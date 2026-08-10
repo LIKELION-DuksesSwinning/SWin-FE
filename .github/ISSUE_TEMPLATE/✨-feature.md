@@ -1,18 +1,10 @@
 ---
 name: "✨ Feature"
 about: Suggest an idea for this project
-title: "✨ Feature"
+title: "[Feat}"
 labels: ''
 assignees: ''
 
----
-
----
-name: ✨ Feature - 작업할 것
-about: 새로운 기능 개발 시 사용하세요.
-title: '✨ Feature - '
-labels:
-assignees: ''
 ---
 
 ## 📌 작업 내용

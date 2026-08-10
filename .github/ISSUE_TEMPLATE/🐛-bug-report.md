@@ -7,14 +7,6 @@ assignees: ''
 
 ---
 
----
-name: 🐛 BugReport - 고칠 것
-about: 버그가 발생했을 때 사용하세요.
-title: '🐛 Bug - '
-labels:
-assignees: ''
----
-
 ## 🔎 버그 설명
 - 어떤 문제가 발생했는지 작성해주세요.
 
