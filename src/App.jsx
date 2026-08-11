@@ -1,5 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 import BottomNav from './components/BottomNav/BottomNav.jsx';
+import ReservationDate from './pages/Clinic/ReservationDate.jsx';
+import ReservationTime from './pages/Clinic/ReservationTime.jsx';
+import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
+import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 import './App.css'; 
 
 const Home = () => <div>홈 화면입니다</div>;
@@ -16,7 +20,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/pool" element={<Pool />} />
-          <Route path="/clinic" element={<Clinic />} />
+          <Route path="/clinic" element={<ReservationDate />} />  
+          <Route path="/clinic/time" element={<ReservationTime />} />
+          <Route path="/clinic/complete" element={<ReservationComplete />} />
+          <Route path="/clinic/history" element={<ReservationHistory />} />
           <Route path="/my" element={<My />} />
         </Routes>
       </div>
