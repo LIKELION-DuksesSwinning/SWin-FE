@@ -1,0 +1,105 @@
+.pool-search-container {
+    padding: 23px 36px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px); 
+    background-color: #FFFFFC;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 18px;
+    color: #111111;
+    text-align: center;
+    padding: 0;
+    line-height: 1;
+    margin-bottom: 53px !important;
+}
+
+/* 탭 헤더 영역 */
+.tab-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #767676;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.tab-item {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    color: #767676;
+    cursor: pointer;
+}
+
+.tab-item.disabled {
+    cursor: default;
+    pointer-events: none;
+}
+
+.tab-item.selected-text {
+    color: #082567;
+}
+
+.list-content {
+    flex: 1;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.list-content::-webkit-scrollbar {
+    display: none;
+}
+
+.list-grid {
+    display: grid;
+    gap: 24px 16px;
+}
+
+.list-grid.one-column {
+    grid-template-columns: 1fr;
+}
+
+.list-grid.three-columns {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.list-item {
+    font-size: 15px;
+    color: #767676;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.pool-result-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 0;
+}
+
+.pool-name {
+    font-size: 16px;
+    color: #111111;
+}
+
+.pool-address {
+    font-size: 14px;
+    color: #767676;
+}
+
+.empty-message {
+    text-align: center;
+    font-size: 15px;
+    color: #767676;
+    margin-top: 40px;
+}
