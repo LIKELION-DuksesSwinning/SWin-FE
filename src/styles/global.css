@@ -1,23 +1,15 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-color: #f3f3ef;
-    font-family: 'Pretendard Variable', sans-serif;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-#root {
-    width: 100%;
-    max-width: 402px;
-    min-height: 100vh;
-    background-color: #FFFFFC; 
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05); 
+  background-color: #f3f3ef;
+  font-family: 'Pretendard Variable', sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
 }
