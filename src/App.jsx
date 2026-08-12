@@ -4,9 +4,15 @@ import ReservationDate from './pages/Clinic/ReservationDate.jsx';
 import ReservationTime from './pages/Clinic/ReservationTime.jsx';
 import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
+import WeeklyCalendar from './components/WeeklyCalendar/WeeklyCalendar.jsx';
 import './App.css'; 
 
-const Home = () => <div>홈 화면입니다</div>;
+// const Home = () => <div>홈 화면입니다</div>;
+const Home = () => (
+  <div>
+    <WeeklyCalendar />
+  </div>
+);
 const Analysis = () => <div>분석 화면입니다</div>;
 const Pool = () => <div>수영장 화면입니다</div>;
 const Clinic = () => <div>클리닉 화면입니다</div>;

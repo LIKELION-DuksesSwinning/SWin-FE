@@ -1,23 +1,347 @@
+/* ================================
+   Pretendard
+================================ */
+
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+
+/* ================================
+   Design Tokens
+================================ */
+
+:root {
+  /* --------------------------------
+     Font Family
+  -------------------------------- */
+  --font-family: 'Pretendard Variable', Pretendard, sans-serif;
+
+
+  /* --------------------------------
+     Font Weight
+     300 = Light
+     400 = Regular
+     500 = Medium
+     600 = Semi Bold
+     700 = Bold
+     800 = Extra Bold
+  -------------------------------- */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+
+
+  /* --------------------------------
+     Font Size
+  -------------------------------- */
+
+  /* 60 */
+  --font-size-60: 60px;
+
+  /* 36 */
+  --font-size-36: 36px;
+
+  /* 24 */
+  --font-size-24: 24px;
+
+  /* 20 */
+  --font-size-20: 20px;
+
+  /* 18 */
+  --font-size-18: 18px;
+
+  /* 16 */
+  --font-size-16: 16px;
+
+  /* 14 */
+  --font-size-14: 14px;
+
+  /* 12 */
+  --font-size-12: 12px;
+
+
+  /* --------------------------------
+     Background
+  -------------------------------- */
+
+  /* 전체 배경 */
+  --color-background: #FFFFFC;
+
+  /* 전체 배경 10% */
+  --color-background-10: rgba(255, 255, 252, 0.1);
+
+  /* 카드 테두리 / 보조 버튼 배경 */
+  --color-background-gray: #D9D9D9;
+
+  /* 읽지 않은 알림 */
+  --color-background-gray-50: rgba(217, 217, 217, 0.5);
+
+
+  /* --------------------------------
+     Primary
+  -------------------------------- */
+
+  /* 강조 텍스트 / 선택 버튼 테두리 */
+  --color-primary: #453682;
+
+  /* 선택된 버튼 */
+  --color-primary-light-20: rgba(177, 132, 232, 0.2);
+
+  /* 수영 기록 버튼 */
+  --color-primary-light-14: rgba(177, 132, 232, 0.14);
+
+  /* 버튼 배경 */
+  --color-primary-light: #B184E8;
+
+  /* 수영장 버튼 배경 */
+  --color-primary-background-middle-20: rgba(70, 141, 217, 0.2);
+
+  /* 피부관리 루틴 추천 */
+  --color-primary-background-light-30: rgba(224, 238, 251, 0.3);
+
+
+  /* --------------------------------
+     Secondary
+  -------------------------------- */
+
+  /* 더나 클리닉 컬러 */
+  --color-secondary: #F9F9FF;
+
+
+  /* --------------------------------
+     Text
+  -------------------------------- */
+
+  /* 제목 / 본문 */
+  --color-text: #111111;
+
+  /* 설명 문구 / 보조 텍스트 */
+  --color-text-gray: #767676;
+
+  /* 모달 뒤 배경 */
+  --color-text-overlay-20: rgba(17, 17, 17, 0.2);
+
+
+  /* --------------------------------
+     Chart
+  -------------------------------- */
+
+  /* AI 분석 - 상 */
+  --color-chart-red: #FF3636;
+
+  /* AI 분석 - 중 */
+  --color-chart-orange: #F59E0B;
+
+  /* AI 분석 - 하 */
+  --color-chart-green: #12B981;
+
+
+  /* --------------------------------
+     Report
+  -------------------------------- */
+
+  /* 주간 리포트 - 수영 후 */
+  --color-report-red: #EC6557;
+
+  /* 주간 리포트 - 수영 전 */
+  --color-report-blue: #468DD9;
+
+
+  /* --------------------------------
+     Calendar
+  -------------------------------- */
+
+  /* 달력 토요일 */
+  --color-calendar: #008AF4;
+
+
+  /* --------------------------------
+     Logo
+  -------------------------------- */
+
+  --color-logo: #0DEFE6;
 }
+
+
+/* ================================
+   Reset
+================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* ================================
+   Body
+================================ */
 
 body {
-    background-color: #f3f3ef;
-    font-family: 'Pretendard Variable', sans-serif;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
+  background-color: #f3f3ef;
+
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+
+  color: var(--color-text);
+
+  display: flex;
+  justify-content: center;
+
+  min-height: 100vh;
 }
 
+
+/* ================================
+   Root
+================================ */
+
 #root {
-    width: 100%;
-    max-width: 402px;
-    min-height: 100vh;
-    background-color: #FFFFFC; 
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05); 
+  width: 100%;
+  max-width: 402px;
+  min-height: 100vh;
+
+  background-color: var(--color-background);
+
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ================================
+   Typography
+   Style Guide
+================================ */
+
+/* 60 */
+
+.text-extra-bold-60 {
+  font-size: var(--font-size-60);
+  font-weight: var(--font-weight-extra-bold);
+}
+
+.text-semi-bold-60 {
+  font-size: var(--font-size-60);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+
+/* 36 */
+
+.text-semi-bold-36 {
+  font-size: var(--font-size-36);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+
+/* 24 */
+
+.text-medium-24 {
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-regular-24 {
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* 20 */
+
+.text-semi-bold-20 {
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+.text-regular-20 {
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* 18 */
+
+.text-medium-18 {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-regular-18 {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* 16 */
+
+.text-bold-16 {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-bold);
+}
+
+.text-medium-16 {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-regular-16 {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* 14 */
+
+.text-bold-14 {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+}
+
+.text-semi-bold-14 {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semi-bold);
+}
+
+.text-medium-14 {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-regular-14 {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* 12 */
+
+.text-bold-12 {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-bold);
+}
+
+.text-regular-12 {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+}
+
+.text-light-12 {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-light);
 }
