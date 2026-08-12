@@ -5,6 +5,7 @@ import ReservationTime from './pages/Clinic/ReservationTime.jsx';
 import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 import WeeklyCalendar from './components/WeeklyCalendar/WeeklyCalendar.jsx';
+import PoolSearch from './pages/Pool/PoolSearch.jsx';
 import './App.css'; 
 
 // const Home = () => <div>홈 화면입니다</div>;
@@ -25,7 +26,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/analysis" element={<Analysis />} />
-          <Route path="/pool" element={<Pool />} />
+          <Route path="/pool" element={<PoolSearch />} />
           <Route path="/clinic" element={<ReservationDate />} />  
           <Route path="/clinic/time" element={<ReservationTime />} />
           <Route path="/clinic/complete" element={<ReservationComplete />} />
