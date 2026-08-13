@@ -1,293 +1,300 @@
 .weekly-calendar {
-    width: 100%;
-    padding: 18px 16px 10px;
-    box-sizing: border-box;
-    background-color: var(--color-background);
+  width: 100%;
+  padding: 18px 16px 24px;
 
-    border-top: 1px solid var(--color-background-gray);
-    border-bottom: 1px solid var(--color-background-gray);
-  }
-  
-  
-  /* ========================================
-     상단 헤더
-  ======================================== */
-  
-  .calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  box-sizing: border-box;
 
-    width: 100%;
-    height: 22px;
-    padding: 24px 0px 24px 0px;
-  }
-  
-  .calendar-navigation {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 5px;
+  background-color: var(--color-background);
 
-    width: 165px;
-    height: 22px;
-  }
-  
-  .calendar-arrow {
-    width: 22px;
-    height: 22px;
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    padding: 0;
-    border: none;
-    background: transparent;
+  border-top: 1px solid var(--color-background-gray);
+  border-bottom: 1px solid var(--color-background-gray);
+}
 
-    cursor: pointer;
-  }
-  
-  .calendar-arrow img{
-    width: 22px;
-    height: 22px;
-  }
-  
-  .calendar-month {
-    font-size: var(--font-size-18);
-    font-weight: var(--font-weight-regular);
-    line-height: 1.2;
-  
-    color: var(--color-text);
-  
-    white-space: nowrap;
-  }
-  
-  
-  /* ========================================
-     일정 범례
-  ======================================== */
-  
-  .schedule-legend {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  
-    white-space: nowrap;
-  
-    font-size: var(--font-size-12);
-    font-weight: var(--font-weight-regular);
-  
-    color: var(--color-text);
-  }
-  
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-  
-  .legend-dot {
-    width: 8px;
-    height: 8px;
-  
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  
-  
-  /* ========================================
-     요일
-  ======================================== */
-  
-  .calendar-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 9px;
-  
-    text-align: center;
-  }
-  
-  .calendar-weekday {
-    font-size: var(--font-size-14);
-    font-weight: var(--font-weight-regular);
-    line-height: 1.2;
-  
-    color: var(--color-text);
-  }
-  
-  .calendar-weekday.sunday {
-    color: #FF3636;
-  }
-  
-  .calendar-weekday.saturday {
-    color: var(--color-calendar);
-  }
-  
-  
-  /* ========================================
-     날짜 영역
-  ======================================== */
-  
-  .calendar-dates {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-  
-    align-items: start;
-  
-    text-align: center;
-  }
-  
-  .calendar-date {
-    width: 100%;
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    margin: 0;
-    padding: 0;
-  
-    border: none;
-    background: transparent;
-  
-    cursor: pointer;
-  }
-  
-  
-  /* ========================================
-     날짜 전체 원
-  ======================================== */
-  
-  .date-circle {
-    position: relative;
-  
-    width: 48px;
-    height: 48px;
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    box-sizing: border-box;
-    border-radius: 50%;
-  }
-  
-  
-  /* ========================================
-     날짜 숫자
-  ======================================== */
-  
-  .date-number {
-    position: absolute;
-  
-    top: 7px;
-    left: 50%;
-  
-    transform: translateX(-50%);
-  
-    font-size: var(--font-size-16);
-    font-weight: var(--font-weight-regular);
-    line-height: 1;
-  
-    color: var(--color-text-gray);
-  
-    white-space: nowrap;
-  }
-  
-  
-  /* ========================================
-     오늘 날짜
-  ======================================== */
-  
-  .calendar-date.today .date-circle {
-    border: 1px solid var(--color-text-gray);
-  }
-  
-  .calendar-date.today .date-number {
-    color: var(--color-text);
-  }
-  
-  
-  /* ========================================
-     선택된 날짜
-  ======================================== */
-  
-  .calendar-date.selected .date-circle {
-    background-color: var(--color-primary-light-20);
-  }
-  
-  .calendar-date.selected .date-number {
-    color: var(--color-primary);
-  }
-  
-  
-  /* ========================================
-     오늘 + 선택된 날짜
-  ======================================== */
-  
-  .calendar-date.today.selected .date-circle {
-    border: 1px solid var(--color-primary);
-    background-color: var(--color-primary-light-20);
-  }
-  
-  .calendar-date.today.selected .date-number {
-    color: var(--color-primary);
-  }
-  
-  
-  /* ========================================
-     일정 점
-  ======================================== */
-  
-  .schedule-dots {
-    position: absolute;
-  
-    left: 50%;
-    bottom: 7px;
-  
-    transform: translateX(-50%);
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    gap: 5px;
-  }
-  
-  .schedule-dot {
-    width: 9px;
-    height: 9px;
-  
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  
-  
-  /* ========================================
-     수영
-  ======================================== */
-  
-  .swim-dot {
-    background-color: var(--color-calendar);
-  }
-  
-  
-  /* ========================================
-     클리닉
-  ======================================== */
-  
-  .clinic-dot {
-    background-color: #FFF05A;
-  }
-  
-  
-  /* ========================================
-     버튼 접근성
-  ======================================== */
-  
-  .calendar-date:focus-visible,
-  .calendar-arrow:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
+
+/* ========================================
+   상단 헤더
+======================================== */
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 22px;
+
+  padding: 24px 0;
+}
+
+
+.calendar-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 5px;
+
+  width: 165px;
+  height: 22px;
+}
+
+
+.calendar-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+
+.calendar-arrow img {
+  width: 22px;
+  height: 22px;
+}
+
+
+.calendar-month {
+  color: var(--color-text);
+
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+
+/* ========================================
+   일정 범례
+======================================== */
+
+.schedule-legend {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  white-space: nowrap;
+}
+
+
+.legend-item {
+  display: flex;
+  align-items: center;
+
+  gap: 3px;
+}
+
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+}
+
+
+/* ========================================
+   요일
+======================================== */
+
+.calendar-weekdays {
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  margin-bottom: 9px;
+
+  text-align: center;
+}
+
+
+.calendar-weekday {
+  color: var(--color-text);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+}
+
+
+.calendar-weekday.sunday {
+  color: #FF3636;
+}
+
+
+.calendar-weekday.saturday {
+  color: var(--color-calendar);
+}
+
+
+/* ========================================
+   날짜 영역
+======================================== */
+
+.calendar-dates {
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  align-items: start;
+
+  text-align: center;
+}
+
+
+.calendar-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+
+/* ========================================
+   날짜 전체 원
+======================================== */
+
+.date-circle {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  box-sizing: border-box;
+
+  border-radius: 50%;
+}
+
+
+/* ========================================
+   날짜 숫자
+======================================== */
+
+.date-number {
+  position: absolute;
+
+  top: 7px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+
+/* ========================================
+   선택된 날짜
+======================================== */
+
+/*
+  처음에는 selectedDate가 오늘이므로
+  오늘 날짜에 테두리가 표시됨.
+
+  다른 날짜를 클릭하면 selectedDate가
+  해당 날짜로 바뀌면서 테두리가 이동함.
+*/
+
+.calendar-date.selected .date-circle {
+  border: 1px solid var(--color-text-gray);
+}
+
+.calendar-date.selected .date-number {
+  color: var(--color-text);
+}
+
+
+/* ========================================
+   일정 점
+======================================== */
+
+.schedule-dots {
+  position: absolute;
+
+  left: 50%;
+  bottom: 7px;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+}
+
+
+.schedule-dot {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+}
+
+
+/* ========================================
+   수영
+======================================== */
+
+.swim-dot {
+  background-color: var(--color-calendar);
+}
+
+
+/* ========================================
+   클리닉
+======================================== */
+
+.clinic-dot {
+  background-color: #FFF05A;
+}
+
+
+/* ========================================
+   버튼 접근성
+======================================== */
+
+.calendar-date:focus-visible,
+.calendar-arrow:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

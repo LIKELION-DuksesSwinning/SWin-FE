@@ -14,6 +14,10 @@ const mockSchedules = [
   },
   {
     date: '2026-08-14',
+    type: 'clinic',
+  },
+  {
+    date: '2026-08-14',
     type: 'swim',
   },
   {
@@ -57,13 +61,11 @@ const WeeklyCalendar = ({ schedules = mockSchedules }) => {
   const [currentWeekDate, setCurrentWeekDate] = useState(new Date());
 
   // 사용자가 선택한 날짜
+  // 처음에는 오늘 날짜가 선택된 상태
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   // 현재 주의 날짜 7개
   const weekDates = getWeekDates(currentWeekDate);
-
-  // 오늘 날짜
-  const todayKey = formatDateKey(new Date());
 
   // 현재 주 가운데 날짜를 기준으로 연/월 표시
   const headerDate = weekDates[3];
@@ -161,8 +163,7 @@ const WeeklyCalendar = ({ schedules = mockSchedules }) => {
         {weekDates.map((date) => {
           const dateKey = formatDateKey(date);
 
-          const isToday = dateKey === todayKey;
-
+          // 현재 선택된 날짜인지 확인
           const isSelected =
             selectedDate &&
             dateKey === formatDateKey(selectedDate);
@@ -182,11 +183,11 @@ const WeeklyCalendar = ({ schedules = mockSchedules }) => {
               key={dateKey}
               type="button"
               className={`calendar-date ${
-                isToday ? 'today' : ''
-              } ${isSelected ? 'selected' : ''}`}
+                isSelected ? 'selected' : ''
+              }`}
               onClick={() => handleDateClick(date)}
             >
-              {/* 날짜 숫자 + 일정 점을 하나의 원 안에 넣음 */}
+              {/* 날짜 숫자 + 일정 점 */}
               <div className="date-circle">
                 <span className="date-number">
                   {date.getDate()}
