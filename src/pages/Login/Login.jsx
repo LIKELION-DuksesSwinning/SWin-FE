@@ -59,9 +59,8 @@ function Login() {
 
       // 로그인 실패
       if (!response.ok) {
-        setIdError(
-          data.detail || '아이디 또는 비밀번호가 불일치합니다.'
-        );
+        setIdError('다시 입력해 주세요.');
+        setPasswordError('다시 입력해 주세요.');
         return;
       }
 
