@@ -1,0 +1,77 @@
+/* ================================
+   Starting Page
+================================ */
+
+.starting-page {
+  display: flex;
+
+  width: 100%;
+  min-height: 100dvh;
+
+  justify-content: center;
+  align-items: center;
+
+  background-color: #102e70;
+}
+
+
+/* ================================
+   Starting Content
+================================ */
+
+.starting-content {
+  display: flex;
+
+  width: 100%;
+  min-height: 100dvh;
+
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* ================================
+   Starting Logo
+================================ */
+
+.starting-logo {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
+
+/* ================================
+   S Logo
+================================ */
+
+.starting-logo img {
+  width: 64px;
+  height: auto;
+
+  margin-bottom: 36px;
+}
+
+
+/* ================================
+   Wordmark
+================================ */
+
+.starting-wordmark {
+  color: #ffffff;
+
+  font-size: var(--font-size-60);
+  font-weight: var(--font-weight-extra-bold);
+  line-height: 1;
+
+  letter-spacing: -2.5px;
+}
+
+.starting-wordmark span {
+  color: var(--color-logo);
+  font-size: var(--font-size-60);
+  font-weight: var(--font-weight-semi-bold);
+
+  margin-left: 3px;
+}
