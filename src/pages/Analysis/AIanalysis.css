@@ -1,0 +1,71 @@
+.analysis-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px); 
+    background-color: #FFFFFC;
+    overflow-y: auto;
+    
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.analysis-container::-webkit-scrollbar {
+    display: none;
+}
+
+.analysis-tab-menu {
+    display: flex;
+    height: 44px;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+}
+
+.tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 16px;
+    color: #767676;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-item.active {
+    color: #111111;
+    font-weight: 600;
+    border-bottom: 1px solid #111111; 
+}
+
+.tab-item.disabled {
+    cursor: default;
+}
+
+.analysis-content {
+    flex: 1;
+    padding: 24px 20px;
+}
+
+.report-cards-container {
+    display: flex;
+    gap: 16px;
+    padding: 24px 20px;
+}
+
+.report-card-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.report-card-btn img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
