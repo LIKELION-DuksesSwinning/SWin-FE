@@ -16,7 +16,7 @@ const BottomNav = () => {
     const location = useLocation();
 
     const navItems = [
-        { path: '/', activeIcon: homeActivated, inactiveIcon: homeDeactivated, alt: '홈' },
+        { path: '/home', activeIcon: homeActivated, inactiveIcon: homeDeactivated, alt: '홈' },
         { path: '/analysis', activeIcon: analyzeActivated, inactiveIcon: analyzeDeactivated, alt: '분석' },
         { path: '/pool', activeIcon: poolsActivated, inactiveIcon: poolsDeactivated, alt: '수영장' },
         { path: '/clinic', activeIcon: clinicActivated, inactiveIcon: clinicDeactivated, alt: '클리닉' },
