@@ -6,9 +6,10 @@ import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 import WeeklyCalendar from './components/WeeklyCalendar/WeeklyCalendar.jsx';
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
+import AIanalysis from './pages/Analysis/AIanalysis.jsx';
+import SwimReport from './pages/Analysis/SwimReport.jsx';
 import './App.css'; 
 
-// const Home = () => <div>홈 화면입니다</div>;
 const Home = () => (
   <div>
     <WeeklyCalendar />
@@ -25,7 +26,8 @@ function App() {
       <div className="content-area">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/analysis" element={<Analysis />} />
+          <Route path="/analysis" element={<AIanalysis />} />
+          <Route path="/analysis/swim-report" element={<SwimReport />} />
           <Route path="/pool" element={<PoolSearch />} />
           <Route path="/clinic" element={<ReservationDate />} />  
           <Route path="/clinic/time" element={<ReservationTime />} />
