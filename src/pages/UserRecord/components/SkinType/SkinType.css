@@ -1,0 +1,220 @@
+/* ================================
+   Skin Type
+================================ */
+
+.skin-type {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100%;
+
+  padding: 35px 25px 25px;
+
+  background-color: var(--color-background);
+}
+
+
+/* ================================
+   Question
+================================ */
+
+.skin-question {
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid var(--color-background-gray);
+}
+
+.skin-question + .skin-question {
+  padding-top: 14px;
+}
+
+
+/* ================================
+   Question Title
+================================ */
+
+.skin-question h2 {
+  margin: 0 0 4px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Question Description
+================================ */
+
+.skin-question p {
+  margin: 0 0 12px;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Options
+================================ */
+
+.skin-option-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-bottom: 25px;
+}
+
+
+/* ================================
+   Option Button
+================================ */
+
+.skin-option-button {
+  width: 75px;
+  height: 40px;
+
+  padding: 0 8px;
+
+  border: 1px solid #BDBDBD;
+  border-radius: 5px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Selected Option
+================================ */
+
+.skin-option-button.selected {
+  border-color: #082567;
+
+  background-color: var(--color-primary-background-middle-20);
+
+  color: #082567;
+}
+
+
+/* ================================
+   Bottom Navigation
+================================ */
+
+.skin-navigation {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+
+/* ================================
+   Previous Button
+================================ */
+
+.skin-prev-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 0;
+
+  border: 1px solid var(--color-background-gray);
+  border-radius: 2px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  cursor: pointer;
+}
+
+.skin-prev-button span {
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-light);
+  line-height: 1;
+}
+
+
+/* ================================
+   Complete Button
+================================ */
+
+.skin-next-button {
+  flex: 1;
+
+  height: 40px;
+
+  border: none;
+  border-radius: 2px;
+
+  background-color: var(--color-background-gray);
+
+  color: #FFFFFF;
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+
+  cursor: not-allowed;
+}
+
+
+/* ================================
+   Active Complete Button
+================================ */
+
+.skin-next-button.active {
+  background-color: #0068F5;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+  .skin-type {
+    padding: 18px 14px 14px;
+  }
+
+  .skin-option-list {
+    gap: 7px 5px;
+  }
+
+  .skin-option-button {
+    width: 70px;
+
+    padding: 0 6px;
+
+    font-size: var(--font-size-12);
+  }
+}
