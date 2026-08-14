@@ -12,16 +12,23 @@ import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 import WeeklyCalendar from './components/WeeklyCalendar/WeeklyCalendar.jsx';
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
-import './App.css';
+import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
+import NoRecords from './pages/Analysis/NoRecords.jsx';
+import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
+import Loading from './pages/Analysis/Loading.jsx';
+
+import AIanalysis from './pages/Analysis/AIanalysis.jsx';
+import SwimReport from './pages/Analysis/SwimReport.jsx';
+
+import './App.css'; 
 
 const Home = () => (
   <div>
     <WeeklyCalendar />
   </div>
 );
-
-const Analysis = () => <div>분석 화면입니다</div>;
 const My = () => <div>마이 화면입니다</div>;
+
 
 function App() {
   const location = useLocation();
@@ -42,35 +49,20 @@ function App() {
     <div className="app-container">
       <div className="content-area">
         <Routes>
-          {/* 처음 접속하는 Starting → Login */}
-          <Route
-            path="/"
-            element={showStarting ? <Starting /> : <Login />}
-          />
-
-          {/* 로그인 성공 후 이동할 홈 화면 */}
-          <Route path="/home" element={<Home />} />
-
-          <Route path="/analysis" element={<Analysis />} />
-
+          <Route path="/" element={<Home />} />
+          
           <Route path="/pool" element={<PoolSearch />} />
+          
+          <Route path="/clinic" element={<ReservationDate />} />  
+          <Route path="/clinic/time" element={<ReservationTime />} />
+          <Route path="/clinic/complete" element={<ReservationComplete />} />
+          <Route path="/clinic/history" element={<ReservationHistory />} />
 
-          <Route path="/clinic" element={<ReservationDate />} />
-
-          <Route
-            path="/clinic/time"
-            element={<ReservationTime />}
-          />
-
-          <Route
-            path="/clinic/complete"
-            element={<ReservationComplete />}
-          />
-
-          <Route
-            path="/clinic/history"
-            element={<ReservationHistory />}
-          />
+          <Route path="/analysis/loading" element={<Loading />} />
+          <Route path="/analysis" element={<ClickForAnalysis />} />
+          <Route path="/analysis/swim-report" element={<NoRecords />} />
+          <Route path="/analysis/clinic-report" element={<NoClinicReport />} />
+          <Route path="/analysis/swim-report-data" element={<SwimReport />} />
 
           <Route path="/my" element={<My />} />
         </Routes>
