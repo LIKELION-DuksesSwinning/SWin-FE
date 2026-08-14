@@ -1,0 +1,72 @@
+/* ================================
+   User Record
+================================ */
+
+.user-record {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: var(--color-background);
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.user-record-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 160px;
+
+  padding: 18px 16px 14px;
+
+  background-color: #102E70;
+}
+
+
+/* ================================
+   Back Button
+================================ */
+
+.user-record-back {
+  display: flex;
+  align-items: center;
+
+  width: 10px;
+  height: 20px;
+
+  margin-bottom: 14px;
+  padding: 0;
+
+  border: none;
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.user-record-back img {
+  margin-top: 15px;
+  margin-left: 25px;
+}
+
+
+/* ================================
+   Content
+================================ */
+
+.user-record-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  width: 100%;
+
+  background-color: var(--color-background);
+}

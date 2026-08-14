@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Login from './pages/Login/Login.jsx';
 import Starting from './pages/Starting/Starting.jsx';
+import UserRecord from './pages/UserRecord/UserRecord.jsx';
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
@@ -37,6 +38,7 @@ function App() {
   }, []);
 
   const isLoginPage = location.pathname === '/';
+  const isUserRecordPage = location.pathname === '/user-record';
 
   return (
     <div className="app-container">
@@ -46,6 +48,12 @@ function App() {
           <Route
             path="/"
             element={showStarting ? <Starting /> : <Login />}
+          />
+
+          {/* 로그인 후 사용자 기록 */}
+          <Route
+            path="/user-record"
+            element={<UserRecord />}
           />
 
           {/* 로그인 성공 후 이동할 홈 화면 */}
@@ -76,8 +84,8 @@ function App() {
         </Routes>
       </div>
 
-      {/* 로그인/Starting 화면에서는 하단 네비게이션 숨김 */}
-      {!isLoginPage && <BottomNav />}
+      {/* Starting / Login / UserRecord에서는 하단 네비게이션 숨김 */}
+      {!isLoginPage && !isUserRecordPage && <BottomNav />}
     </div>
   );
 }
