@@ -20,8 +20,6 @@
 ================================ */
 
 .record-question {
-  padding-bottom: 16px;
-
   border-bottom: 1px solid var(--color-background-gray);
 }
 
@@ -29,6 +27,9 @@
   padding-top: 14px;
 }
 
+.must-needed{
+  color: #EC6557;
+}
 
 /* ================================
    Question Title
@@ -54,10 +55,15 @@
   display: flex;
   flex-wrap: wrap;
 
-  gap: 10px;
+  gap: 15px 10px;
   margin-bottom: 25px;
 }
 
+.two-two {
+  display: grid;
+  grid-template-columns: repeat(2, 90px);
+  gap: 10px;
+}
 
 /* ================================
    Option Button
@@ -122,7 +128,7 @@
 .record-next-button {
   flex: 1;
 
-  height: 40px;
+  height: 52px;
 
   border: none;
   border-radius: 2px;

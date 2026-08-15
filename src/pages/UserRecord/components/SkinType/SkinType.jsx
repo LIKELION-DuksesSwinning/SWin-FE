@@ -1,4 +1,7 @@
 import { useState } from 'react';
+
+import prevBtn from '../../../../assets/images/prev-btn.svg';
+
 import './SkinType.css';
 
 const SKIN_TYPE_OPTIONS = [
@@ -123,11 +126,14 @@ function SkinType({ onNext, onPrev }) {
       ======================================== */}
 
       <div className="skin-question">
-        <h2>1. 피부 타입</h2>
+        <h2>
+          1. 피부 타입{' '}
+          <span className="must-needed">*</span>
+        </h2>
 
         <p>중복 선택 가능</p>
 
-        <div className="skin-option-list">
+        <div className="skin-option-list max-three">
           {SKIN_TYPE_OPTIONS.map((option) => (
             <button
               key={option}
@@ -143,19 +149,23 @@ function SkinType({ onNext, onPrev }) {
         </div>
       </div>
 
+
       {/* ========================================
           2. 반복 증상
       ======================================== */}
 
       <div className="skin-question">
-        <h2>2. 반복 증상</h2>
+        <h2>
+          2. 반복 증상{' '}
+          <span className="must-needed">*</span>
+        </h2>
 
         <p>
           수영 후 자주 나타나는 증상을 선택하세요.
           (중복 선택 가능)
         </p>
 
-        <div className="skin-option-list">
+        <div className="skin-option-list max-three">
           {SKIN_SYMPTOM_OPTIONS.map((option) => (
             <button
               key={option}
@@ -171,6 +181,7 @@ function SkinType({ onNext, onPrev }) {
         </div>
       </div>
 
+
       {/* ========================================
           3. 증상 발생 부위
       ======================================== */}
@@ -183,7 +194,7 @@ function SkinType({ onNext, onPrev }) {
           선택하세요. (중복 선택 가능)
         </p>
 
-        <div className="skin-option-list">
+        <div className="skin-option-list max-three">
           {SKIN_AREA_OPTIONS.map((option) => (
             <button
               key={option}
@@ -199,6 +210,7 @@ function SkinType({ onNext, onPrev }) {
         </div>
       </div>
 
+
       {/* ========================================
           하단 버튼
       ======================================== */}
@@ -211,7 +223,10 @@ function SkinType({ onNext, onPrev }) {
           onClick={onPrev}
           aria-label="이전"
         >
-          <span aria-hidden="true">‹</span>
+          <img
+            src={prevBtn}
+            alt="이전"
+          />
         </button>
 
         <button

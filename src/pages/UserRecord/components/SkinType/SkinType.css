@@ -20,13 +20,20 @@
 ================================ */
 
 .skin-question {
-  padding-bottom: 16px;
-
   border-bottom: 1px solid var(--color-background-gray);
 }
 
 .skin-question + .skin-question {
   padding-top: 14px;
+}
+
+
+/* ================================
+   Required Mark
+================================ */
+
+.must-needed {
+  color: #EC6557;
 }
 
 
@@ -70,9 +77,23 @@
   display: flex;
   flex-wrap: wrap;
 
-  gap: 10px;
+  gap: 15px 10px;
 
   margin-bottom: 25px;
+}
+
+
+/* ================================
+   3-Column Options
+================================ */
+
+.max-three {
+  display: grid;
+
+  grid-template-columns: repeat(3, 75px);
+
+  column-gap: 10px;
+  row-gap: 15px;
 }
 
 
@@ -141,8 +162,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
 
   padding: 0;
 
@@ -151,15 +172,14 @@
 
   background-color: var(--color-background);
 
-  color: var(--color-text-gray);
-
   cursor: pointer;
 }
 
-.skin-prev-button span {
-  font-size: var(--font-size-24);
-  font-weight: var(--font-weight-light);
-  line-height: 1;
+.skin-prev-button img {
+  display: block;
+
+  width: 40px;
+  height: 40px;
 }
 
 
@@ -170,7 +190,7 @@
 .skin-next-button {
   flex: 1;
 
-  height: 40px;
+  height: 52px;
 
   border: none;
   border-radius: 2px;
@@ -208,6 +228,13 @@
 
   .skin-option-list {
     gap: 7px 5px;
+  }
+
+  .max-three {
+    grid-template-columns: repeat(3, 70px);
+
+    column-gap: 5px;
+    row-gap: 7px;
   }
 
   .skin-option-button {

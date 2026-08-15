@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import StepIndicator from './components/StepIndicator/StepIndicator';
 import SwimmingPattern from './components/SwimmingPattern/SwimmingPattern';
@@ -9,6 +10,8 @@ import timePrev from '../../assets/images/time-prev.svg';
 import './UserRecord.css';
 
 function UserRecord() {
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
 
   const [userData, setUserData] = useState({
@@ -34,7 +37,7 @@ function UserRecord() {
   };
 
   // ========================================
-  // 피부 → 온보딩 완료
+  // 피부 → 기록 완료 화면
   // ========================================
 
   const handleSkinNext = (data) => {
@@ -47,9 +50,7 @@ function UserRecord() {
 
     console.log('최종 사용자 기록:', completeData);
 
-    // 이후 작업:
-    // 1. 온보딩 API 요청
-    // 2. API 성공 시 완료 화면으로 이동
+    navigate('/record-done');
   };
 
   // ========================================

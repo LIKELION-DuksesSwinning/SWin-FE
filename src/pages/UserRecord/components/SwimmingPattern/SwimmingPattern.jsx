@@ -51,7 +51,7 @@ function SwimmingPattern({ onNext, onPrev }) {
       ================================= */}
 
       <div className="record-question">
-        <h2>1. 수영 기간</h2>
+        <h2>1. 수영 기간 <span class="must-needed">*</span></h2>
 
         <div className="option-list">
           {SWIM_PERIOD_OPTIONS.map((option) => (
@@ -75,7 +75,7 @@ function SwimmingPattern({ onNext, onPrev }) {
       ================================= */}
 
       <div className="record-question">
-        <h2>2. 평균 수영 횟수</h2>
+        <h2>2. 평균 수영 횟수 <span class="must-needed">*</span></h2>
 
         <div className="option-list">
           {SWIM_COUNT_OPTIONS.map((option) => (
@@ -99,9 +99,9 @@ function SwimmingPattern({ onNext, onPrev }) {
       ================================= */}
 
       <div className="record-question">
-        <h2>3. 평균 수영 시간</h2>
+        <h2>3. 평균 수영 시간 <span class="must-needed">*</span></h2>
 
-        <div className="option-list">
+        <div className="option-list two-two">
           {SWIM_TIME_OPTIONS.map((option) => (
             <button
               key={option}
