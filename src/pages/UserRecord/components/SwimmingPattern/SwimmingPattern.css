@@ -1,0 +1,176 @@
+/* ================================
+   Swimming Pattern
+================================ */
+
+.swimming-pattern {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100%;
+
+  padding: 35px 25px 25px;
+
+  background-color: var(--color-background);
+}
+
+
+/* ================================
+   Question
+================================ */
+
+.record-question {
+  border-bottom: 1px solid var(--color-background-gray);
+}
+
+.record-question + .record-question {
+  padding-top: 14px;
+}
+
+.must-needed{
+  color: #EC6557;
+}
+
+/* ================================
+   Question Title
+================================ */
+
+.record-question h2 {
+  margin: 0 0 20px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Options
+================================ */
+
+.option-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 15px 10px;
+  margin-bottom: 25px;
+}
+
+.two-two {
+  display: grid;
+  grid-template-columns: repeat(2, 90px);
+  gap: 10px;
+}
+
+/* ================================
+   Option Button
+================================ */
+
+.option-button {
+  width: 90px;
+  height: 45px;
+
+  padding: 0 10px;
+
+  border: 1px solid #BDBDBD;
+  border-radius: 5px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Selected Option
+================================ */
+
+.option-button.selected {
+  border-color: #082567;
+
+  background-color: var(--color-primary-background-middle-20);
+
+  color: #082567;
+}
+
+
+/* ================================
+   Bottom Navigation
+================================ */
+
+.record-navigation {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+
+/* ================================
+   Next Button
+================================ */
+
+.record-next-button {
+  flex: 1;
+
+  height: 52px;
+
+  border: none;
+  border-radius: 2px;
+
+  background-color: var(--color-background-gray);
+
+  color: #FFFFFF;
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+
+  cursor: not-allowed;
+}
+
+
+/* ================================
+   Active Next Button
+================================ */
+
+.record-next-button.active {
+  background-color: #0068F5;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+  .swimming-pattern {
+    padding: 18px 14px 14px;
+  }
+
+  .option-list {
+    gap: 7px 5px;
+  }
+
+  .option-button {
+    padding: 0 8px;
+
+    font-size: 10px;
+  }
+}

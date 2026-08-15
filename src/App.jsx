@@ -3,6 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Login from './pages/Login/Login.jsx';
 import Starting from './pages/Starting/Starting.jsx';
+import UserRecord from './pages/UserRecord/UserRecord.jsx';
+import RecordDone from './pages/UserRecord/components/RecordDone/RecordDone.jsx';
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
@@ -37,6 +39,8 @@ function App() {
   }, []);
 
   const isLoginPage = location.pathname === '/';
+  const isUserRecordPage = location.pathname === '/user-record';
+  const isRecordDonePage = location.pathname === '/record-done';
 
   return (
     <div className="app-container">
@@ -48,7 +52,19 @@ function App() {
             element={showStarting ? <Starting /> : <Login />}
           />
 
-          {/* 로그인 성공 후 이동할 홈 화면 */}
+          {/* 로그인 후 사용자 기록 */}
+          <Route
+            path="/user-record"
+            element={<UserRecord />}
+          />
+
+          {/* 사용자 기록 완료 화면 */}
+          <Route
+            path="/record-done"
+            element={<RecordDone />}
+          />
+
+          {/* 사용자 기록 완료 후 홈 */}
           <Route path="/home" element={<Home />} />
 
           <Route path="/analysis" element={<Analysis />} />
@@ -76,8 +92,10 @@ function App() {
         </Routes>
       </div>
 
-      {/* 로그인/Starting 화면에서는 하단 네비게이션 숨김 */}
-      {!isLoginPage && <BottomNav />}
+      {/* Starting / Login / UserRecord / RecordDone에서는 하단 네비게이션 숨김 */}
+      {!isLoginPage &&
+        !isUserRecordPage &&
+        !isRecordDonePage && <BottomNav />}
     </div>
   );
 }

@@ -42,7 +42,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        'http://localhost:8000/api/v1/accounts/login/',
+        'https://miseno.store/api/v1/accounts/login/',
         {
           method: 'POST',
           headers: {
@@ -69,7 +69,7 @@ function Login() {
       localStorage.setItem('userId', data.user_id);
       localStorage.setItem('userName', data.name);
 
-      navigate('/home');
+      navigate('/user-record');
     } catch (error) {
       console.error('로그인 오류:', error);
 
