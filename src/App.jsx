@@ -17,7 +17,18 @@ import Calendar from './pages/Calendar/Calendar.jsx';
 import BeforeSwimming from './pages/Archive/BeforeSwimming/BeforeSwimming.jsx';
 import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 
-import Alert from './pages/Alert/Alert.jsx';
+/*
+  Alert.jsx가
+
+  export default Alert;
+
+  또는
+
+  export { Alert };
+
+  둘 중 어떤 방식이든 대응할 수 있도록 가져옴
+*/
+import * as AlertPage from './pages/Alert/Alert.jsx';
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
 
@@ -37,6 +48,10 @@ const Analysis = () => (
 const My = () => (
   <div>마이 화면입니다</div>
 );
+
+// Alert.jsx의 export 방식에 따라 컴포넌트 선택
+const Alert =
+  AlertPage.default || AlertPage.Alert;
 
 function App() {
   const location = useLocation();
@@ -119,13 +134,18 @@ function App() {
 
 
           {/* ========================================
-              1.2 수영 기록
+              1.2 수영 전 기록
           ======================================== */}
 
           <Route
             path="/archive/before-swimming"
             element={<BeforeSwimming />}
           />
+
+
+          {/* ========================================
+              1.2 수영 후 기록
+          ======================================== */}
 
           <Route
             path="/archive/after-swimming"

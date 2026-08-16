@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import './WeeklyCalendar.css';
 
@@ -39,14 +39,14 @@ const mockSchedules = [
 // Date → YYYY-MM-DD
 const formatDateKey = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(
-    2,
-    '0'
-  );
-  const day = String(date.getDate()).padStart(
-    2,
-    '0'
-  );
+
+  const month = String(
+    date.getMonth() + 1
+  ).padStart(2, '0');
+
+  const day = String(
+    date.getDate()
+  ).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 };
@@ -85,38 +85,33 @@ const getWeekDates = (date) => {
 const WeeklyCalendar = ({
   schedules = mockSchedules,
 
-  // Calendar 페이지에서만 전달
+  // Calendar 페이지에서 전달하는 선택 날짜
   selectedDate: controlledSelectedDate = null,
 
-  // 날짜 변경 시 부모에게 전달
+  // 날짜가 변경되었을 때 부모에게 전달
   onDateChange = null,
 }) => {
-  // controlledSelectedDate가 있으면 그 날짜를 기준으로 시작
+  // ========================================
+  // 초기 날짜
+  //
+  // Calendar 페이지에서 selectedDate가 전달되면
+  // 해당 날짜가 포함된 주부터 보여줌
+  // ========================================
+
   const initialDate =
     controlledSelectedDate || new Date();
 
-  // 현재 보고 있는 주를 결정하는 기준 날짜
-  const [currentWeekDate, setCurrentWeekDate] =
-    useState(initialDate);
+  // 현재 보고 있는 주의 기준 날짜
+  const [
+    currentWeekDate,
+    setCurrentWeekDate,
+  ] = useState(initialDate);
 
   // 내부 선택 날짜
   const [
     internalSelectedDate,
     setInternalSelectedDate,
   ] = useState(initialDate);
-
-  // Calendar.jsx에서 selectedDate가 바뀌었을 때 동기화
-  useEffect(() => {
-    if (!controlledSelectedDate) return;
-
-    setCurrentWeekDate(
-      controlledSelectedDate
-    );
-
-    setInternalSelectedDate(
-      controlledSelectedDate
-    );
-  }, [controlledSelectedDate]);
 
   // 실제 선택 날짜
   const selectedDate =
@@ -137,6 +132,7 @@ const WeeklyCalendar = ({
     headerDate.getMonth() + 1
   ).padStart(2, '0');
 
+
   // ========================================
   // 이전 주
   // ========================================
@@ -151,6 +147,7 @@ const WeeklyCalendar = ({
 
     setCurrentWeekDate(prevWeek);
   };
+
 
   // ========================================
   // 다음 주
@@ -167,6 +164,7 @@ const WeeklyCalendar = ({
     setCurrentWeekDate(nextWeek);
   };
 
+
   // ========================================
   // 날짜 선택
   // ========================================
@@ -174,15 +172,16 @@ const WeeklyCalendar = ({
   const handleDateClick = (date) => {
     setInternalSelectedDate(date);
 
-    // Calendar 페이지처럼 부모가 날짜를
-    // 제어하는 경우 부모에도 전달
+    // Calendar 페이지에서 사용하는 경우
+    // 부모의 selectedDate도 변경
     if (onDateChange) {
       onDateChange(date);
     }
   };
 
+
   // ========================================
-  // 특정 날짜 일정
+  // 특정 날짜 일정 가져오기
   // ========================================
 
   const getSchedulesForDate = (date) => {
@@ -194,6 +193,7 @@ const WeeklyCalendar = ({
         schedule.date === dateKey
     );
   };
+
 
   return (
     <section className="weekly-calendar">
@@ -337,6 +337,7 @@ const WeeklyCalendar = ({
                 )
               }
             >
+
               <div className="date-circle">
 
                 <span className="date-number">
@@ -362,6 +363,7 @@ const WeeklyCalendar = ({
                 </div>
 
               </div>
+
             </button>
           );
         })}
