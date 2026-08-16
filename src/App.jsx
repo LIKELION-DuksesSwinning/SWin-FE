@@ -17,17 +17,6 @@ import Calendar from './pages/Calendar/Calendar.jsx';
 import BeforeSwimming from './pages/Archive/BeforeSwimming/BeforeSwimming.jsx';
 import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 
-/*
-  Alert.jsx가
-
-  export default Alert;
-
-  또는
-
-  export { Alert };
-
-  둘 중 어떤 방식이든 대응할 수 있도록 가져옴
-*/
 import * as AlertPage from './pages/Alert/Alert.jsx';
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
@@ -41,6 +30,11 @@ import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
 import './App.css';
 
+
+/* ========================================
+   임시 페이지
+======================================== */
+
 const Analysis = () => (
   <div>분석 화면입니다</div>
 );
@@ -49,15 +43,25 @@ const My = () => (
   <div>마이 화면입니다</div>
 );
 
-// Alert.jsx의 export 방식에 따라 컴포넌트 선택
+
+/* ========================================
+   Alert export 방식 대응
+======================================== */
+
 const Alert =
   AlertPage.default || AlertPage.Alert;
+
 
 function App() {
   const location = useLocation();
 
   const [showStarting, setShowStarting] =
     useState(true);
+
+
+  /* ========================================
+     Starting → Login
+  ======================================== */
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -67,17 +71,38 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // ========================================
-  // 하단 네비게이션을 숨길 페이지
-  // ========================================
+
+  /* ========================================
+     Bottom Navigation 표시 여부
+     
+     숨김:
+     - Login / Starting
+     - UserRecord
+     - RecordDone
+     - BeforeSwimming
+     - AfterSwimming
+
+     표시:
+     - Home
+     - Calendar
+     - Alert
+     - Analysis
+     - Pool
+     - Clinic
+     - My
+  ======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
     location.pathname === '/user-record' ||
-    location.pathname === '/record-done';
+    location.pathname === '/record-done' ||
+    location.pathname === '/archive/before-swimming' ||
+    location.pathname === '/archive/after-swimming';
+
 
   return (
     <div className="app-container">
+
       <div className="content-area">
 
         <Routes>
@@ -89,17 +114,15 @@ function App() {
           <Route
             path="/"
             element={
-              showStarting ? (
-                <Starting />
-              ) : (
-                <Login />
-              )
+              showStarting
+                ? <Starting />
+                : <Login />
             }
           />
 
 
           {/* ========================================
-              0.2 사용자 기록
+              사용자 기록
           ======================================== */}
 
           <Route
@@ -114,7 +137,7 @@ function App() {
 
 
           {/* ========================================
-              1. 홈
+              홈
           ======================================== */}
 
           <Route
@@ -124,7 +147,7 @@ function App() {
 
 
           {/* ========================================
-              1.1.2 캘린더
+              상세 캘린더
           ======================================== */}
 
           <Route
@@ -134,7 +157,7 @@ function App() {
 
 
           {/* ========================================
-              1.2 수영 전 기록
+              수영 전 기록
           ======================================== */}
 
           <Route
@@ -144,7 +167,7 @@ function App() {
 
 
           {/* ========================================
-              1.2 수영 후 기록
+              수영 후 기록
           ======================================== */}
 
           <Route
@@ -154,7 +177,7 @@ function App() {
 
 
           {/* ========================================
-              1.3 알림
+              알림
           ======================================== */}
 
           <Route
@@ -224,21 +247,6 @@ function App() {
 
       {/* ========================================
           Bottom Navigation
-
-          숨김:
-          - Starting / Login
-          - UserRecord
-          - RecordDone
-
-          표시:
-          - Home
-          - Calendar
-          - Archive
-          - Alert
-          - Analysis
-          - Pool
-          - Clinic
-          - My
       ======================================== */}
 
       {!hideBottomNav && (
