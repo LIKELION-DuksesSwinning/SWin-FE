@@ -22,7 +22,7 @@ const SWIM_TIME_OPTIONS = [
   '90분 이상',
 ];
 
-function SwimmingPattern({ onNext, onPrev }) {
+function SwimmingPattern({ onNext }) {
   const [swimPeriod, setSwimPeriod] = useState('');
   const [swimCount, setSwimCount] = useState('');
   const [swimTime, setSwimTime] = useState('');
@@ -36,6 +36,7 @@ function SwimmingPattern({ onNext, onPrev }) {
   const handleNext = () => {
     if (!isComplete) return;
 
+    // API 명세에 맞춰 화면의 한글 텍스트를 그대로 전달
     onNext({
       swimPeriod,
       swimCount,
@@ -51,7 +52,10 @@ function SwimmingPattern({ onNext, onPrev }) {
       ================================= */}
 
       <div className="record-question">
-        <h2>1. 수영 기간 <span class="must-needed">*</span></h2>
+        <h2>
+          1. 수영 기간{' '}
+          <span className="must-needed">*</span>
+        </h2>
 
         <div className="option-list">
           {SWIM_PERIOD_OPTIONS.map((option) => (
@@ -75,7 +79,10 @@ function SwimmingPattern({ onNext, onPrev }) {
       ================================= */}
 
       <div className="record-question">
-        <h2>2. 평균 수영 횟수 <span class="must-needed">*</span></h2>
+        <h2>
+          2. 평균 수영 횟수{' '}
+          <span className="must-needed">*</span>
+        </h2>
 
         <div className="option-list">
           {SWIM_COUNT_OPTIONS.map((option) => (
@@ -99,7 +106,10 @@ function SwimmingPattern({ onNext, onPrev }) {
       ================================= */}
 
       <div className="record-question">
-        <h2>3. 평균 수영 시간 <span class="must-needed">*</span></h2>
+        <h2>
+          3. 평균 수영 시간{' '}
+          <span className="must-needed">*</span>
+        </h2>
 
         <div className="option-list two-two">
           {SWIM_TIME_OPTIONS.map((option) => (
@@ -133,7 +143,6 @@ function SwimmingPattern({ onNext, onPrev }) {
         >
           다음
         </button>
-
       </div>
 
     </section>
