@@ -37,6 +37,8 @@ function SkinType({ onNext, onPrev }) {
 
   // ========================================
   // 1. 피부 타입
+  // API: skin_types → Array[String]
+  // 중복 선택 가능
   // ========================================
 
   const handleSkinTypeClick = (option) => {
@@ -49,6 +51,8 @@ function SkinType({ onNext, onPrev }) {
 
   // ========================================
   // 2. 반복 증상
+  // API: symptoms → Array[String]
+  //
   // '없음' 선택 시 다른 증상 해제
   // ========================================
 
@@ -73,6 +77,9 @@ function SkinType({ onNext, onPrev }) {
 
   // ========================================
   // 3. 증상 발생 부위
+  // API: symptom_areas → Array[String]
+  // 선택 사항
+  //
   // '전체' 선택 시 다른 부위 해제
   // ========================================
 
@@ -97,7 +104,13 @@ function SkinType({ onNext, onPrev }) {
 
   // ========================================
   // 완료 버튼 활성화 조건
-  // 1번 + 2번만 답하면 활성화
+  //
+  // 필수:
+  // 1. 피부 타입
+  // 2. 반복 증상
+  //
+  // 선택:
+  // 3. 증상 발생 부위
   // ========================================
 
   const isComplete =
@@ -111,6 +124,7 @@ function SkinType({ onNext, onPrev }) {
   const handleNext = () => {
     if (!isComplete) return;
 
+    // UserRecord.jsx로 최종 데이터 전달
     onNext({
       skinTypes,
       symptoms,
@@ -139,7 +153,9 @@ function SkinType({ onNext, onPrev }) {
               key={option}
               type="button"
               className={`skin-option-button ${
-                skinTypes.includes(option) ? 'selected' : ''
+                skinTypes.includes(option)
+                  ? 'selected'
+                  : ''
               }`}
               onClick={() => handleSkinTypeClick(option)}
             >
@@ -171,7 +187,9 @@ function SkinType({ onNext, onPrev }) {
               key={option}
               type="button"
               className={`skin-option-button ${
-                symptoms.includes(option) ? 'selected' : ''
+                symptoms.includes(option)
+                  ? 'selected'
+                  : ''
               }`}
               onClick={() => handleSymptomClick(option)}
             >
@@ -200,7 +218,9 @@ function SkinType({ onNext, onPrev }) {
               key={option}
               type="button"
               className={`skin-option-button ${
-                symptomAreas.includes(option) ? 'selected' : ''
+                symptomAreas.includes(option)
+                  ? 'selected'
+                  : ''
               }`}
               onClick={() => handleAreaClick(option)}
             >
