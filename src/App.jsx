@@ -1,34 +1,48 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  useLocation,
+} from 'react-router-dom';
 
 import Login from './pages/Login/Login.jsx';
 import Starting from './pages/Starting/Starting.jsx';
+
 import UserRecord from './pages/UserRecord/UserRecord.jsx';
 import RecordDone from './pages/UserRecord/components/RecordDone/RecordDone.jsx';
 
+import Main from './pages/Main/Main.jsx';
+import Calendar from './pages/Calendar/Calendar.jsx';
+
+import BeforeSwimming from './pages/Archive/BeforeSwimming/BeforeSwimming.jsx';
+import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
+
+import Alert from './pages/Alert/Alert.jsx';
+
 import BottomNav from './components/BottomNav/BottomNav.jsx';
+
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
 import ReservationTime from './pages/Clinic/ReservationTime.jsx';
 import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
-import WeeklyCalendar from './components/WeeklyCalendar/WeeklyCalendar.jsx';
+
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
 import './App.css';
 
-const Home = () => (
-  <div>
-    <WeeklyCalendar />
-  </div>
+const Analysis = () => (
+  <div>분석 화면입니다</div>
 );
 
-const Analysis = () => <div>분석 화면입니다</div>;
-const My = () => <div>마이 화면입니다</div>;
+const My = () => (
+  <div>마이 화면입니다</div>
+);
 
 function App() {
   const location = useLocation();
 
-  const [showStarting, setShowStarting] = useState(true);
+  const [showStarting, setShowStarting] =
+    useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,40 +52,125 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const isLoginPage = location.pathname === '/';
-  const isUserRecordPage = location.pathname === '/user-record';
-  const isRecordDonePage = location.pathname === '/record-done';
+  // ========================================
+  // 하단 네비게이션을 숨길 페이지
+  // ========================================
+
+  const hideBottomNav =
+    location.pathname === '/' ||
+    location.pathname === '/user-record' ||
+    location.pathname === '/record-done';
 
   return (
     <div className="app-container">
       <div className="content-area">
+
         <Routes>
-          {/* 처음 접속하는 Starting → Login */}
+
+          {/* ========================================
+              Starting → Login
+          ======================================== */}
+
           <Route
             path="/"
-            element={showStarting ? <Starting /> : <Login />}
+            element={
+              showStarting ? (
+                <Starting />
+              ) : (
+                <Login />
+              )
+            }
           />
 
-          {/* 로그인 후 사용자 기록 */}
+
+          {/* ========================================
+              0.2 사용자 기록
+          ======================================== */}
+
           <Route
             path="/user-record"
             element={<UserRecord />}
           />
 
-          {/* 사용자 기록 완료 화면 */}
           <Route
             path="/record-done"
             element={<RecordDone />}
           />
 
-          {/* 사용자 기록 완료 후 홈 */}
-          <Route path="/home" element={<Home />} />
 
-          <Route path="/analysis" element={<Analysis />} />
+          {/* ========================================
+              1. 홈
+          ======================================== */}
 
-          <Route path="/pool" element={<PoolSearch />} />
+          <Route
+            path="/home"
+            element={<Main />}
+          />
 
-          <Route path="/clinic" element={<ReservationDate />} />
+
+          {/* ========================================
+              1.1.2 캘린더
+          ======================================== */}
+
+          <Route
+            path="/calendar"
+            element={<Calendar />}
+          />
+
+
+          {/* ========================================
+              1.2 수영 기록
+          ======================================== */}
+
+          <Route
+            path="/archive/before-swimming"
+            element={<BeforeSwimming />}
+          />
+
+          <Route
+            path="/archive/after-swimming"
+            element={<AfterSwimming />}
+          />
+
+
+          {/* ========================================
+              1.3 알림
+          ======================================== */}
+
+          <Route
+            path="/alert"
+            element={<Alert />}
+          />
+
+
+          {/* ========================================
+              분석
+          ======================================== */}
+
+          <Route
+            path="/analysis"
+            element={<Analysis />}
+          />
+
+
+          {/* ========================================
+              수영장
+          ======================================== */}
+
+          <Route
+            path="/pool"
+            element={<PoolSearch />}
+          />
+
+
+          {/* ========================================
+              클리닉
+          ======================================== */}
+
+          <Route
+            path="/clinic"
+            element={<ReservationDate />}
+          />
 
           <Route
             path="/clinic/time"
@@ -88,14 +187,44 @@ function App() {
             element={<ReservationHistory />}
           />
 
-          <Route path="/my" element={<My />} />
+
+          {/* ========================================
+              마이
+          ======================================== */}
+
+          <Route
+            path="/my"
+            element={<My />}
+          />
+
         </Routes>
+
       </div>
 
-      {/* Starting / Login / UserRecord / RecordDone에서는 하단 네비게이션 숨김 */}
-      {!isLoginPage &&
-        !isUserRecordPage &&
-        !isRecordDonePage && <BottomNav />}
+
+      {/* ========================================
+          Bottom Navigation
+
+          숨김:
+          - Starting / Login
+          - UserRecord
+          - RecordDone
+
+          표시:
+          - Home
+          - Calendar
+          - Archive
+          - Alert
+          - Analysis
+          - Pool
+          - Clinic
+          - My
+      ======================================== */}
+
+      {!hideBottomNav && (
+        <BottomNav />
+      )}
+
     </div>
   );
 }
