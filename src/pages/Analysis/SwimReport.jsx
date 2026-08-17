@@ -31,11 +31,13 @@ const SwimReport = () => {
                 <button className="report-card-btn" onClick={() => console.log('주간 수영 리포트 클릭')}>
                     <img src={weeklySwimReport} alt="주간 수영 리포트" />
                     <div>주간 수영 리포트</div>
+                    <div className="report-card-subtitle">수영 기록과 피부 변화 추이를 확인해 보세요.</div>
                 </button>
                 
                 <button className="report-card-btn" onClick={() => console.log('수영 루틴 추천 클릭')}>
                     <img src={swimRoutineRecs} alt="수영 루틴 추천" />
-                    <div>수영 루틴 추천</div>
+                    <div>수영 및 피부 루틴 추천</div>
+                    <div className="report-card-subtitle">수영 플랜과 피부 루틴을 확인해 보세요..</div>
                 </button>
             </div>
         </div>

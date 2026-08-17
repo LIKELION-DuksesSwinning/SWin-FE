@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ReservationHistory.css';
-
 import completePrev from '../../assets/images/complete-prev.svg';
 
 const ReservationHistory = () => {
