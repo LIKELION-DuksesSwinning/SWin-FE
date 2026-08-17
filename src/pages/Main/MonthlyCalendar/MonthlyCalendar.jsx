@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import arrowPrev from '../../../assets/images/arrow-prev.svg';
+import arrowNext from '../../../assets/images/arrow-next.svg';
+
 import './MonthlyCalendar.css';
 
 const WEEKDAYS = [
@@ -27,12 +30,18 @@ const DEMO_EVENTS = {
 function MonthlyCalendar() {
   const navigate = useNavigate();
 
+  // ========================================
   // 현재 보고 있는 달
+  // ========================================
+
   const [currentDate, setCurrentDate] = useState(
     new Date(2026, 7, 1)
   );
 
+  // ========================================
   // 현재 달에서 선택된 날짜
+  // ========================================
+
   const [selectedDate, setSelectedDate] =
     useState(14);
 
@@ -60,6 +69,7 @@ function MonthlyCalendar() {
     month,
     0
   ).getDate();
+
 
   // ========================================
   // 캘린더 날짜 생성
@@ -123,6 +133,7 @@ function MonthlyCalendar() {
     year,
   ]);
 
+
   // ========================================
   // 이전 달
   // ========================================
@@ -134,6 +145,7 @@ function MonthlyCalendar() {
 
     setSelectedDate(null);
   };
+
 
   // ========================================
   // 다음 달
@@ -147,6 +159,7 @@ function MonthlyCalendar() {
     setSelectedDate(null);
   };
 
+
   // ========================================
   // 날짜 클릭
   // ========================================
@@ -156,6 +169,7 @@ function MonthlyCalendar() {
 
     setSelectedDate(date.day);
   };
+
 
   // ========================================
   // 날짜 더블클릭
@@ -170,6 +184,7 @@ function MonthlyCalendar() {
     );
   };
 
+
   return (
     <section className="monthly-calendar">
 
@@ -181,18 +196,29 @@ function MonthlyCalendar() {
 
         <div className="calendar-month-navigation">
 
+          {/* 이전 달 */}
+
           <button
             type="button"
             className="calendar-month-button"
             onClick={goToPreviousMonth}
             aria-label="이전 달"
           >
-            ‹
+            <img
+              src={arrowPrev}
+              alt=""
+            />
           </button>
+
+
+          {/* 현재 연월 */}
 
           <strong>
             {monthLabel}
           </strong>
+
+
+          {/* 다음 달 */}
 
           <button
             type="button"
@@ -200,7 +226,10 @@ function MonthlyCalendar() {
             onClick={goToNextMonth}
             aria-label="다음 달"
           >
-            ›
+            <img
+              src={arrowNext}
+              alt=""
+            />
           </button>
 
         </div>
@@ -259,7 +288,6 @@ function MonthlyCalendar() {
 
         {calendarDays.map(
           (date, index) => {
-
             const events = date.dateKey
               ? DEMO_EVENTS[
                   date.dateKey
@@ -278,10 +306,6 @@ function MonthlyCalendar() {
                   date.currentMonth
                     ? 'current-month'
                     : 'other-month'
-                } ${
-                  isSelected
-                    ? 'selected'
-                    : ''
                 }`}
                 onClick={() =>
                   handleDateClick(date)
@@ -290,33 +314,49 @@ function MonthlyCalendar() {
                   handleDateDoubleClick(date)
                 }
                 disabled={!date.currentMonth}
+                aria-label={
+                  date.currentMonth
+                    ? `${year}년 ${
+                        month + 1
+                      }월 ${date.day}일`
+                    : undefined
+                }
               >
-                <span className="calendar-day-number">
-                  {date.day}
-                </span>
-
-                {events.length > 0 && (
-                  <span className="calendar-events">
-
-                    {events.includes(
-                      'swim'
-                    ) && (
-                      <span
-                        className="calendar-event-dot swim"
-                      />
-                    )}
-
-                    {events.includes(
-                      'clinic'
-                    ) && (
-                      <span
-                        className="calendar-event-dot clinic"
-                      />
-                    )}
-
+                <span
+                  className={`calendar-day-content ${
+                    isSelected
+                      ? 'selected'
+                      : ''
+                  }`}
+                >
+                  <span className="calendar-day-number">
+                    {date.day}
                   </span>
-                )}
 
+                  {events.length > 0 && (
+                    <span className="calendar-events">
+
+                      {events.includes(
+                        'swim'
+                      ) && (
+                        <span
+                          className="calendar-event-dot swim"
+                          aria-label="수영 일정"
+                        />
+                      )}
+
+                      {events.includes(
+                        'clinic'
+                      ) && (
+                        <span
+                          className="calendar-event-dot clinic"
+                          aria-label="클리닉 일정"
+                        />
+                      )}
+
+                    </span>
+                  )}
+                </span>
               </button>
             );
           }

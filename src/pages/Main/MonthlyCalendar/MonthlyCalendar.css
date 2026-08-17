@@ -3,9 +3,12 @@
 ================================ */
 
 .monthly-calendar {
-  width: 100%;
+  width: 354px;
+  height: 384px;
 
-  padding: 14px 14px 16px;
+  box-sizing: border-box;
+
+  padding: 35px 25px 20px;
 
   border: 1px solid #E5E5E5;
   border-radius: 16px;
@@ -23,7 +26,7 @@
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 14px;
+  margin-bottom: 25px;
 }
 
 
@@ -42,8 +45,10 @@
 .calendar-month-navigation strong {
   color: var(--color-text);
 
-  font-size: var(--font-size-14);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.2;
 }
 
 
@@ -61,14 +66,17 @@
 
   background: transparent;
 
-  color: var(--color-text);
-
-  font-size: 18px;
-  font-weight: var(--font-weight-regular);
-
-  line-height: 1;
-
   cursor: pointer;
+}
+
+
+.calendar-month-button img {
+  display: block;
+
+  width: 14px;
+  height: 14px;
+
+  object-fit: contain;
 }
 
 
@@ -90,16 +98,20 @@
 
   gap: 4px;
 
-  color: var(--color-text-gray);
+  color: var(--color-text);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: var(--font-weight-regular);
+
+  line-height: 1;
 }
 
 
 .calendar-dot {
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
+
+  flex-shrink: 0;
 
   border-radius: 50%;
 }
@@ -136,8 +148,10 @@
 
   color: var(--color-text);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: var(--font-weight-regular);
+
+  line-height: 1;
 }
 
 
@@ -167,42 +181,27 @@
    Calendar Day
 ================================ */
 
-.calendar-day {
-  position: relative;
+/*
+  날짜 한 칸 자체의 위치는
+  일정 유무나 선택 여부와 관계없이 동일하게 유지
+*/
 
+.calendar-day {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 
   width: 100%;
   height: 39px;
 
+  margin: 0;
   padding: 0;
 
   border: none;
-  border-radius: 50%;
 
   background: transparent;
 
   cursor: pointer;
-}
-
-
-.calendar-day-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 28px;
-  height: 28px;
-
-  border-radius: 50%;
-
-  color: var(--color-text);
-
-  font-size: 11px;
-  font-weight: var(--font-weight-regular);
 }
 
 
@@ -211,8 +210,31 @@
 }
 
 
-.calendar-day.other-month .calendar-day-number {
-  color: #D6D6D6;
+/* ================================
+   Calendar Day Content
+================================ */
+
+/*
+  중요:
+  선택 여부와 관계없이
+  항상 같은 크기를 유지한다.
+  
+  이렇게 해야 선택 시 숫자가
+  위아래로 움직이지 않는다.
+*/
+
+.calendar-day-content {
+  position: relative;
+
+  width: 44px;
+  height: 46px;
+
+  box-sizing: border-box;
+
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  background: transparent;
 }
 
 
@@ -220,8 +242,46 @@
    Selected Date
 ================================ */
 
-.calendar-day.selected .calendar-day-number {
-  border: 1px solid var(--color-report-blue);
+/*
+  선택되었을 때는 크기를 변경하지 않고
+  테두리만 표시한다.
+*/
+
+.calendar-day-content.selected {
+  border-color: #082567;
+}
+
+
+/* ================================
+   Date Number
+================================ */
+
+/*
+  모든 날짜에서 동일한 위치에 고정
+*/
+
+.calendar-day-number {
+  position: absolute;
+
+  top: 9px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  color: var(--color-text);
+
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+
+.calendar-day.other-month
+.calendar-day-number {
+  color: #D6D6D6;
 }
 
 
@@ -229,21 +289,37 @@
    Event Dots
 ================================ */
 
+/*
+  날짜 숫자 아래에 고정
+*/
+
 .calendar-events {
   position: absolute;
 
-  bottom: 0;
+  left: 50%;
+  bottom: 7px;
 
   display: flex;
   align-items: center;
+  justify-content: center;
 
   gap: 3px;
+
+  min-height: 5px;
+
+  margin: 0;
+
+  transform: translateX(-50%);
 }
 
 
 .calendar-event-dot {
+  display: block;
+
   width: 5px;
   height: 5px;
+
+  flex-shrink: 0;
 
   border-radius: 50%;
 }
@@ -265,17 +341,45 @@
 
 @media (max-width: 375px) {
   .monthly-calendar {
+    width: 100%;
+    height: auto;
+
     padding: 12px 10px 14px;
   }
+
 
   .calendar-day {
     height: 36px;
   }
 
+
+  .calendar-day-content {
+    width: 37px;
+    height: 39px;
+  }
+
+
+  .calendar-day-content.selected {
+    border-color: #082567;
+  }
+
+
   .calendar-day-number {
-    width: 27px;
-    height: 27px;
+    top: 8px;
 
     font-size: 10px;
+  }
+
+
+  .calendar-events {
+    bottom: 5px;
+
+    gap: 2px;
+  }
+
+
+  .calendar-event-dot {
+    width: 4px;
+    height: 4px;
   }
 }
