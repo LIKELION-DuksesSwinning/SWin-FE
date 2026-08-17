@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import arrayFilter from '../../../assets/images/array-filter.svg';
+import moreRecords from '../../../assets/images/more-records.svg';
+import noRecords from '../../../assets/images/no-records.svg';
+
 import './RecordList.css';
 
 const PAGE_SIZE = 5;
@@ -149,6 +153,10 @@ function RecordList({
   ] = useState(false);
 
 
+  /* ========================================
+     안전한 records 배열
+  ======================================== */
+
   const safeRecords =
     Array.isArray(records)
       ? records
@@ -157,7 +165,7 @@ function RecordList({
 
   /* ========================================
      정렬
-======================================== */
+  ======================================== */
 
   const sortedRecords = useMemo(() => {
     const copiedRecords = [
@@ -197,7 +205,7 @@ function RecordList({
 
   /* ========================================
      표시할 기록
-======================================== */
+  ======================================== */
 
   const visibleRecords =
     sortedRecords.slice(
@@ -209,16 +217,23 @@ function RecordList({
     visibleCount <
     sortedRecords.length;
 
+  const isExpanded =
+    visibleCount > PAGE_SIZE;
+
+  const hasExpandableRecords =
+    sortedRecords.length > PAGE_SIZE;
+
 
   /* ========================================
      정렬 변경
-======================================== */
+  ======================================== */
 
   const handleSortChange = (
     nextOrder
   ) => {
     setSortOrder(nextOrder);
 
+    // 정렬 변경 시 다시 5개부터
     setVisibleCount(PAGE_SIZE);
 
     setIsSortOpen(false);
@@ -226,11 +241,28 @@ function RecordList({
 
 
   /* ========================================
-     더보기
-     → 5개 추가
-======================================== */
+     더보기 / 접기
+  ======================================== */
 
-  const handleLoadMore = () => {
+  const handleMoreToggle = () => {
+
+    /* ----------------------------
+       현재 펼쳐진 상태
+       → 다시 5개로 접기
+    ---------------------------- */
+
+    if (isExpanded) {
+      setVisibleCount(PAGE_SIZE);
+
+      return;
+    }
+
+
+    /* ----------------------------
+       현재 접힌 상태
+       → 5개씩 추가
+    ---------------------------- */
+
     setVisibleCount((prev) =>
       Math.min(
         prev + PAGE_SIZE,
@@ -243,7 +275,7 @@ function RecordList({
   /* ========================================
      기록 추가
      → Additional.jsx
-======================================== */
+  ======================================== */
 
   const handleAddRecord = (
     record
@@ -284,7 +316,7 @@ function RecordList({
   /* ========================================
      자세히 보기
      → Furthermore.jsx
-======================================== */
+  ======================================== */
 
   const handleDetail = (
     record
@@ -326,7 +358,7 @@ function RecordList({
 
   /* ========================================
      기록 없음
-======================================== */
+  ======================================== */
 
   if (safeRecords.length === 0) {
     return (
@@ -344,12 +376,11 @@ function RecordList({
             aria-label="정렬"
             disabled
           >
-            <span
+            <img
+              src={arrayFilter}
+              alt=""
               className="record-sort-icon"
-              aria-hidden="true"
-            >
-              ☷
-            </span>
+            />
           </button>
 
         </div>
@@ -357,12 +388,11 @@ function RecordList({
 
         <div className="record-empty">
 
-          <div
+          <img
+            src={noRecords}
+            alt=""
             className="record-empty-icon"
-            aria-hidden="true"
-          >
-            ≋
-          </div>
+          />
 
           <p className="record-empty-title">
             아직 수영 기록이 없어요.
@@ -395,6 +425,10 @@ function RecordList({
         </h2>
 
 
+        {/* ================================
+            Sort
+        ================================= */}
+
         <div className="record-sort">
 
           <button
@@ -414,12 +448,11 @@ function RecordList({
               isSortOpen
             }
           >
-            <span
+            <img
+              src={arrayFilter}
+              alt=""
               className="record-sort-icon"
-              aria-hidden="true"
-            >
-              ☷
-            </span>
+            />
           </button>
 
 
@@ -533,22 +566,33 @@ function RecordList({
 
 
       {/* ================================
-          More
+          More / Collapse
       ================================= */}
 
-      {hasMore && (
+      {hasExpandableRecords && (
         <button
           type="button"
-          className="record-more-button"
-          onClick={handleLoadMore}
+          className={`record-more-button ${
+            isExpanded
+              ? 'expanded'
+              : ''
+          }`}
+          onClick={handleMoreToggle}
+          aria-expanded={isExpanded}
         >
+
           <span>
-            더보기
+            {isExpanded
+              ? '접기'
+              : '더보기'}
           </span>
 
-          <span aria-hidden="true">
-            ⌄
-          </span>
+          <img
+            src={moreRecords}
+            alt=""
+            className="record-more-icon"
+          />
+
         </button>
       )}
 
