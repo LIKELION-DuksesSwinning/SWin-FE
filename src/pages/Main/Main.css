@@ -5,9 +5,12 @@
 .main-page {
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   width: 100%;
   min-height: 100vh;
+
+  box-sizing: border-box;
 
   padding: 24px 16px 100px;
 
@@ -27,8 +30,14 @@
   justify-content: space-between;
 
   width: 100%;
+  max-width: 354px;
 
   margin-bottom: 22px;
+}
+
+
+.main-greeting {
+  min-width: 0;
 }
 
 
@@ -53,8 +62,7 @@
   font-weight: var(--font-weight-regular);
 
   line-height: 28px;
-
-  letter-spacing: -0.2px;
+  letter-spacing: -2.5%;
 }
 
 
@@ -104,9 +112,40 @@
 ================================ */
 
 .main-calendar-section {
+  display: flex;
+  justify-content: center;
+
   width: 100%;
+  max-width: 354px;
 
   margin-bottom: 18px;
+}
+
+
+/*
+  MonthlyCalendar가 354px 고정이므로
+  작은 화면에서는 부모를 넘지 않도록 처리
+*/
+
+.main-calendar-section > * {
+  max-width: 100%;
+}
+
+
+/* ================================
+   Archive Button
+================================ */
+
+/*
+  ArchiveBtn의 최상위 section을
+  캘린더와 동일한 중심축에 맞춤
+*/
+
+.main-page > .archive-button {
+  width: 354px;
+  max-width: 100%;
+
+  box-sizing: border-box;
 }
 
 
@@ -115,9 +154,12 @@
 ================================ */
 
 .main-record-section {
-  width: 100%;
+  width: 354px;
+  max-width: 100%;
 
   margin-top: 28px;
+
+  box-sizing: border-box;
 }
 
 
@@ -289,12 +331,15 @@
 ================================ */
 
 @media (max-width: 375px) {
+
   .main-page {
     padding: 20px 14px 90px;
   }
 
 
   .main-header {
+    max-width: 354px;
+
     margin-bottom: 18px;
   }
 
@@ -332,7 +377,16 @@
   }
 
 
+  .main-page > .archive-button {
+    width: 100%;
+    max-width: 354px;
+  }
+
+
   .main-record-section {
+    width: 100%;
+    max-width: 354px;
+
     margin-top: 24px;
   }
 

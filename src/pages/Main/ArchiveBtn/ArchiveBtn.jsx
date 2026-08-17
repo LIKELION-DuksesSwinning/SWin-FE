@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
+import recordBefore from '../../../assets/images/record-before.svg';
+import recordAfter from '../../../assets/images/record-after.svg';
+
 import './ArchiveBtn.css';
 
 function ArchiveBtn() {
@@ -35,6 +38,8 @@ function ArchiveBtn() {
 
       <div className="archive-button-group">
 
+        {/* 수영 전 */}
+
         <button
           type="button"
           className="archive-record-button"
@@ -44,12 +49,17 @@ function ArchiveBtn() {
             className="archive-record-icon"
             aria-hidden="true"
           >
-            ♧
+            <img
+              src={recordBefore}
+              alt=""
+            />
           </span>
 
           <span>수영 전</span>
         </button>
 
+
+        {/* 수영 후 */}
 
         <button
           type="button"
@@ -60,7 +70,10 @@ function ArchiveBtn() {
             className="archive-record-icon"
             aria-hidden="true"
           >
-            ♧
+            <img
+              src={recordAfter}
+              alt=""
+            />
           </span>
 
           <span>수영 후</span>
