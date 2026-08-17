@@ -143,13 +143,11 @@
     transition: background-color 0.2s;
 }
 
-/* 취소 버튼[cite: 3] */
 .modal-btn.cancel {
     background-color: #D9D9D9;
     color: #767676;
 }
 
-/* 확인 버튼[cite: 3] */
 .modal-btn.confirm {
     background-color: #fff76b;
     color: #111111;
