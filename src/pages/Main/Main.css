@@ -1,0 +1,397 @@
+/* ================================
+   Main Page
+================================ */
+
+.main-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  min-height: 100vh;
+
+  box-sizing: border-box;
+
+  padding: 24px 16px 100px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.main-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  width: 100%;
+  max-width: 354px;
+
+  margin-bottom: 22px;
+}
+
+
+.main-greeting {
+  min-width: 0;
+}
+
+
+.main-greeting-small {
+  margin: 0 0 8px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+.main-greeting h1 {
+  margin: 0;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 28px;
+  letter-spacing: -2.5%;
+}
+
+
+/* ================================
+   Notification
+================================ */
+
+.main-notification-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  margin-left: 12px;
+  padding: 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+
+.main-notification-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 3px;
+}
+
+
+.main-notification-icon {
+  display: block;
+
+  width: 28px;
+  height: 28px;
+
+  object-fit: contain;
+}
+
+
+/* ================================
+   Calendar Section
+================================ */
+
+.main-calendar-section {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 354px;
+
+  margin-bottom: 18px;
+}
+
+
+/*
+  MonthlyCalendar가 354px 고정이므로
+  작은 화면에서는 부모를 넘지 않도록 처리
+*/
+
+.main-calendar-section > * {
+  max-width: 100%;
+}
+
+
+/* ================================
+   Archive Button
+================================ */
+
+/*
+  ArchiveBtn의 최상위 section을
+  캘린더와 동일한 중심축에 맞춤
+*/
+
+.main-page > .archive-button {
+  width: 354px;
+  max-width: 100%;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   My Swim Records
+================================ */
+
+.main-record-section {
+  width: 354px;
+  max-width: 100%;
+
+  margin-top: 28px;
+
+  box-sizing: border-box;
+}
+
+
+.main-record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  margin-bottom: 14px;
+}
+
+
+.main-record-header h2 {
+  margin: 0;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Filter Button
+================================ */
+
+.main-filter-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  color: var(--color-text-gray);
+
+  font-size: 18px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+.main-filter-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 2px;
+}
+
+
+/* ================================
+   Empty State
+================================ */
+
+.main-record-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 210px;
+
+  padding: 20px 0;
+
+  text-align: center;
+}
+
+
+.main-record-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  margin-bottom: 16px;
+
+  color: #D9D9D9;
+
+  font-size: 46px;
+  line-height: 1;
+}
+
+
+.main-record-empty-title {
+  margin: 0 0 6px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+}
+
+
+.main-record-empty-description {
+  margin: 0;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.55;
+}
+
+
+/* ================================
+   More Button
+================================ */
+
+.main-more-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  width: 100%;
+
+  min-height: 32px;
+
+  padding: 6px 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+
+  cursor: pointer;
+}
+
+
+.main-more-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 2px;
+}
+
+
+.main-more-button span:last-child {
+  font-size: 14px;
+  line-height: 1;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+
+  .main-page {
+    padding: 20px 14px 90px;
+  }
+
+
+  .main-header {
+    max-width: 354px;
+
+    margin-bottom: 18px;
+  }
+
+
+  .main-greeting-small {
+    margin-bottom: 6px;
+
+    font-size: var(--font-size-12);
+  }
+
+
+  .main-greeting h1 {
+    font-size: var(--font-size-16);
+
+    line-height: 1.5;
+  }
+
+
+  .main-notification-button {
+    width: 30px;
+    height: 30px;
+
+    margin-left: 8px;
+  }
+
+
+  .main-notification-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+
+  .main-calendar-section {
+    margin-bottom: 16px;
+  }
+
+
+  .main-page > .archive-button {
+    width: 100%;
+    max-width: 354px;
+  }
+
+
+  .main-record-section {
+    width: 100%;
+    max-width: 354px;
+
+    margin-top: 24px;
+  }
+
+
+  .main-record-empty {
+    min-height: 190px;
+  }
+}

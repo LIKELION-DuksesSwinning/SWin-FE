@@ -1,0 +1,563 @@
+/* ================================
+   Calendar Page
+================================ */
+
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 48px;
+
+  padding: 0 16px;
+
+  background-color: var(--color-background);
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+.calendar-back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  color: var(--color-text);
+
+  font-size: 28px;
+  font-weight: var(--font-weight-light);
+
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Weekly Calendar
+================================ */
+
+.calendar-weekly-section {
+  width: 100%;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+/* ================================
+   Detail
+================================ */
+
+.calendar-detail {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  padding: 0 16px 30px;
+}
+
+
+/* ================================
+   Selected Date
+================================ */
+
+.calendar-selected-date {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  width: 100%;
+  min-height: 42px;
+
+  padding-right: 4px;
+
+  border-bottom: 1px solid #eeeeee;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* ================================
+   Detail Section
+================================ */
+
+.calendar-detail-section {
+  width: 100%;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+.calendar-detail-section h2 {
+  margin: 0 0 12px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Event
+================================ */
+
+.calendar-event-buttons {
+  display: flex;
+
+  gap: 8px;
+}
+
+
+.calendar-event-button {
+  min-width: 38px;
+  height: 30px;
+
+  padding: 0 10px;
+
+  border: 1px solid #dedede;
+  border-radius: 4px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  cursor: pointer;
+}
+
+
+.calendar-event-button.selected {
+  border-color: #8faee8;
+
+  background-color: #dce8ff;
+
+  color: #31589e;
+}
+
+
+/* ================================
+   Time
+================================ */
+
+.calendar-time-row {
+  display: grid;
+  grid-template-columns: 1fr 26px 1fr;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.calendar-time-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+}
+
+
+.calendar-time-group > span {
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+}
+
+
+.calendar-time-group label {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+}
+
+
+.calendar-time-prefix {
+  color: var(--color-text);
+}
+
+
+.calendar-time-group input {
+  width: 76px;
+  height: 26px;
+
+  padding: 0;
+
+  border: none;
+
+  outline: none;
+
+  background-color: transparent;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+}
+
+
+.calendar-time-arrow {
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-14);
+
+  text-align: center;
+}
+
+
+/* ================================
+   Repeat
+================================ */
+
+.calendar-repeat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.calendar-repeat-header h2 {
+  margin-bottom: 0;
+}
+
+
+/* ================================
+   Repeat Toggle
+================================ */
+
+.calendar-repeat-toggle {
+  position: relative;
+
+  width: 32px;
+  height: 18px;
+
+  padding: 0;
+
+  border: 1px solid #bdbdbd;
+  border-radius: 10px;
+
+  background-color: #ffffff;
+
+  cursor: pointer;
+}
+
+
+.calendar-repeat-toggle span {
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background-color: #bdbdbd;
+
+  transition: 0.15s ease;
+}
+
+
+.calendar-repeat-toggle.active {
+  border-color: #0068f5;
+
+  background-color: #dce8ff;
+}
+
+
+.calendar-repeat-toggle.active span {
+  left: 17px;
+
+  background-color: #0068f5;
+}
+
+
+/* ================================
+   Repeat Content
+================================ */
+
+.calendar-repeat-content {
+  margin-top: 12px;
+}
+
+
+.calendar-repeat-rule {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 10px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+}
+
+
+.repeat-number {
+  width: 14px;
+
+  padding-bottom: 2px;
+
+  border-bottom: 1px solid #0068f5;
+
+  color: #0068f5;
+
+  text-align: center;
+}
+
+
+.repeat-type-button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Repeat End Options
+================================ */
+
+.calendar-repeat-end-options {
+  display: flex;
+
+  gap: 5px;
+}
+
+
+.repeat-end-button {
+  height: 28px;
+
+  padding: 0 8px;
+
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+
+.repeat-end-button.selected {
+  border-color: #8faee8;
+
+  background-color: #dce8ff;
+
+  color: #31589e;
+}
+
+
+/* ================================
+   Repeat Count
+================================ */
+
+.calendar-repeat-value {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 10px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+}
+
+
+.calendar-repeat-value input {
+  width: 34px;
+  height: 24px;
+
+  padding: 0;
+
+  border: none;
+  border-bottom: 1px solid #0068f5;
+
+  outline: none;
+
+  background-color: transparent;
+
+  color: var(--color-text);
+
+  text-align: center;
+
+  font-size: var(--font-size-12);
+}
+
+
+/* ================================
+   Repeat Date
+================================ */
+
+.calendar-repeat-date {
+  margin-top: 10px;
+}
+
+
+.calendar-repeat-date input {
+  width: 100%;
+  height: 30px;
+
+  padding: 0 8px;
+
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+
+  outline: none;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+}
+
+
+/* ================================
+   Memo
+================================ */
+
+.calendar-memo-input {
+  width: 100%;
+  height: 36px;
+
+  padding: 0 10px;
+
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+
+  outline: none;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+}
+
+
+.calendar-memo-input::placeholder {
+  color: #b5b5b5;
+}
+
+
+/* ================================
+   Save
+================================ */
+
+.calendar-save-button {
+  width: 100%;
+  height: 44px;
+
+  margin-top: 24px;
+
+  border: none;
+  border-radius: 2px;
+
+  background-color: #0068f5;
+
+  color: #ffffff;
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+}
+
+
+.calendar-save-button:active {
+  background-color: #0059d1;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+  .calendar-header {
+    height: 44px;
+
+    padding: 0 14px;
+  }
+
+  .calendar-detail {
+    padding: 0 14px 28px;
+  }
+
+  .calendar-time-row {
+    grid-template-columns: 1fr 20px 1fr;
+
+    gap: 5px;
+  }
+
+  .calendar-time-group input {
+    width: 68px;
+  }
+
+  .calendar-repeat-end-options {
+    gap: 4px;
+  }
+
+  .repeat-end-button {
+    padding: 0 6px;
+
+    font-size: 9px;
+  }
+}

@@ -1,0 +1,489 @@
+/* ================================
+   Common
+================================ */
+
+.after-swimming-page,
+.after-swimming-done {
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.archive-record-header {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 48px;
+
+  padding: 0 16px;
+}
+
+
+.archive-record-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+
+.archive-record-back img {
+  width: 18px;
+  height: 18px;
+
+  object-fit: contain;
+}
+
+
+/* ================================
+   Content
+================================ */
+
+.archive-record-content {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  padding: 0 16px 30px;
+}
+
+
+/* ================================
+   Section
+================================ */
+
+.archive-record-section {
+  width: 100%;
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+.archive-record-section h2 {
+  margin: 0 0 8px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+}
+
+
+.archive-record-description {
+  margin: 0 0 10px;
+
+  color: var(--color-text-gray);
+
+  font-size: 10px;
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Photo
+================================ */
+
+.photo-upload-row {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+}
+
+
+.photo-upload-box,
+.photo-frame {
+  flex-shrink: 0;
+
+  width: 100px;
+  height: 120px;
+}
+
+
+.photo-upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: 1px dashed #bdbdbd;
+
+  background-color: #ffffff;
+
+  color: var(--color-text-gray);
+
+  font-size: 10px;
+
+  text-align: center;
+
+  cursor: pointer;
+}
+
+
+.photo-upload-plus {
+  color: var(--color-text);
+
+  font-size: 25px;
+  font-weight: var(--font-weight-light);
+
+  line-height: 1;
+}
+
+
+.photo-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.photo-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background-color: #f4f4f4;
+}
+
+
+.photo-frame img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+
+.photo-remove-button {
+  width: 100px;
+
+  padding: 3px 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  color: var(--color-text-gray);
+
+  font-size: 9px;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Photo Guide
+================================ */
+
+.photo-guide {
+  padding-top: 3px;
+
+  color: var(--color-text-gray);
+
+  font-size: 9px;
+
+  line-height: 1.55;
+}
+
+
+.photo-guide strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--color-text);
+}
+
+
+.photo-guide p {
+  margin: 0;
+}
+
+
+/* ================================
+   Swim Time
+================================ */
+
+.swim-time-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 8px;
+}
+
+
+.swim-time-button {
+  height: 34px;
+
+  border: 1px solid #bdbdbd;
+  border-radius: 5px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+
+.swim-time-button.selected {
+  border-color: #6b91ce;
+
+  background-color: #dce8ff;
+
+  color: #183b78;
+}
+
+
+/* ================================
+   Symptom
+================================ */
+
+.symptom-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+}
+
+
+.symptom-button {
+  height: 34px;
+
+  border: 1px solid #bdbdbd;
+  border-radius: 5px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+
+.symptom-button.selected {
+  border-color: #6b91ce;
+
+  background-color: #dce8ff;
+
+  color: #183b78;
+}
+
+
+/* ================================
+   Severity
+================================ */
+
+.severity-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+
+.severity-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+.severity-name {
+  width: 40px;
+
+  color: var(--color-text);
+
+  font-size: 11px;
+}
+
+
+.severity-buttons {
+  display: flex;
+
+  gap: 6px;
+}
+
+
+.severity-button {
+  width: 38px;
+  height: 32px;
+
+  border: 1px solid #bdbdbd;
+  border-radius: 5px;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text-gray);
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+
+.severity-button.selected {
+  border-color: #6b91ce;
+
+  background-color: #dce8ff;
+
+  color: #183b78;
+}
+
+
+/* ================================
+   Memo
+================================ */
+
+.archive-record-memo {
+  display: block;
+
+  width: 100%;
+  min-height: 62px;
+
+  padding: 10px;
+
+  border: 1px solid #dddddd;
+
+  outline: none;
+
+  resize: none;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+
+.archive-record-memo::placeholder {
+  color: #b5b5b5;
+}
+
+
+/* ================================
+   Save
+================================ */
+
+.archive-record-save {
+  width: 100%;
+  height: 42px;
+
+  margin-top: 20px;
+
+  border: none;
+  border-radius: 3px;
+
+  background-color: var(--color-background-gray);
+
+  color: #ffffff;
+
+  font-size: var(--font-size-14);
+
+  cursor: not-allowed;
+}
+
+
+.archive-record-save.active {
+  background-color: #0068f5;
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   Saved
+================================ */
+
+.after-swimming-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.record-done-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 18px;
+}
+
+
+.record-done-icon {
+  width: 72px;
+  height: 72px;
+
+  object-fit: contain;
+}
+
+
+.record-done-content p {
+  margin: 0;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-16);
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+  .archive-record-content {
+    padding: 0 14px 24px;
+  }
+
+  .photo-upload-box,
+  .photo-frame {
+    width: 96px;
+    height: 116px;
+  }
+
+  .photo-guide {
+    font-size: 8px;
+  }
+}

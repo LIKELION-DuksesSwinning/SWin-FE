@@ -1,0 +1,214 @@
+/* ================================
+   Archive Button
+================================ */
+
+.archive-button {
+  width: 354px;
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 16px 14px;
+  margin-top: 20px;
+
+  border-radius: 15px;
+
+  background-color: #0068F5;
+
+  box-shadow: 0 6px 16px rgba(0, 104, 245, 0.18);
+}
+
+
+/* ================================
+   Text
+================================ */
+
+.archive-button-text {
+  margin-bottom: 14px;
+}
+
+
+.archive-button-text h2 {
+  margin: 0 0 5px;
+
+  color: #FFFFFF;
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-bold);
+
+  line-height: 1.4;
+}
+
+
+.archive-button-text p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Button Group
+================================ */
+
+.archive-button-group {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  width: 100%;
+}
+
+
+/* ================================
+   Record Button
+================================ */
+
+.archive-record-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 1;
+
+  min-width: 0;
+  min-height: 42px;
+
+  padding: 0 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+
+  background-color: rgba(255, 255, 255, 0.08);
+
+  color: #FFFFFF;
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+
+.archive-record-button:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+
+.archive-record-button:active {
+  transform: scale(0.98);
+}
+
+
+.archive-record-button:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+
+/* ================================
+   Record Icon
+================================ */
+
+.archive-record-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  margin: 0px 5px 0px 0px;
+
+  line-height: 0;
+}
+
+
+.archive-record-icon img {
+  display: block;
+
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+}
+
+
+/* ================================
+   Record Text
+================================ */
+
+.archive-record-button > span:last-child {
+  display: block;
+
+  margin: 0;
+
+  line-height: 1;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+  .archive-button {
+    width: 100%;
+
+    padding: 14px 12px;
+  }
+
+
+  .archive-button-text {
+    margin-bottom: 12px;
+  }
+
+
+  .archive-button-text h2 {
+    font-size: var(--font-size-16);
+  }
+
+
+  .archive-button-text p {
+    font-size: var(--font-size-12);
+  }
+
+
+  .archive-record-button {
+    min-height: 42px;
+
+    padding: 0 8px;
+
+    gap: 5px;
+
+    font-size: var(--font-size-12);
+  }
+
+
+  .archive-record-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+
+  .archive-record-icon img {
+    width: 16px;
+    height: 16px;
+  }
+}
