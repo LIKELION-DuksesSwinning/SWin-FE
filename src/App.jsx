@@ -28,6 +28,10 @@ import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
+/*
+  분석 파트
+  → 팀원 작업이므로 임의로 수정/삭제하지 않음
+*/
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
 import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
@@ -36,24 +40,24 @@ import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
-import './App.css'; 
-
-
-/* ========================================
-   임시 페이지
-======================================== */
-
-const Analysis = () => (
-  <div>분석 화면입니다</div>
-);
-
-const My = () => (
-  <div>마이 화면입니다</div>
-);
+import './App.css';
 
 
 /* ========================================
    Alert export 방식 대응
+======================================== */
+
+const Alert =
+  AlertPage.default || AlertPage.Alert;
+
+
+/* ========================================
+   My
+======================================== */
+
+const My = () => (
+  <div>마이 화면입니다</div>
+);
 
 
 function App() {
@@ -78,22 +82,13 @@ function App() {
 
   /* ========================================
      Bottom Navigation 표시 여부
-     
+
      숨김:
      - Login / Starting
      - UserRecord
      - RecordDone
      - BeforeSwimming
      - AfterSwimming
-
-     표시:
-     - Home
-     - Calendar
-     - Alert
-     - Analysis
-     - Pool
-     - Clinic
-     - My
   ======================================== */
 
   const hideBottomNav =
@@ -114,7 +109,7 @@ function App() {
           {/* ========================================
               Starting → Login
           ======================================== */}
-  
+
           <Route
             path="/"
             element={
@@ -191,26 +186,69 @@ function App() {
 
 
           {/* ========================================
-              분석
+              수영장
           ======================================== */}
 
           <Route
-            path="/analysis"
-            element={<Analysis />}
+            path="/pool"
+            element={<PoolSearch />}
           />
 
-          <Route path="/pool" element={<PoolSearch />} />
-          
-          <Route path="/clinic" element={<ReservationDate />} />  
-          <Route path="/clinic/time" element={<ReservationTime />} />
-          <Route path="/clinic/complete" element={<ReservationComplete />} />
-          <Route path="/clinic/history" element={<ReservationHistory />} />
 
-          <Route path="/analysis/loading" element={<Loading />} />
-          <Route path="/analysis" element={<ClickForAnalysis />} />
-          <Route path="/analysis/swim-report" element={<NoRecords />} />
-          <Route path="/analysis/clinic-report" element={<NoClinicReport />} />
-          <Route path="/analysis/swim-report-data" element={<SwimReport />} />
+          {/* ========================================
+              클리닉
+          ======================================== */}
+
+          <Route
+            path="/clinic"
+            element={<ReservationDate />}
+          />
+
+          <Route
+            path="/clinic/time"
+            element={<ReservationTime />}
+          />
+
+          <Route
+            path="/clinic/complete"
+            element={<ReservationComplete />}
+          />
+
+          <Route
+            path="/clinic/history"
+            element={<ReservationHistory />}
+          />
+
+
+          {/* ========================================
+              분석
+              → 팀원 작업 유지
+          ======================================== */}
+
+          <Route
+            path="/analysis/loading"
+            element={<Loading />}
+          />
+
+          <Route
+            path="/analysis"
+            element={<ClickForAnalysis />}
+          />
+
+          <Route
+            path="/analysis/swim-report"
+            element={<NoRecords />}
+          />
+
+          <Route
+            path="/analysis/clinic-report"
+            element={<NoClinicReport />}
+          />
+
+          <Route
+            path="/analysis/swim-report-data"
+            element={<SwimReport />}
+          />
 
 
           {/* ========================================
