@@ -1,0 +1,421 @@
+/* ================================
+   Record List
+================================ */
+
+.record-list {
+  position: relative;
+
+  width: 354px;
+  max-width: 100%;
+
+  margin-top: 28px;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.record-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  margin-bottom: 12px;
+}
+
+
+.record-list-header h2 {
+  margin: 0;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Sort
+================================ */
+
+.record-sort {
+  position: relative;
+}
+
+
+.record-sort-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-text-gray);
+
+  cursor: pointer;
+}
+
+
+.record-sort-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 2px;
+}
+
+
+.record-sort-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+
+/* ================================
+   Sort Menu
+================================ */
+
+.record-sort-menu {
+  position: absolute;
+
+  top: calc(100% + 6px);
+  right: 0;
+
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  width: 87px;
+
+  padding: 0;
+
+  box-sizing: border-box;
+
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+
+  background-color: #FFFFFF;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.10);
+
+  overflow: hidden;
+}
+
+
+/* ================================
+   Sort Menu Button
+================================ */
+
+.record-sort-menu button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 40px;
+
+  margin: 0;
+  padding: 0;
+
+  border: none;
+
+  background-color: #FFFFFF;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease;
+}
+
+
+.record-sort-menu button:hover {
+  background-color: #F8F8F8;
+}
+
+
+.record-sort-menu button:active {
+  background-color: #F2F2F2;
+}
+
+
+.record-sort-menu button.selected {
+  font-weight: var(--font-weight-medium);
+}
+
+
+/* ================================
+   Focus
+================================ */
+
+.record-sort-menu button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: -2px;
+}
+
+
+/* ================================
+   Empty State
+================================ */
+
+.record-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 210px;
+
+  padding: 20px 0;
+
+  box-sizing: border-box;
+
+  text-align: center;
+}
+
+
+.record-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  margin-bottom: 16px;
+
+  color: #D9D9D9;
+
+  font-size: 46px;
+
+  line-height: 1;
+}
+
+
+.record-empty-title {
+  margin: 0 0 6px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+}
+
+
+.record-empty-description {
+  margin: 0;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.55;
+}
+
+
+/* ================================
+   Record Feed
+================================ */
+
+.record-feed {
+  width: 100%;
+
+  border-top: 1px solid #E5E5E5;
+}
+
+
+/* ================================
+   Record Item
+================================ */
+
+.record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 64px;
+
+  padding: 0 0;
+
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #E5E5E5;
+}
+
+
+.record-item-date {
+  color: var(--color-text);
+
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+.record-item-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.record-add-button,
+.record-detail-button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+
+.record-add-button:hover,
+.record-detail-button:hover {
+  text-decoration: underline;
+}
+
+
+.record-add-button:focus-visible,
+.record-detail-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 2px;
+}
+
+
+/* ================================
+   More Button
+================================ */
+
+.record-more-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  width: 100%;
+
+  min-height: 40px;
+
+  padding: 6px 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  cursor: pointer;
+}
+
+.record-more-icon {
+  display: block;
+
+  width: 11px;
+  height: 11px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+
+  transition: transform 0.2s ease;
+}
+
+.record-more-button.expanded .record-more-icon {
+  transform: rotate(180deg);
+}
+
+.record-more-button:hover {
+  color: var(--color-text);
+}
+
+
+.record-more-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 2px;
+}
+
+
+.record-more-button span:last-child {
+  font-size: 14px;
+
+  line-height: 1;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+
+  .record-list {
+    width: 100%;
+    max-width: 354px;
+
+    margin-top: 24px;
+  }
+
+
+  .record-item {
+    min-height: 60px;
+  }
+
+
+  .record-item-actions {
+    gap: 10px;
+  }
+
+
+  .record-add-button,
+  .record-detail-button {
+    font-size: var(--font-size-12);
+  }
+
+
+  .record-empty {
+    min-height: 190px;
+  }
+}

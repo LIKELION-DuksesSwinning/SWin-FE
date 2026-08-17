@@ -16,6 +16,8 @@ import Calendar from './pages/Calendar/Calendar.jsx';
 
 import BeforeSwimming from './pages/Archive/BeforeSwimming/BeforeSwimming.jsx';
 import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
+import Additional from './pages/Archive/Additional/Additional.jsx';
+import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
 import * as AlertPage from './pages/Alert/Alert.jsx';
 
@@ -36,31 +38,37 @@ import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
-import './App.css'; 
-
-
-/* ========================================
-   임시 페이지
-======================================== */
-
-const Analysis = () => (
-  <div>분석 화면입니다</div>
-);
-
-const My = () => (
-  <div>마이 화면입니다</div>
-);
+import './App.css';
 
 
 /* ========================================
    Alert export 방식 대응
+======================================== */
+
+const Alert =
+  AlertPage.default ||
+  AlertPage.Alert;
+
+
+/* ========================================
+   My
+======================================== */
+
+const My = () => (
+  <div>
+    마이 화면입니다
+  </div>
+);
 
 
 function App() {
-  const location = useLocation();
+  const location =
+    useLocation();
 
-  const [showStarting, setShowStarting] =
-    useState(true);
+  const [
+    showStarting,
+    setShowStarting,
+  ] = useState(true);
 
 
   /* ========================================
@@ -68,40 +76,32 @@ function App() {
   ======================================== */
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowStarting(false);
-    }, 2000);
+    const timer =
+      setTimeout(() => {
+        setShowStarting(false);
+      }, 2000);
 
-    return () => clearTimeout(timer);
+    return () =>
+      clearTimeout(timer);
   }, []);
 
 
   /* ========================================
-     Bottom Navigation 표시 여부
-     
-     숨김:
-     - Login / Starting
-     - UserRecord
-     - RecordDone
-     - BeforeSwimming
-     - AfterSwimming
-
-     표시:
-     - Home
-     - Calendar
-     - Alert
-     - Analysis
-     - Pool
-     - Clinic
-     - My
-  ======================================== */
+     Bottom Navigation 숨김
+======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
     location.pathname === '/user-record' ||
     location.pathname === '/record-done' ||
-    location.pathname === '/archive/before-swimming' ||
-    location.pathname === '/archive/after-swimming';
+    location.pathname ===
+      '/archive/before-swimming' ||
+    location.pathname ===
+      '/archive/after-swimming' ||
+    location.pathname ===
+      '/archive/additional' ||
+    location.pathname ===
+      '/archive/furthermore';
 
 
   return (
@@ -114,7 +114,7 @@ function App() {
           {/* ========================================
               Starting → Login
           ======================================== */}
-  
+
           <Route
             path="/"
             element={
@@ -131,12 +131,16 @@ function App() {
 
           <Route
             path="/user-record"
-            element={<UserRecord />}
+            element={
+              <UserRecord />
+            }
           />
 
           <Route
             path="/record-done"
-            element={<RecordDone />}
+            element={
+              <RecordDone />
+            }
           />
 
 
@@ -146,17 +150,21 @@ function App() {
 
           <Route
             path="/home"
-            element={<Main />}
+            element={
+              <Main />
+            }
           />
 
 
           {/* ========================================
-              상세 캘린더
+              캘린더
           ======================================== */}
 
           <Route
             path="/calendar"
-            element={<Calendar />}
+            element={
+              <Calendar />
+            }
           />
 
 
@@ -166,7 +174,9 @@ function App() {
 
           <Route
             path="/archive/before-swimming"
-            element={<BeforeSwimming />}
+            element={
+              <BeforeSwimming />
+            }
           />
 
 
@@ -176,7 +186,33 @@ function App() {
 
           <Route
             path="/archive/after-swimming"
-            element={<AfterSwimming />}
+            element={
+              <AfterSwimming />
+            }
+          />
+
+
+          {/* ========================================
+              추가 기록
+          ======================================== */}
+
+          <Route
+            path="/archive/additional"
+            element={
+              <Additional />
+            }
+          />
+
+
+          {/* ========================================
+              수영 기록 상세
+          ======================================== */}
+
+          <Route
+            path="/archive/furthermore"
+            element={
+              <Furthermore />
+            }
           />
 
 
@@ -186,31 +222,96 @@ function App() {
 
           <Route
             path="/alert"
-            element={<Alert />}
+            element={
+              <Alert />
+            }
+          />
+
+
+          {/* ========================================
+              수영장
+          ======================================== */}
+
+          <Route
+            path="/pool"
+            element={
+              <PoolSearch />
+            }
+          />
+
+
+          {/* ========================================
+              클리닉
+          ======================================== */}
+
+          <Route
+            path="/clinic"
+            element={
+              <ReservationDate />
+            }
+          />
+
+          <Route
+            path="/clinic/time"
+            element={
+              <ReservationTime />
+            }
+          />
+
+          <Route
+            path="/clinic/complete"
+            element={
+              <ReservationComplete />
+            }
+          />
+
+          <Route
+            path="/clinic/history"
+            element={
+              <ReservationHistory />
+            }
           />
 
 
           {/* ========================================
               분석
+              → 팀원 작업 유지
           ======================================== */}
 
           <Route
-            path="/analysis"
-            element={<Analysis />}
+            path="/analysis/loading"
+            element={
+              <Loading />
+            }
           />
 
-          <Route path="/pool" element={<PoolSearch />} />
-          
-          <Route path="/clinic" element={<ReservationDate />} />  
-          <Route path="/clinic/time" element={<ReservationTime />} />
-          <Route path="/clinic/complete" element={<ReservationComplete />} />
-          <Route path="/clinic/history" element={<ReservationHistory />} />
+          <Route
+            path="/analysis"
+            element={
+              <ClickForAnalysis />
+            }
+          />
 
-          <Route path="/analysis/loading" element={<Loading />} />
-          <Route path="/analysis" element={<ClickForAnalysis />} />
-          <Route path="/analysis/swim-report" element={<NoRecords />} />
-          <Route path="/analysis/clinic-report" element={<NoClinicReport />} />
-          <Route path="/analysis/swim-report-data" element={<SwimReport />} />
+          <Route
+            path="/analysis/swim-report"
+            element={
+              <NoRecords />
+            }
+          />
+
+          <Route
+            path="/analysis/clinic-report"
+            element={
+              <NoClinicReport />
+            }
+          />
+
+          <Route
+            path="/analysis/swim-report-data"
+            element={
+              <SwimReport />
+            }
+          />
 
 
           {/* ========================================
@@ -219,7 +320,9 @@ function App() {
 
           <Route
             path="/my"
-            element={<My />}
+            element={
+              <My />
+            }
           />
 
         </Routes>
