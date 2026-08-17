@@ -17,6 +17,7 @@ import Calendar from './pages/Calendar/Calendar.jsx';
 import BeforeSwimming from './pages/Archive/BeforeSwimming/BeforeSwimming.jsx';
 import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
+import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
 import * as AlertPage from './pages/Alert/Alert.jsx';
 
@@ -33,6 +34,7 @@ import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
 import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
 import Loading from './pages/Analysis/Loading.jsx';
+
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
@@ -74,30 +76,19 @@ function App() {
   ======================================== */
 
   useEffect(() => {
-
     const timer =
       setTimeout(() => {
         setShowStarting(false);
       }, 2000);
 
-
     return () =>
       clearTimeout(timer);
-
   }, []);
 
 
   /* ========================================
-     Bottom Navigation
-
-     숨김:
-     - Login / Starting
-     - UserRecord
-     - RecordDone
-     - BeforeSwimming
-     - AfterSwimming
-     - Additional
-  ======================================== */
+     Bottom Navigation 숨김
+======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
@@ -108,7 +99,9 @@ function App() {
     location.pathname ===
       '/archive/after-swimming' ||
     location.pathname ===
-      '/archive/additional';
+      '/archive/additional' ||
+    location.pathname ===
+      '/archive/furthermore';
 
 
   return (
@@ -117,7 +110,6 @@ function App() {
       <div className="content-area">
 
         <Routes>
-
 
           {/* ========================================
               Starting → Login
@@ -165,7 +157,7 @@ function App() {
 
 
           {/* ========================================
-              상세 캘린더
+              캘린더
           ======================================== */}
 
           <Route
@@ -208,6 +200,18 @@ function App() {
             path="/archive/additional"
             element={
               <Additional />
+            }
+          />
+
+
+          {/* ========================================
+              수영 기록 상세
+          ======================================== */}
+
+          <Route
+            path="/archive/furthermore"
+            element={
+              <Furthermore />
             }
           />
 

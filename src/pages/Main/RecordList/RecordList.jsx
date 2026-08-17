@@ -5,29 +5,11 @@ import './RecordList.css';
 
 const PAGE_SIZE = 5;
 
-/*
-  백엔드 API에서 records를 전달받는 구조
-
-  예상 데이터 예시:
-  [
-    {
-      id: 1,
-      date: '2026-08-17',
-    },
-    {
-      id: 2,
-      date: '2026-08-15',
-    },
-  ]
-
-  현재 API 연동 전이므로 기본값은 빈 배열.
-*/
-
 
 /* ========================================
    날짜 파싱
-   - 2026-08-17
-   - 2026.08.17
+   API에서 들어오는
+   2026-08-17 / 2026.08.17
    둘 다 대응
 ======================================== */
 
@@ -50,11 +32,7 @@ const parseRecordDate = (dateValue) => {
   const [year, month, day] =
     normalized.split('-').map(Number);
 
-  if (
-    !year ||
-    !month ||
-    !day
-  ) {
+  if (!year || !month || !day) {
     return null;
   }
 
@@ -75,34 +53,25 @@ const parseRecordDate = (dateValue) => {
 
 
 /* ========================================
-   날짜 표시
-   API 날짜:
-   2026-08-17
-
-   화면:
-   2026.08.17
+   화면 표시 날짜
 ======================================== */
 
 const formatDisplayDate = (dateValue) => {
-  const date =
-    parseRecordDate(dateValue);
+  const date = parseRecordDate(dateValue);
 
   if (!date) {
     return '-';
   }
 
-  const year =
-    date.getFullYear();
+  const year = date.getFullYear();
 
-  const month =
-    String(
-      date.getMonth() + 1
-    ).padStart(2, '0');
+  const month = String(
+    date.getMonth() + 1
+  ).padStart(2, '0');
 
-  const day =
-    String(
-      date.getDate()
-    ).padStart(2, '0');
+  const day = String(
+    date.getDate()
+  ).padStart(2, '0');
 
   return `${year}.${month}.${day}`;
 };
@@ -127,36 +96,23 @@ const getToday = () => {
 
 
 /* ========================================
-   기록 추가 가능 여부
+   최근 3일 이내 기록인지 확인
 
-   수영 기록일이
-   오늘 포함 최근 3일 이내라면 true
-
-   예:
-   오늘 = 8/17
-
-   8/17 ✅
-   8/16 ✅
-   8/15 ✅
-   8/14 ✅
-
-   8/13 ❌
+   오늘 포함
+   오늘 / 어제 / 2일 전 / 3일 전
 ======================================== */
 
 const isRecordAddable = (
   recordDateValue
 ) => {
   const recordDate =
-    parseRecordDate(
-      recordDateValue
-    );
+    parseRecordDate(recordDateValue);
 
   if (!recordDate) {
     return false;
   }
 
-  const today =
-    getToday();
+  const today = getToday();
 
   const threeDaysAgo =
     new Date(today);
@@ -175,8 +131,7 @@ const isRecordAddable = (
 function RecordList({
   records = [],
 }) {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
   const [
     sortOrder,
@@ -194,10 +149,6 @@ function RecordList({
   ] = useState(false);
 
 
-  /* ========================================
-     안전한 records 배열
-======================================== */
-
   const safeRecords =
     Array.isArray(records)
       ? records
@@ -208,56 +159,44 @@ function RecordList({
      정렬
 ======================================== */
 
-  const sortedRecords =
-    useMemo(() => {
+  const sortedRecords = useMemo(() => {
+    const copiedRecords = [
+      ...safeRecords,
+    ];
 
-      const copiedRecords =
-        [...safeRecords];
+    copiedRecords.sort((a, b) => {
+      const dateA =
+        parseRecordDate(a?.date);
 
-      copiedRecords.sort(
-        (a, b) => {
+      const dateB =
+        parseRecordDate(b?.date);
 
-          const dateA =
-            parseRecordDate(
-              a?.date
-            );
+      if (!dateA && !dateB) {
+        return 0;
+      }
 
-          const dateB =
-            parseRecordDate(
-              b?.date
-            );
+      if (!dateA) {
+        return 1;
+      }
 
+      if (!dateB) {
+        return -1;
+      }
 
-          // 날짜가 없는 데이터는 뒤로 보냄
-          if (!dateA && !dateB) {
-            return 0;
-          }
+      return sortOrder === 'latest'
+        ? dateB - dateA
+        : dateA - dateB;
+    });
 
-          if (!dateA) {
-            return 1;
-          }
-
-          if (!dateB) {
-            return -1;
-          }
-
-
-          return sortOrder === 'latest'
-            ? dateB - dateA
-            : dateA - dateB;
-        }
-      );
-
-      return copiedRecords;
-
-    }, [
-      safeRecords,
-      sortOrder,
-    ]);
+    return copiedRecords;
+  }, [
+    safeRecords,
+    sortOrder,
+  ]);
 
 
   /* ========================================
-     현재 표시할 기록
+     표시할 기록
 ======================================== */
 
   const visibleRecords =
@@ -265,7 +204,6 @@ function RecordList({
       0,
       visibleCount
     );
-
 
   const hasMore =
     visibleCount <
@@ -276,119 +214,121 @@ function RecordList({
      정렬 변경
 ======================================== */
 
-  const handleSortChange =
-    (nextOrder) => {
+  const handleSortChange = (
+    nextOrder
+  ) => {
+    setSortOrder(nextOrder);
 
-      setSortOrder(
-        nextOrder
-      );
+    setVisibleCount(PAGE_SIZE);
 
-      // 정렬 변경 시 다시 5개부터
-      setVisibleCount(
-        PAGE_SIZE
-      );
-
-      setIsSortOpen(false);
-    };
+    setIsSortOpen(false);
+  };
 
 
   /* ========================================
      더보기
-     → 5개씩 추가
+     → 5개 추가
 ======================================== */
 
-  const handleLoadMore =
-    () => {
-
-      setVisibleCount(
-        (prev) =>
-          Math.min(
-            prev + PAGE_SIZE,
-            sortedRecords.length
-          )
-      );
-    };
+  const handleLoadMore = () => {
+    setVisibleCount((prev) =>
+      Math.min(
+        prev + PAGE_SIZE,
+        sortedRecords.length
+      )
+    );
+  };
 
 
   /* ========================================
      기록 추가
      → Additional.jsx
-
-     날짜를 query parameter로 전달
-     예:
-     /archive/additional?date=2026-08-15
 ======================================== */
 
-  const handleAddRecord =
-    (record) => {
+  const handleAddRecord = (
+    record
+  ) => {
+    if (!record?.date) {
+      return;
+    }
 
-      if (
-        !record?.date
-      ) {
-        return;
-      }
+    const recordDate =
+      parseRecordDate(record.date);
 
-      const recordDate =
-        parseRecordDate(
-          record.date
-        );
+    if (!recordDate) {
+      return;
+    }
 
-      if (!recordDate) {
-        return;
-      }
+    const year =
+      recordDate.getFullYear();
 
+    const month = String(
+      recordDate.getMonth() + 1
+    ).padStart(2, '0');
 
-      const year =
-        recordDate.getFullYear();
+    const day = String(
+      recordDate.getDate()
+    ).padStart(2, '0');
 
-      const month =
-        String(
-          recordDate.getMonth() + 1
-        ).padStart(2, '0');
+    const dateKey =
+      `${year}-${month}-${day}`;
 
-      const day =
-        String(
-          recordDate.getDate()
-        ).padStart(2, '0');
-
-
-      const dateKey =
-        `${year}-${month}-${day}`;
-
-
-      navigate(
-        `/archive/additional?date=${encodeURIComponent(
-          dateKey
-        )}`
-      );
-    };
+    navigate(
+      `/archive/additional?date=${encodeURIComponent(
+        dateKey
+      )}`
+    );
+  };
 
 
   /* ========================================
      자세히 보기
-     → 상세 페이지 미정
+     → Furthermore.jsx
 ======================================== */
 
-  const handleDetail =
-    (record) => {
+  const handleDetail = (
+    record
+  ) => {
+    if (!record?.id || !record?.date) {
+      return;
+    }
 
-      console.log(
-        '수영 기록 상세보기:',
-        record
-      );
+    const recordDate =
+      parseRecordDate(record.date);
 
-      // TODO:
-      // 백엔드/기획 확정 후 상세 페이지 연결
-    };
+    if (!recordDate) {
+      return;
+    }
+
+    const year =
+      recordDate.getFullYear();
+
+    const month = String(
+      recordDate.getMonth() + 1
+    ).padStart(2, '0');
+
+    const day = String(
+      recordDate.getDate()
+    ).padStart(2, '0');
+
+    const dateKey =
+      `${year}-${month}-${day}`;
+
+    navigate(
+      `/archive/furthermore?id=${encodeURIComponent(
+        record.id
+      )}&date=${encodeURIComponent(
+        dateKey
+      )}`
+    );
+  };
 
 
   /* ========================================
      기록 없음
 ======================================== */
 
-  if (
-    safeRecords.length === 0
-  ) {
+  if (safeRecords.length === 0) {
     return (
       <section className="record-list">
 
@@ -441,10 +381,6 @@ function RecordList({
   }
 
 
-  /* ========================================
-     기록 있음
-======================================== */
-
   return (
     <section className="record-list">
 
@@ -459,10 +395,6 @@ function RecordList({
         </h2>
 
 
-        {/* ================================
-            Sort
-        ================================= */}
-
         <div className="record-sort">
 
           <button
@@ -474,8 +406,7 @@ function RecordList({
             }`}
             onClick={() =>
               setIsSortOpen(
-                (prev) =>
-                  !prev
+                (prev) => !prev
               )
             }
             aria-label="정렬"
@@ -493,9 +424,7 @@ function RecordList({
 
 
           {isSortOpen && (
-            <div
-              className="record-sort-menu"
-            >
+            <div className="record-sort-menu">
 
               <button
                 type="button"
@@ -512,7 +441,6 @@ function RecordList({
               >
                 최신순
               </button>
-
 
               <button
                 type="button"
@@ -552,7 +480,6 @@ function RecordList({
                 record?.date
               );
 
-
             return (
               <article
                 key={record.id}
@@ -568,9 +495,6 @@ function RecordList({
 
                 <div className="record-item-actions">
 
-                  {/* 최근 3일 이내 기록만
-                      추가 기록 가능 */}
-
                   {addable && (
                     <button
                       type="button"
@@ -585,9 +509,6 @@ function RecordList({
                     </button>
                   )}
 
-
-                  {/* 상세보기는
-                      추후 연결 */}
 
                   <button
                     type="button"
@@ -619,17 +540,13 @@ function RecordList({
         <button
           type="button"
           className="record-more-button"
-          onClick={
-            handleLoadMore
-          }
+          onClick={handleLoadMore}
         >
           <span>
             더보기
           </span>
 
-          <span
-            aria-hidden="true"
-          >
+          <span aria-hidden="true">
             ⌄
           </span>
         </button>
