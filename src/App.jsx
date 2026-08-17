@@ -16,6 +16,7 @@ import Calendar from './pages/Calendar/Calendar.jsx';
 
 import BeforeSwimming from './pages/Archive/BeforeSwimming/BeforeSwimming.jsx';
 import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
+import Additional from './pages/Archive/Additional/Additional.jsx';
 
 import * as AlertPage from './pages/Alert/Alert.jsx';
 
@@ -28,15 +29,10 @@ import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
-/*
-  분석 파트
-  → 팀원 작업이므로 임의로 수정/삭제하지 않음
-*/
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
 import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
 import Loading from './pages/Analysis/Loading.jsx';
-
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
@@ -48,7 +44,8 @@ import './App.css';
 ======================================== */
 
 const Alert =
-  AlertPage.default || AlertPage.Alert;
+  AlertPage.default ||
+  AlertPage.Alert;
 
 
 /* ========================================
@@ -56,15 +53,20 @@ const Alert =
 ======================================== */
 
 const My = () => (
-  <div>마이 화면입니다</div>
+  <div>
+    마이 화면입니다
+  </div>
 );
 
 
 function App() {
-  const location = useLocation();
+  const location =
+    useLocation();
 
-  const [showStarting, setShowStarting] =
-    useState(true);
+  const [
+    showStarting,
+    setShowStarting,
+  ] = useState(true);
 
 
   /* ========================================
@@ -72,16 +74,21 @@ function App() {
   ======================================== */
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowStarting(false);
-    }, 2000);
 
-    return () => clearTimeout(timer);
+    const timer =
+      setTimeout(() => {
+        setShowStarting(false);
+      }, 2000);
+
+
+    return () =>
+      clearTimeout(timer);
+
   }, []);
 
 
   /* ========================================
-     Bottom Navigation 표시 여부
+     Bottom Navigation
 
      숨김:
      - Login / Starting
@@ -89,14 +96,19 @@ function App() {
      - RecordDone
      - BeforeSwimming
      - AfterSwimming
+     - Additional
   ======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
     location.pathname === '/user-record' ||
     location.pathname === '/record-done' ||
-    location.pathname === '/archive/before-swimming' ||
-    location.pathname === '/archive/after-swimming';
+    location.pathname ===
+      '/archive/before-swimming' ||
+    location.pathname ===
+      '/archive/after-swimming' ||
+    location.pathname ===
+      '/archive/additional';
 
 
   return (
@@ -105,6 +117,7 @@ function App() {
       <div className="content-area">
 
         <Routes>
+
 
           {/* ========================================
               Starting → Login
@@ -126,12 +139,16 @@ function App() {
 
           <Route
             path="/user-record"
-            element={<UserRecord />}
+            element={
+              <UserRecord />
+            }
           />
 
           <Route
             path="/record-done"
-            element={<RecordDone />}
+            element={
+              <RecordDone />
+            }
           />
 
 
@@ -141,7 +158,9 @@ function App() {
 
           <Route
             path="/home"
-            element={<Main />}
+            element={
+              <Main />
+            }
           />
 
 
@@ -151,7 +170,9 @@ function App() {
 
           <Route
             path="/calendar"
-            element={<Calendar />}
+            element={
+              <Calendar />
+            }
           />
 
 
@@ -161,7 +182,9 @@ function App() {
 
           <Route
             path="/archive/before-swimming"
-            element={<BeforeSwimming />}
+            element={
+              <BeforeSwimming />
+            }
           />
 
 
@@ -171,7 +194,21 @@ function App() {
 
           <Route
             path="/archive/after-swimming"
-            element={<AfterSwimming />}
+            element={
+              <AfterSwimming />
+            }
+          />
+
+
+          {/* ========================================
+              추가 기록
+          ======================================== */}
+
+          <Route
+            path="/archive/additional"
+            element={
+              <Additional />
+            }
           />
 
 
@@ -181,7 +218,9 @@ function App() {
 
           <Route
             path="/alert"
-            element={<Alert />}
+            element={
+              <Alert />
+            }
           />
 
 
@@ -191,7 +230,9 @@ function App() {
 
           <Route
             path="/pool"
-            element={<PoolSearch />}
+            element={
+              <PoolSearch />
+            }
           />
 
 
@@ -201,22 +242,30 @@ function App() {
 
           <Route
             path="/clinic"
-            element={<ReservationDate />}
+            element={
+              <ReservationDate />
+            }
           />
 
           <Route
             path="/clinic/time"
-            element={<ReservationTime />}
+            element={
+              <ReservationTime />
+            }
           />
 
           <Route
             path="/clinic/complete"
-            element={<ReservationComplete />}
+            element={
+              <ReservationComplete />
+            }
           />
 
           <Route
             path="/clinic/history"
-            element={<ReservationHistory />}
+            element={
+              <ReservationHistory />
+            }
           />
 
 
@@ -227,27 +276,37 @@ function App() {
 
           <Route
             path="/analysis/loading"
-            element={<Loading />}
+            element={
+              <Loading />
+            }
           />
 
           <Route
             path="/analysis"
-            element={<ClickForAnalysis />}
+            element={
+              <ClickForAnalysis />
+            }
           />
 
           <Route
             path="/analysis/swim-report"
-            element={<NoRecords />}
+            element={
+              <NoRecords />
+            }
           />
 
           <Route
             path="/analysis/clinic-report"
-            element={<NoClinicReport />}
+            element={
+              <NoClinicReport />
+            }
           />
 
           <Route
             path="/analysis/swim-report-data"
-            element={<SwimReport />}
+            element={
+              <SwimReport />
+            }
           />
 
 
@@ -257,7 +316,9 @@ function App() {
 
           <Route
             path="/my"
-            element={<My />}
+            element={
+              <My />
+            }
           />
 
         </Routes>
