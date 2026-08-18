@@ -39,6 +39,16 @@ import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
+/* ========================================
+   My
+======================================== */
+
+import My from './pages/My/My.jsx';
+import Info from './pages/My/Info/Info.jsx';
+import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
+import Policy from './pages/My/Policy/Policy.jsx';
+import LogOut from './pages/My/LogOut/LogOut.jsx';
+
 import './App.css';
 
 
@@ -52,19 +62,11 @@ const Alert =
 
 
 /* ========================================
-   My
+   App
 ======================================== */
 
-const My = () => (
-  <div>
-    마이 화면입니다
-  </div>
-);
-
-
 function App() {
-  const location =
-    useLocation();
+  const location = useLocation();
 
   const [
     showStarting,
@@ -77,13 +79,13 @@ function App() {
   ======================================== */
 
   useEffect(() => {
-    const timer =
-      setTimeout(() => {
-        setShowStarting(false);
-      }, 2000);
+    const timer = setTimeout(() => {
+      setShowStarting(false);
+    }, 2000);
 
-    return () =>
+    return () => {
       clearTimeout(timer);
+    };
   }, []);
 
 
@@ -106,19 +108,12 @@ function App() {
     location.pathname === '/' ||
     location.pathname === '/user-record' ||
     location.pathname === '/record-done' ||
-    location.pathname ===
-      '/archive/before-swimming' ||
-    location.pathname ===
-      '/archive/after-swimming' ||
-    location.pathname ===
-      '/archive/additional' ||
-    location.pathname ===
-      '/archive/furthermore' ||
-    location.pathname ===
-      '/alert' ||
-    location.pathname.startsWith(
-      '/alert/'
-    );
+    location.pathname === '/archive/before-swimming' ||
+    location.pathname === '/archive/after-swimming' ||
+    location.pathname === '/archive/additional' ||
+    location.pathname === '/archive/furthermore' ||
+    location.pathname === '/alert' ||
+    location.pathname.startsWith('/alert/');
 
 
   return (
@@ -342,15 +337,67 @@ function App() {
             }
           />
 
+          {/* 현재 import 되어 있지만 기존 구조 유지 */}
+          <Route
+            path="/analysis/ai"
+            element={
+              <AIanalysis />
+            }
+          />
+
 
           {/* ========================================
-              마이
+              마이페이지
           ======================================== */}
 
           <Route
             path="/my"
             element={
               <My />
+            }
+          />
+
+          {/* ========================================
+              마이페이지 > 나의 정보
+          ======================================== */}
+
+          <Route
+            path="/my/info"
+            element={
+              <Info />
+            }
+          />
+
+          {/* ========================================
+              마이페이지 > 푸시 알람
+          ======================================== */}
+
+          <Route
+            path="/my/push-alarm"
+            element={
+              <PushAlarm />
+            }
+          />
+
+          {/* ========================================
+              마이페이지 > 약관 및 정책
+          ======================================== */}
+
+          <Route
+            path="/my/policy"
+            element={
+              <Policy />
+            }
+          />
+
+          {/* ========================================
+              마이페이지 > 로그아웃 팝업
+          ======================================== */}
+
+          <Route
+            path="/my/logout"
+            element={
+              <LogOut />
             }
           />
 
@@ -361,6 +408,9 @@ function App() {
 
       {/* ========================================
           Bottom Navigation
+          
+          My 페이지에서도 이 BottomNav를 사용함.
+          My.jsx 내부에 BottomNav를 추가하면 안 됨.
       ======================================== */}
 
       {!hideBottomNav && (
