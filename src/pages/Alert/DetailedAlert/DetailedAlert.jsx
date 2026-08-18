@@ -1,16 +1,20 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import {
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 
 import prevBtn from '../../../assets/images/prev-btn.svg';
 
 import './DetailedAlert.css';
 
 
+const READ_ALERTS_KEY =
+  'swinning-read-alert-ids';
+
+
 /* ========================================
    임시 상세 알림 데이터
-
-   TODO:
-   백엔드 알림 상세 조회 API 연결 시
-   이 부분을 API 응답으로 교체
 ======================================== */
 
 const DETAILED_ALERTS = {
@@ -96,12 +100,84 @@ const DETAILED_ALERTS = {
 };
 
 
+/* ========================================
+   읽은 알림 ID 저장
+======================================== */
+
+const markAlertAsRead = (
+  alertId
+) => {
+  try {
+    const saved =
+      localStorage.getItem(
+        READ_ALERTS_KEY
+      );
+
+    const currentReadIds =
+      saved
+        ? JSON.parse(saved)
+        : [];
+
+    const readIds =
+      Array.isArray(
+        currentReadIds
+      )
+        ? currentReadIds
+        : [];
+
+
+    if (
+      !readIds.includes(
+        Number(alertId)
+      )
+    ) {
+      readIds.push(
+        Number(alertId)
+      );
+    }
+
+
+    localStorage.setItem(
+      READ_ALERTS_KEY,
+      JSON.stringify(readIds)
+    );
+
+  } catch (error) {
+    console.error(
+      '알림 읽음 상태를 저장하지 못했습니다.',
+      error
+    );
+  }
+};
+
+
 function DetailedAlert() {
   const navigate = useNavigate();
-  const { alertId } = useParams();
+
+  const { alertId } =
+    useParams();
+
 
   const alert =
-    DETAILED_ALERTS[alertId];
+    DETAILED_ALERTS[
+      Number(alertId)
+    ];
+
+
+  /* ========================================
+     상세 페이지 진입
+     → 자동으로 읽음 처리
+  ======================================== */
+
+  useEffect(() => {
+    if (!alertId) {
+      return;
+    }
+
+    markAlertAsRead(
+      alertId
+    );
+  }, [alertId]);
 
 
   /* ========================================
@@ -135,6 +211,7 @@ function DetailedAlert() {
             />
           </button>
 
+
           <h1>
             알림
           </h1>
@@ -143,9 +220,11 @@ function DetailedAlert() {
 
 
         <section className="detailed-alert-empty">
+
           <p>
             알림을 찾을 수 없습니다.
           </p>
+
         </section>
 
       </main>
@@ -211,7 +290,6 @@ function DetailedAlert() {
 
         {/* ========================================
             알림 종류별 이동 버튼
-            백엔드 연결 전 기본 UI만 구성
         ======================================== */}
 
         {alert.type === 'record' && (
@@ -232,7 +310,9 @@ function DetailedAlert() {
             type="button"
             className="detailed-alert-action"
             onClick={() =>
-              navigate('/clinic/history')
+              navigate(
+                '/clinic/history'
+              )
             }
           >
             예약 내역 확인하기
@@ -270,5 +350,6 @@ function DetailedAlert() {
     </main>
   );
 }
+
 
 export default DetailedAlert;
