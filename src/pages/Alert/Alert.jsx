@@ -5,6 +5,7 @@ import prevBtn from '../../assets/images/prev-btn.svg';
 
 import './Alert.css';
 
+
 const INITIAL_ALERTS = [
   {
     id: 1,
@@ -68,24 +69,27 @@ const INITIAL_ALERTS = [
   },
 ];
 
+
 function Alert() {
   const navigate = useNavigate();
 
   const [alerts, setAlerts] =
     useState(INITIAL_ALERTS);
 
-  // ========================================
-  // 뒤로가기
-  // ========================================
+
+  /* ========================================
+     뒤로가기
+  ======================================== */
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  // ========================================
-  // 알림 클릭
-  // → 읽음 처리
-  // ========================================
+
+  /* ========================================
+     알림 클릭
+     → 읽음 처리
+  ======================================== */
 
   const handleAlertClick = (alertId) => {
     setAlerts((prev) =>
@@ -99,6 +103,7 @@ function Alert() {
       )
     );
   };
+
 
   return (
     <main className="alert-page">
@@ -117,11 +122,14 @@ function Alert() {
         >
           <img
             src={prevBtn}
-            alt="이전"
+            alt=""
           />
         </button>
 
-        <h1>알림</h1>
+
+        <h1>
+          알림
+        </h1>
 
       </header>
 
@@ -130,9 +138,13 @@ function Alert() {
           Alert List
       ================================= */}
 
-      <section className="alert-list">
+      <section
+        className="alert-list"
+        aria-label="알림 목록"
+      >
 
         {alerts.map((alert) => (
+
           <button
             key={alert.id}
             type="button"
@@ -145,6 +157,7 @@ function Alert() {
               handleAlertClick(alert.id)
             }
           >
+
             <span className="alert-title">
               {alert.title}
             </span>
@@ -152,7 +165,9 @@ function Alert() {
             <span className="alert-date">
               {alert.date}
             </span>
+
           </button>
+
         ))}
 
       </section>
