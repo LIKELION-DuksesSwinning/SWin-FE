@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import prevBtn from '../../assets/images/prev-btn.svg';
 
 import './Alert.css';
+
 
 const INITIAL_ALERTS = [
   {
@@ -68,26 +69,132 @@ const INITIAL_ALERTS = [
   },
 ];
 
+
+const READ_ALERTS_KEY =
+  'swinning-read-alert-ids';
+
+
+/* ========================================
+   localStorage에서 읽은 알림 ID 가져오기
+======================================== */
+
+const getReadAlertIds = () => {
+  try {
+    const saved =
+      localStorage.getItem(
+        READ_ALERTS_KEY
+      );
+
+    if (!saved) {
+      return [];
+    }
+
+    const parsed = JSON.parse(saved);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+  } catch (error) {
+    console.error(
+      '읽은 알림 상태를 불러오지 못했습니다.',
+      error
+    );
+
+    return [];
+  }
+};
+
+
+/* ========================================
+   읽은 알림 ID 저장
+======================================== */
+
+const saveReadAlertIds = (
+  readIds
+) => {
+  try {
+    localStorage.setItem(
+      READ_ALERTS_KEY,
+      JSON.stringify(readIds)
+    );
+  } catch (error) {
+    console.error(
+      '읽은 알림 상태를 저장하지 못했습니다.',
+      error
+    );
+  }
+};
+
+
 function Alert() {
   const navigate = useNavigate();
 
   const [alerts, setAlerts] =
-    useState(INITIAL_ALERTS);
+    useState([]);
 
-  // ========================================
-  // 뒤로가기
-  // ========================================
+
+  /* ========================================
+     알림 목록 + 읽음 상태 초기화
+  ======================================== */
+
+  useEffect(() => {
+    const readAlertIds =
+      getReadAlertIds();
+
+    const nextAlerts =
+      INITIAL_ALERTS.map(
+        (alert) => ({
+          ...alert,
+          isRead:
+            alert.isRead ||
+            readAlertIds.includes(
+              alert.id
+            ),
+        })
+      );
+
+    setAlerts(nextAlerts);
+  }, []);
+
+
+  /* ========================================
+     뒤로가기
+  ======================================== */
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  // ========================================
-  // 알림 클릭
-  // → 읽음 처리
-  // ========================================
 
-  const handleAlertClick = (alertId) => {
+  /* ========================================
+     알림 클릭
+     → 읽음 처리
+     → localStorage 저장
+     → 상세 페이지 이동
+  ======================================== */
+
+  const handleAlertClick = (
+    alertId
+  ) => {
+
+    const previousReadIds =
+      getReadAlertIds();
+
+    const nextReadIds =
+      previousReadIds.includes(
+        alertId
+      )
+        ? previousReadIds
+        : [
+            ...previousReadIds,
+            alertId,
+          ];
+
+    saveReadAlertIds(
+      nextReadIds
+    );
+
+
     setAlerts((prev) =>
       prev.map((alert) =>
         alert.id === alertId
@@ -98,7 +205,13 @@ function Alert() {
           : alert
       )
     );
+
+
+    navigate(
+      `/alert/${alertId}`
+    );
   };
+
 
   return (
     <main className="alert-page">
@@ -117,11 +230,14 @@ function Alert() {
         >
           <img
             src={prevBtn}
-            alt="이전"
+            alt=""
           />
         </button>
 
-        <h1>알림</h1>
+
+        <h1>
+          알림
+        </h1>
 
       </header>
 
@@ -130,7 +246,10 @@ function Alert() {
           Alert List
       ================================= */}
 
-      <section className="alert-list">
+      <section
+        className="alert-list"
+        aria-label="알림 목록"
+      >
 
         {alerts.map((alert) => (
           <button
@@ -142,16 +261,21 @@ function Alert() {
                 : 'unread'
             }`}
             onClick={() =>
-              handleAlertClick(alert.id)
+              handleAlertClick(
+                alert.id
+              )
             }
           >
+
             <span className="alert-title">
               {alert.title}
             </span>
 
+
             <span className="alert-date">
               {alert.date}
             </span>
+
           </button>
         ))}
 
@@ -160,5 +284,6 @@ function Alert() {
     </main>
   );
 }
+
 
 export default Alert;
