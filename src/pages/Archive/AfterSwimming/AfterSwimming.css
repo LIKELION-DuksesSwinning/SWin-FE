@@ -7,6 +7,8 @@
   width: 100%;
   min-height: 100vh;
 
+  box-sizing: border-box;
+
   background-color: var(--color-background);
 
   color: var(--color-text);
@@ -17,18 +19,21 @@
    Header
 ================================ */
 
-.archive-record-header {
+.after-archive-record-header {
   display: flex;
   align-items: center;
 
   width: 100%;
+
   height: 48px;
 
   padding: 0 16px;
+
+  box-sizing: border-box;
 }
 
 
-.archive-record-back {
+.after-archive-record-back {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +51,9 @@
 }
 
 
-.archive-record-back img {
+.after-archive-record-back img {
+  display: block;
+
   width: 18px;
   height: 18px;
 
@@ -58,13 +65,15 @@
    Content
 ================================ */
 
-.archive-record-content {
+.after-archive-record-content {
   display: flex;
   flex-direction: column;
 
   width: 100%;
 
   padding: 0 16px 30px;
+
+  box-sizing: border-box;
 }
 
 
@@ -72,16 +81,18 @@
    Section
 ================================ */
 
-.archive-record-section {
+.after-archive-record-section {
   width: 100%;
 
   padding: 14px 0;
 
-  border-bottom: 1px solid #eeeeee;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #EEEEEE;
 }
 
 
-.archive-record-section h2 {
+.after-archive-record-section h2 {
   margin: 0 0 8px;
 
   color: var(--color-text);
@@ -93,7 +104,7 @@
 }
 
 
-.archive-record-description {
+.after-archive-record-description {
   margin: 0 0 10px;
 
   color: var(--color-text-gray);
@@ -108,7 +119,7 @@
    Photo
 ================================ */
 
-.photo-upload-row {
+.after-photo-upload-row {
   display: flex;
   align-items: flex-start;
 
@@ -116,8 +127,8 @@
 }
 
 
-.photo-upload-box,
-.photo-frame {
+.after-photo-upload-box,
+.after-photo-frame {
   flex-shrink: 0;
 
   width: 100px;
@@ -125,7 +136,7 @@
 }
 
 
-.photo-upload-box {
+.after-photo-upload-box {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -133,9 +144,9 @@
 
   gap: 8px;
 
-  border: 1px dashed #bdbdbd;
+  border: 1px dashed #BDBDBD;
 
-  background-color: #ffffff;
+  background-color: #FFFFFF;
 
   color: var(--color-text-gray);
 
@@ -147,7 +158,7 @@
 }
 
 
-.photo-upload-plus {
+.after-photo-upload-plus {
   color: var(--color-text);
 
   font-size: 25px;
@@ -157,7 +168,7 @@
 }
 
 
-.photo-preview-wrapper {
+.after-photo-preview-wrapper {
   display: flex;
   flex-direction: column;
 
@@ -165,18 +176,18 @@
 }
 
 
-.photo-frame {
+.after-photo-frame {
   display: flex;
   align-items: center;
   justify-content: center;
 
   overflow: hidden;
 
-  background-color: #f4f4f4;
+  background-color: #F4F4F4;
 }
 
 
-.photo-frame img {
+.after-photo-frame img {
   display: block;
 
   width: 100%;
@@ -186,7 +197,11 @@
 }
 
 
-.photo-remove-button {
+/* ================================
+   Photo Remove
+================================ */
+
+.after-photo-remove-button {
   width: 100px;
 
   padding: 3px 0;
@@ -207,7 +222,7 @@
    Photo Guide
 ================================ */
 
-.photo-guide {
+.after-photo-guide {
   padding-top: 3px;
 
   color: var(--color-text-gray);
@@ -218,7 +233,7 @@
 }
 
 
-.photo-guide strong {
+.after-photo-guide strong {
   display: block;
 
   margin-bottom: 5px;
@@ -227,7 +242,7 @@
 }
 
 
-.photo-guide p {
+.after-photo-guide p {
   margin: 0;
 }
 
@@ -236,18 +251,20 @@
    Swim Time
 ================================ */
 
-.swim-time-list {
+.after-swim-time-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+
+  grid-template-columns:
+    repeat(2, 1fr);
 
   gap: 8px;
 }
 
 
-.swim-time-button {
+.after-swim-time-button {
   height: 34px;
 
-  border: 1px solid #bdbdbd;
+  border: 1px solid #BDBDBD;
   border-radius: 5px;
 
   background-color: var(--color-background);
@@ -260,12 +277,12 @@
 }
 
 
-.swim-time-button.selected {
-  border-color: #6b91ce;
+.after-swim-time-button.selected {
+  border-color: #6B91CE;
 
-  background-color: #dce8ff;
+  background-color: #DCE8FF;
 
-  color: #183b78;
+  color: #183B78;
 }
 
 
@@ -273,18 +290,20 @@
    Symptom
 ================================ */
 
-.symptom-list {
+.after-symptom-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns:
+    repeat(3, 1fr);
 
   gap: 8px;
 }
 
 
-.symptom-button {
+.after-symptom-button {
   height: 34px;
 
-  border: 1px solid #bdbdbd;
+  border: 1px solid #BDBDBD;
   border-radius: 5px;
 
   background-color: var(--color-background);
@@ -297,12 +316,12 @@
 }
 
 
-.symptom-button.selected {
-  border-color: #6b91ce;
+.after-symptom-button.selected {
+  border-color: #6B91CE;
 
-  background-color: #dce8ff;
+  background-color: #DCE8FF;
 
-  color: #183b78;
+  color: #183B78;
 }
 
 
@@ -310,7 +329,7 @@
    Severity
 ================================ */
 
-.severity-list {
+.after-severity-list {
   display: flex;
   flex-direction: column;
 
@@ -318,7 +337,7 @@
 }
 
 
-.severity-row {
+.after-severity-row {
   display: flex;
   align-items: center;
 
@@ -326,7 +345,7 @@
 }
 
 
-.severity-name {
+.after-severity-name {
   width: 40px;
 
   color: var(--color-text);
@@ -335,18 +354,18 @@
 }
 
 
-.severity-buttons {
+.after-severity-buttons {
   display: flex;
 
   gap: 6px;
 }
 
 
-.severity-button {
+.after-severity-button {
   width: 38px;
   height: 32px;
 
-  border: 1px solid #bdbdbd;
+  border: 1px solid #BDBDBD;
   border-radius: 5px;
 
   background-color: var(--color-background);
@@ -359,12 +378,12 @@
 }
 
 
-.severity-button.selected {
-  border-color: #6b91ce;
+.after-severity-button.selected {
+  border-color: #6B91CE;
 
-  background-color: #dce8ff;
+  background-color: #DCE8FF;
 
-  color: #183b78;
+  color: #183B78;
 }
 
 
@@ -372,7 +391,7 @@
    Memo
 ================================ */
 
-.archive-record-memo {
+.after-archive-record-memo {
   display: block;
 
   width: 100%;
@@ -380,7 +399,7 @@
 
   padding: 10px;
 
-  border: 1px solid #dddddd;
+  border: 1px solid #DDDDDD;
 
   outline: none;
 
@@ -396,8 +415,8 @@
 }
 
 
-.archive-record-memo::placeholder {
-  color: #b5b5b5;
+.after-archive-record-memo::placeholder {
+  color: #B5B5B5;
 }
 
 
@@ -405,7 +424,7 @@
    Save
 ================================ */
 
-.archive-record-save {
+.after-archive-record-save {
   width: 100%;
   height: 42px;
 
@@ -416,7 +435,7 @@
 
   background-color: var(--color-background-gray);
 
-  color: #ffffff;
+  color: #FFFFFF;
 
   font-size: var(--font-size-14);
 
@@ -424,8 +443,8 @@
 }
 
 
-.archive-record-save.active {
-  background-color: #0068f5;
+.after-archive-record-save.active {
+  background-color: #0068F5;
 
   cursor: pointer;
 }
@@ -442,7 +461,7 @@
 }
 
 
-.record-done-content {
+.after-record-done-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -451,7 +470,7 @@
 }
 
 
-.record-done-icon {
+.after-record-done-icon {
   width: 72px;
   height: 72px;
 
@@ -459,7 +478,7 @@
 }
 
 
-.record-done-content p {
+.after-record-done-content p {
   margin: 0;
 
   color: var(--color-text);
@@ -473,17 +492,25 @@
 ================================ */
 
 @media (max-width: 375px) {
-  .archive-record-content {
+
+  .after-archive-record-content {
     padding: 0 14px 24px;
   }
 
-  .photo-upload-box,
-  .photo-frame {
+
+  .after-photo-upload-box,
+  .after-photo-frame {
     width: 96px;
     height: 116px;
   }
 
-  .photo-guide {
+
+  .after-photo-remove-button {
+    width: 96px;
+  }
+
+
+  .after-photo-guide {
     font-size: 8px;
   }
 }
