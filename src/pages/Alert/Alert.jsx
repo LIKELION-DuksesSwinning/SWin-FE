@@ -3,7 +3,9 @@ import {
   useState,
 } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+} from 'react-router-dom';
 
 import prevBtn from '../../assets/images/prev-btn.svg';
 
@@ -16,13 +18,7 @@ import './Alert.css';
 
 
 /* ========================================
-   날짜 표시 변환
-
-   백엔드:
-   2026-08-07T11:00:00
-
-   화면:
-   2026년 8월 7일 오전 11시
+   날짜 표시
 ======================================== */
 
 const formatNotificationDate = (
@@ -72,14 +68,12 @@ const formatNotificationDate = (
       '0'
     );
 
-  return `${year}년 ${month}월 ${day}일 ${period} ${displayHour}시 ${paddedMinute}분`;
+  return `${year}년 ${month}월 ${day}일 ${period} ${displayHour}시 ${paddedMinute}`;
 };
 
 
 /* ========================================
-   알림 데이터 변환
-
-   API → 화면에서 사용하는 구조
+   API → 화면 데이터
 ======================================== */
 
 const mapNotification =
@@ -154,14 +148,14 @@ function Alert() {
             await getNotifications();
 
 
-          /*
-           * GET 응답은 배열
-           */
           const notificationList =
             Array.isArray(data)
               ? data
-              : data?.notifications ||
-                [];
+              : Array.isArray(
+                  data?.notifications
+                )
+              ? data.notifications
+              : [];
 
 
           setAlerts(
@@ -203,44 +197,58 @@ function Alert() {
 
   /* ========================================
      알림 클릭
-     → 읽음 처리 API
+     
+     1. 읽음 처리
+     2. 상세 페이지 이동
   ======================================== */
 
   const handleAlertClick =
     async (
       alert
     ) => {
-      /*
-       * 이미 읽은 알림이면
-       * API 호출하지 않음
-       */
-      if (alert.isRead) {
-        return;
-      }
-
-
-      /*
-       * 화면 먼저 읽음 상태로 변경
-       */
-      setAlerts(
-        (prev) =>
-          prev.map(
-            (item) =>
-              item.id ===
-              alert.id
-                ? {
-                    ...item,
-                    isRead:
-                      true,
-                  }
-                : item
-          )
-      );
-
-
       try {
-        await markNotificationAsRead(
-          alert.id
+        /*
+         * 아직 안 읽은 경우에만
+         * PATCH 호출
+         */
+        if (
+          !alert.isRead
+        ) {
+          setAlerts(
+            (prev) =>
+              prev.map(
+                (item) =>
+                  item.id ===
+                  alert.id
+                    ? {
+                        ...item,
+                        isRead:
+                          true,
+                      }
+                    : item
+              )
+          );
+
+
+          await markNotificationAsRead(
+            alert.id
+          );
+        }
+
+
+        /*
+         * 상세 페이지로 이동
+         *
+         * state에 현재 알림도 같이 전달
+         * → 상세 페이지가 즉시 렌더링 가능
+         */
+        navigate(
+          `/alert/${alert.id}`,
+          {
+            state: {
+              alert,
+            },
+          }
         );
       } catch (error) {
         console.error(
@@ -250,8 +258,8 @@ function Alert() {
 
 
         /*
-         * API 실패 시
-         * 화면 상태 원복
+         * 읽음 처리 실패한 경우
+         * 다시 unread로 복구
          */
         setAlerts(
           (prev) =>
@@ -267,6 +275,20 @@ function Alert() {
                   : item
             )
         );
+
+
+        /*
+         * 읽음 처리 API가 실패해도
+         * 상세 페이지 자체는 볼 수 있게 함
+         */
+        navigate(
+          `/alert/${alert.id}`,
+          {
+            state: {
+              alert,
+            },
+          }
+        );
       }
     };
 
@@ -274,9 +296,7 @@ function Alert() {
   return (
     <main className="alert-page">
 
-      {/* ================================
-          Header
-      ================================= */}
+      {/* Header */}
 
       <header className="alert-header">
 
@@ -300,51 +320,49 @@ function Alert() {
       </header>
 
 
-      {/* ================================
-          Loading
-      ================================= */}
+      {/* Loading */}
 
       {isLoading && (
         <section className="alert-list">
+
           <div className="alert-empty">
             알림을 불러오는 중입니다.
           </div>
+
         </section>
       )}
 
 
-      {/* ================================
-          Error
-      ================================= */}
+      {/* Error */}
 
       {!isLoading &&
         error && (
           <section className="alert-list">
+
             <div className="alert-empty alert-error">
               {error}
             </div>
+
           </section>
         )}
 
 
-      {/* ================================
-          Empty
-      ================================= */}
+      {/* Empty */}
 
       {!isLoading &&
         !error &&
         alerts.length === 0 && (
           <section className="alert-list">
+
             <div className="alert-empty">
               새로운 알림이 없습니다.
             </div>
+
           </section>
         )}
 
 
-      {/* ================================
-          Alert List
-      ================================= */}
+      {/* Alert List */}
 
       {!isLoading &&
         !error &&
@@ -392,5 +410,6 @@ function Alert() {
     </main>
   );
 }
+
 
 export default Alert;

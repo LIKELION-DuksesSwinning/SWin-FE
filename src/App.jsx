@@ -1,4 +1,8 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
+
 import {
   Routes,
   Route,
@@ -19,16 +23,38 @@ import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
-import * as AlertPage from './pages/Alert/Alert.jsx';
+
+/* ========================================
+   Alert
+======================================== */
+
+import Alert from './pages/Alert/Alert.jsx';
+import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
+
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
+
+
+/* ========================================
+   Clinic
+======================================== */
 
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
 import ReservationTime from './pages/Clinic/ReservationTime.jsx';
 import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 
+
+/* ========================================
+   Pool
+======================================== */
+
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
+
+
+/* ========================================
+   Analysis
+======================================== */
 
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
@@ -38,16 +64,8 @@ import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
+
 import './App.css';
-
-
-/* ========================================
-   Alert export 방식 대응
-======================================== */
-
-const Alert =
-  AlertPage.default ||
-  AlertPage.Alert;
 
 
 /* ========================================
@@ -65,6 +83,7 @@ function App() {
   const location =
     useLocation();
 
+
   const [
     showStarting,
     setShowStarting,
@@ -81,6 +100,7 @@ function App() {
         setShowStarting(false);
       }, 2000);
 
+
     return () =>
       clearTimeout(timer);
   }, []);
@@ -88,20 +108,35 @@ function App() {
 
   /* ========================================
      Bottom Navigation 숨김
-======================================== */
+  ======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
-    location.pathname === '/user-record' ||
-    location.pathname === '/record-done' ||
+
+    location.pathname ===
+      '/user-record' ||
+
+    location.pathname ===
+      '/record-done' ||
+
     location.pathname ===
       '/archive/before-swimming' ||
+
     location.pathname ===
       '/archive/after-swimming' ||
+
     location.pathname ===
       '/archive/additional' ||
+
     location.pathname ===
-      '/archive/furthermore';
+      '/archive/furthermore' ||
+
+    location.pathname ===
+      '/alert' ||
+
+    location.pathname.startsWith(
+      '/alert/'
+    );
 
 
   return (
@@ -135,6 +170,7 @@ function App() {
               <UserRecord />
             }
           />
+
 
           <Route
             path="/record-done"
@@ -217,13 +253,29 @@ function App() {
 
 
           {/* ========================================
-              알림
+              알림 목록
           ======================================== */}
 
           <Route
             path="/alert"
             element={
               <Alert />
+            }
+          />
+
+
+          {/* ========================================
+              알림 상세
+              
+              예:
+              /alert/501
+              /alert/502
+          ======================================== */}
+
+          <Route
+            path="/alert/:alertId"
+            element={
+              <DetailedAlert />
             }
           />
 
@@ -251,6 +303,7 @@ function App() {
             }
           />
 
+
           <Route
             path="/clinic/time"
             element={
@@ -258,12 +311,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/clinic/complete"
             element={
               <ReservationComplete />
             }
           />
+
 
           <Route
             path="/clinic/history"
@@ -285,12 +340,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/analysis"
             element={
               <ClickForAnalysis />
             }
           />
+
 
           <Route
             path="/analysis/swim-report"
@@ -299,12 +356,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/analysis/clinic-report"
             element={
               <NoClinicReport />
             }
           />
+
 
           <Route
             path="/analysis/swim-report-data"
@@ -341,5 +400,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
