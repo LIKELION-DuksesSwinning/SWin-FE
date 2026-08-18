@@ -127,9 +127,10 @@ const DEMO_DETAIL_RECORDS = {
     },
   },
 
+
   /* --------------------------------------
      테스트용 두 번째 날짜
-     -------------------------------------- */
+  -------------------------------------- */
 
   '2026-08-15': {
     before: {
@@ -200,8 +201,10 @@ function Furthermore() {
      현재 페이지
   ======================================== */
 
-  const [currentTypeIndex, setCurrentTypeIndex] =
-    useState(0);
+  const [
+    currentTypeIndex,
+    setCurrentTypeIndex,
+  ] = useState(0);
 
 
   /* ========================================
@@ -223,7 +226,7 @@ function Furthermore() {
 
      before + after
      → 2페이지
-======================================== */
+  ======================================== */
 
   const availableTypes =
     useMemo(() => {
@@ -278,7 +281,7 @@ function Furthermore() {
 
   /* ========================================
      이전 기록
-======================================== */
+  ======================================== */
 
   const handlePrevious = () => {
     if (currentTypeIndex <= 0) {
@@ -293,7 +296,7 @@ function Furthermore() {
 
   /* ========================================
      다음 기록
-======================================== */
+  ======================================== */
 
   const handleNext = () => {
     if (
@@ -496,7 +499,10 @@ function Furthermore() {
                 수영 시간
               </h2>
 
-              <div className="furthermore-option-grid">
+
+              {/* ★ 핵심 수정:
+                  수영 시간은 2열 × 2행 */}
+              <div className="furthermore-option-grid furthermore-duration-grid">
 
                 {[
                   '30분 미만',
@@ -540,6 +546,7 @@ function Furthermore() {
           </p>
 
 
+          {/* 증상은 기존대로 3열 × 2행 */}
           <div className="furthermore-option-grid">
 
             {SYMPTOMS.map(

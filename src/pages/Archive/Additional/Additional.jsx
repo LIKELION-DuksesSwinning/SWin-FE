@@ -28,9 +28,10 @@ function Additional() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const searchParams = new URLSearchParams(
-    location.search
-  );
+  const searchParams =
+    new URLSearchParams(
+      location.search
+    );
 
   const recordDate =
     searchParams.get('date') || '';
@@ -60,14 +61,20 @@ function Additional() {
      사진 업로드
   ======================================== */
 
-  const handlePhotoChange = (event) => {
+  const handlePhotoChange = (
+    event
+  ) => {
     const file =
       event.target.files?.[0];
 
     if (!file) return;
 
 
-    if (!file.type.startsWith('image/')) {
+    if (
+      !file.type.startsWith(
+        'image/'
+      )
+    ) {
       alert(
         '이미지 파일만 업로드할 수 있습니다.'
       );
@@ -109,21 +116,27 @@ function Additional() {
      증상 선택
   ======================================== */
 
-  const handleSymptomClick = (option) => {
+  const handleSymptomClick = (
+    option
+  ) => {
 
     /* ----------------------------
        없음
     ---------------------------- */
 
     if (option === '없음') {
+
       setSymptoms((prev) => {
 
-        if (prev.includes('없음')) {
+        if (
+          prev.includes('없음')
+        ) {
           return [];
         }
 
         return ['없음'];
       });
+
 
       setSymptomSeverity({});
 
@@ -139,21 +152,27 @@ function Additional() {
 
       const withoutNone =
         prev.filter(
-          (item) => item !== '없음'
+          (item) =>
+            item !== '없음'
         );
 
 
       if (
-        withoutNone.includes(option)
+        withoutNone.includes(
+          option
+        )
       ) {
+
         const nextSymptoms =
           withoutNone.filter(
-            (item) => item !== option
+            (item) =>
+              item !== option
           );
 
 
         setSymptomSeverity(
           (prevSeverity) => {
+
             const next = {
               ...prevSeverity,
             };
@@ -185,10 +204,14 @@ function Additional() {
     symptom,
     severity
   ) => {
-    setSymptomSeverity((prev) => ({
-      ...prev,
-      [symptom]: severity,
-    }));
+
+    setSymptomSeverity(
+      (prev) => ({
+        ...prev,
+        [symptom]:
+          severity,
+      })
+    );
   };
 
 
@@ -197,11 +220,17 @@ function Additional() {
   ======================================== */
 
   const hasAllSeverity =
-    symptoms.length === 0 ||
     symptoms.includes('없음') ||
-    symptoms.every(
-      (symptom) =>
-        symptomSeverity[symptom]
+    (
+      symptoms.length > 0 &&
+      symptoms.every(
+        (symptom) =>
+          Boolean(
+            symptomSeverity[
+              symptom
+            ]
+          )
+      )
     );
 
 
@@ -216,15 +245,28 @@ function Additional() {
   ======================================== */
 
   const handleSave = () => {
-    if (!isComplete) return;
+
+    if (
+      !isComplete ||
+      isSaved
+    ) {
+      return;
+    }
 
 
     const recordData = {
       type: 'additional',
-      date: recordDate || null,
-      photo: photo.file,
+
+      date:
+        recordDate || null,
+
+      photo:
+        photo.file,
+
       symptoms,
+
       symptomSeverity,
+
       memo,
     };
 
@@ -243,9 +285,12 @@ function Additional() {
 
 
     setTimeout(() => {
-      navigate('/home', {
-        replace: true,
-      });
+      navigate(
+        '/home',
+        {
+          replace: true,
+        }
+      );
     }, 2000);
   };
 
@@ -261,7 +306,9 @@ function Additional() {
         <div className="additional-done-content">
 
           <img
-            src={recordProcessDone}
+            src={
+              recordProcessDone
+            }
             alt="저장 완료"
             className="additional-done-icon"
           />
@@ -289,13 +336,17 @@ function Additional() {
         <button
           type="button"
           className="additional-back-button"
-          onClick={() => navigate(-1)}
+          onClick={() =>
+            navigate(-1)
+          }
           aria-label="이전"
         >
+
           <img
             src={prevBtn}
             alt="이전"
           />
+
         </button>
 
       </header>
@@ -322,12 +373,15 @@ function Additional() {
           <div className="additional-photo-row">
 
             {photo ? (
+
               <div className="additional-photo-preview-wrapper">
 
                 <div className="additional-photo-frame">
 
                   <img
-                    src={photo.preview}
+                    src={
+                      photo.preview
+                    }
                     alt="추가 기록 사진"
                   />
 
@@ -345,11 +399,14 @@ function Additional() {
                 </button>
 
               </div>
+
             ) : (
+
               <label
                 htmlFor="additional-photo"
                 className="additional-photo-upload"
               >
+
                 <span className="additional-photo-plus">
                   +
                 </span>
@@ -369,7 +426,9 @@ function Additional() {
                   }
                   hidden
                 />
+
               </label>
+
             )}
 
 
@@ -404,6 +463,7 @@ function Additional() {
             증상 선택
           </h2>
 
+
           <p className="additional-description">
             현재 느끼고 있는 피부 불편 증상을
             선택해 주세요.
@@ -415,11 +475,14 @@ function Additional() {
 
             {SYMPTOM_OPTIONS.map(
               (option) => (
+
                 <button
                   key={option}
                   type="button"
                   className={`additional-symptom-button ${
-                    symptoms.includes(option)
+                    symptoms.includes(
+                      option
+                    )
                       ? 'selected'
                       : ''
                   }`}
@@ -431,6 +494,7 @@ function Additional() {
                 >
                   {option}
                 </button>
+
               )
             )}
 
@@ -444,7 +508,10 @@ function Additional() {
         ================================= */}
 
         {symptoms.length > 0 &&
-          !symptoms.includes('없음') && (
+          !symptoms.includes(
+            '없음'
+          ) && (
+
             <section className="additional-section">
 
               <h2>
@@ -456,6 +523,7 @@ function Additional() {
 
                 {symptoms.map(
                   (symptom) => (
+
                     <div
                       key={symptom}
                       className="additional-severity-row"
@@ -470,13 +538,17 @@ function Additional() {
 
                         {SEVERITY_OPTIONS.map(
                           (severity) => (
+
                             <button
-                              key={severity}
+                              key={
+                                severity
+                              }
                               type="button"
                               className={`additional-severity-button ${
                                 symptomSeverity[
                                   symptom
-                                ] === severity
+                                ] ===
+                                severity
                                   ? 'selected'
                                   : ''
                               }`}
@@ -489,18 +561,21 @@ function Additional() {
                             >
                               {severity}
                             </button>
+
                           )
                         )}
 
                       </div>
 
                     </div>
+
                   )
                 )}
 
               </div>
 
             </section>
+
           )}
 
 

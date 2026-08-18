@@ -23,11 +23,12 @@
   display: flex;
   align-items: center;
 
-  width: 100%;
+  width: 343px;
+  max-width: calc(100% - 32px);
 
-  height: 48px;
+  height: 52px;
 
-  padding: 0 16px;
+  margin: 0 auto;
 
   box-sizing: border-box;
 }
@@ -38,8 +39,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
 
   padding: 0;
 
@@ -54,8 +55,8 @@
 .after-archive-record-back img {
   display: block;
 
-  width: 18px;
-  height: 18px;
+  width: 30px;
+  height: 30px;
 
   object-fit: contain;
 }
@@ -69,9 +70,12 @@
   display: flex;
   flex-direction: column;
 
-  width: 100%;
+  width: 343px;
+  max-width: calc(100% - 32px);
 
-  padding: 0 16px 30px;
+  margin: 0 auto;
+
+  padding: 0 0 32px;
 
   box-sizing: border-box;
 }
@@ -84,20 +88,18 @@
 .after-archive-record-section {
   width: 100%;
 
-  padding: 14px 0;
+  padding: 30px 0 16px;
 
   box-sizing: border-box;
-
-  border-bottom: 1px solid #EEEEEE;
 }
 
 
 .after-archive-record-section h2 {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
 
   color: var(--color-text);
 
-  font-size: var(--font-size-12);
+  font-size: var(--font-size-16);
   font-weight: var(--font-weight-medium);
 
   line-height: 1.4;
@@ -105,13 +107,14 @@
 
 
 .after-archive-record-description {
-  margin: 0 0 10px;
+  margin: 0 0 11px;
 
   color: var(--color-text-gray);
 
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
 
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 
@@ -123,7 +126,9 @@
   display: flex;
   align-items: flex-start;
 
-  gap: 10px;
+  width: 100%;
+
+  gap: 12px;
 }
 
 
@@ -131,8 +136,10 @@
 .after-photo-frame {
   flex-shrink: 0;
 
-  width: 100px;
-  height: 120px;
+  width: 112px;
+  height: 136px;
+
+  box-sizing: border-box;
 }
 
 
@@ -142,15 +149,23 @@
   align-items: center;
   justify-content: center;
 
+  width: 135px;
+  height: 160px;
+
   gap: 8px;
+
+  padding: 12px 8px;
 
   border: 1px dashed #BDBDBD;
 
   background-color: #FFFFFF;
 
-  color: var(--color-text-gray);
+  color: var(--color-text);
 
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.45;
 
   text-align: center;
 
@@ -159,9 +174,11 @@
 
 
 .after-photo-upload-plus {
+  display: block;
+
   color: var(--color-text);
 
-  font-size: 25px;
+  font-size: 27px;
   font-weight: var(--font-weight-light);
 
   line-height: 1;
@@ -193,7 +210,7 @@
   width: 100%;
   height: 100%;
 
-  object-fit: contain;
+  object-fit: cover;
 }
 
 
@@ -202,7 +219,7 @@
 ================================ */
 
 .after-photo-remove-button {
-  width: 100px;
+  width: 112px;
 
   padding: 3px 0;
 
@@ -223,22 +240,28 @@
 ================================ */
 
 .after-photo-guide {
+  flex: 1;
+
   padding-top: 3px;
 
-  color: var(--color-text-gray);
+  color: var(--color-text);
 
-  font-size: 9px;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
 
-  line-height: 1.55;
+  line-height: 18px;
 }
 
 
 .after-photo-guide strong {
   display: block;
 
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 
   color: var(--color-text);
+
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
 }
 
 
@@ -257,12 +280,22 @@
   grid-template-columns:
     repeat(2, 1fr);
 
-  gap: 8px;
+  gap: 9px;
+
+  width: 70%;
 }
 
 
 .after-swim-time-button {
-  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  padding: 12px 9px;
+
+  box-sizing: border-box;
 
   border: 1px solid #BDBDBD;
   border-radius: 5px;
@@ -271,9 +304,19 @@
 
   color: var(--color-text-gray);
 
-  font-size: 11px;
+  font-size: 18px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.2;
+
+  white-space: nowrap;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 
@@ -296,12 +339,23 @@
   grid-template-columns:
     repeat(3, 1fr);
 
-  gap: 8px;
+  column-gap: 9px;
+  row-gap: 12px;
+
+  width: 70%;
 }
 
 
 .after-symptom-button {
-  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  padding: 12px 9px;
+
+  box-sizing: border-box;
 
   border: 1px solid #BDBDBD;
   border-radius: 5px;
@@ -310,18 +364,28 @@
 
   color: var(--color-text-gray);
 
-  font-size: 11px;
+  font-size: 18px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.2;
+
+  white-space: nowrap;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 
 .after-symptom-button.selected {
-  border-color: #6B91CE;
+  border-color: #082567;
 
-  background-color: #DCE8FF;
+  background-color: #005AE533;
 
-  color: #183B78;
+  color: #082567;
 }
 
 
@@ -334,6 +398,8 @@
   flex-direction: column;
 
   gap: 10px;
+
+  width: 100%;
 }
 
 
@@ -341,29 +407,45 @@
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 40px;
+
+  width: 100%;
 }
 
 
 .after-severity-name {
+  flex-shrink: 0;
+
   width: 40px;
 
   color: var(--color-text);
 
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
 }
 
 
 .after-severity-buttons {
   display: flex;
+  align-items: center;
 
-  gap: 6px;
+  gap: 7px;
 }
 
 
 .after-severity-button {
-  width: 38px;
-  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 49px;
+  height: 44px;
+
+  padding: 0;
+
+  box-sizing: border-box;
 
   border: 1px solid #BDBDBD;
   border-radius: 5px;
@@ -372,18 +454,24 @@
 
   color: var(--color-text-gray);
 
-  font-size: 11px;
+  font-size: 18px;
+  font-weight: 400;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 
 .after-severity-button.selected {
-  border-color: #6B91CE;
+  border-color: #082567;
 
-  background-color: #DCE8FF;
+  background-color: #005AE533;
 
-  color: #183B78;
+  color: #082567;
 }
 
 
@@ -395,11 +483,14 @@
   display: block;
 
   width: 100%;
-  min-height: 62px;
+  min-height: 72px;
 
   padding: 10px;
 
-  border: 1px solid #DDDDDD;
+  box-sizing: border-box;
+
+  border: 1px solid #D9D9D9;
+  border-radius: 2px;
 
   outline: none;
 
@@ -409,7 +500,10 @@
 
   color: var(--color-text);
 
-  font-size: 10px;
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
 
   line-height: 1.5;
 }
@@ -420,15 +514,24 @@
 }
 
 
+.after-archive-record-memo:focus {
+  border-color: #7F9ED7;
+}
+
+
 /* ================================
    Save
 ================================ */
 
 .after-archive-record-save {
-  width: 100%;
-  height: 42px;
+  display: block;
 
-  margin-top: 20px;
+  width: 100%;
+  height: 44px;
+
+  margin-top: 18px;
+
+  padding: 0;
 
   border: none;
   border-radius: 3px;
@@ -438,6 +541,7 @@
   color: #FFFFFF;
 
   font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
 
   cursor: not-allowed;
 }
@@ -450,6 +554,11 @@
 }
 
 
+.after-archive-record-save.active:hover {
+  background-color: #0059D1;
+}
+
+
 /* ================================
    Saved
 ================================ */
@@ -458,6 +567,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  min-height: 100dvh;
 }
 
 
@@ -471,6 +582,8 @@
 
 
 .after-record-done-icon {
+  display: block;
+
   width: 72px;
   height: 72px;
 
@@ -493,24 +606,134 @@
 
 @media (max-width: 375px) {
 
+  .after-archive-record-header {
+    width: 100%;
+    max-width: 343px;
+
+    height: 50px;
+  }
+
+
   .after-archive-record-content {
-    padding: 0 14px 24px;
+    width: 100%;
+    max-width: 343px;
+
+    padding-bottom: 26px;
+  }
+
+
+  .after-archive-record-section {
+    padding-top: 14px;
+    padding-bottom: 15px;
+  }
+
+
+  .after-photo-upload-row {
+    gap: 10px;
   }
 
 
   .after-photo-upload-box,
   .after-photo-frame {
-    width: 96px;
-    height: 116px;
+    width: 108px;
+    height: 132px;
   }
 
 
   .after-photo-remove-button {
-    width: 96px;
+    width: 108px;
   }
 
 
   .after-photo-guide {
     font-size: 8px;
+
+    line-height: 1.6;
+  }
+
+
+  .after-photo-guide strong {
+    font-size: 9px;
+  }
+
+
+  .after-swim-time-list {
+    grid-template-columns:
+      repeat(2, 1fr);
+
+    gap: 7px;
+
+    width: 70%;
+  }
+
+
+  .after-swim-time-button {
+    width: 100%;
+
+    padding: 12px 9px;
+
+    font-size: 18px;
+  }
+
+
+  .after-symptom-list {
+    grid-template-columns:
+      repeat(3, 1fr);
+
+    column-gap: 9px;
+    row-gap: 12px;
+
+    width: 70%;
+  }
+
+
+  .after-symptom-button {
+    width: 100%;
+
+    padding: 12px 9px;
+
+    font-size: 18px;
+  }
+
+
+  .after-severity-list {
+    gap: 9px;
+  }
+
+
+  .after-severity-row {
+    gap: 10px;
+  }
+
+
+  .after-severity-name {
+    width: 38px;
+
+    font-size: 10px;
+  }
+
+
+  .after-severity-buttons {
+    gap: 6px;
+  }
+
+
+  .after-severity-button {
+    width: 38px;
+    height: 32px;
+
+    font-size: 10px;
+  }
+
+
+  .after-archive-record-memo {
+    min-height: 68px;
+  }
+
+
+  .after-archive-record-save {
+    height: 42px;
+
+    margin-top: 18px;
   }
 }
