@@ -73,8 +73,9 @@ const INITIAL_ALERTS = [
 function Alert() {
   const navigate = useNavigate();
 
-  const [alerts, setAlerts] =
-    useState(INITIAL_ALERTS);
+  const [alerts, setAlerts] = useState(
+    INITIAL_ALERTS
+  );
 
 
   /* ========================================
@@ -89,6 +90,7 @@ function Alert() {
   /* ========================================
      알림 클릭
      → 읽음 처리
+     → 상세 알림 페이지 이동
   ======================================== */
 
   const handleAlertClick = (alertId) => {
@@ -102,6 +104,8 @@ function Alert() {
           : alert
       )
     );
+
+    navigate(`/alert/${alertId}`);
   };
 
 
@@ -144,7 +148,6 @@ function Alert() {
       >
 
         {alerts.map((alert) => (
-
           <button
             key={alert.id}
             type="button"
@@ -162,12 +165,12 @@ function Alert() {
               {alert.title}
             </span>
 
+
             <span className="alert-date">
               {alert.date}
             </span>
 
           </button>
-
         ))}
 
       </section>
@@ -175,5 +178,6 @@ function Alert() {
     </main>
   );
 }
+
 
 export default Alert;

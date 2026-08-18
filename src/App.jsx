@@ -20,6 +20,7 @@ import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
 import * as AlertPage from './pages/Alert/Alert.jsx';
+import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
 
@@ -88,7 +89,18 @@ function App() {
 
   /* ========================================
      Bottom Navigation 숨김
-======================================== */
+     
+     숨김:
+     - Login / Starting
+     - UserRecord
+     - RecordDone
+     - BeforeSwimming
+     - AfterSwimming
+     - Additional
+     - Furthermore
+     - Alert
+     - DetailedAlert
+  ======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
@@ -101,7 +113,12 @@ function App() {
     location.pathname ===
       '/archive/additional' ||
     location.pathname ===
-      '/archive/furthermore';
+      '/archive/furthermore' ||
+    location.pathname ===
+      '/alert' ||
+    location.pathname.startsWith(
+      '/alert/'
+    );
 
 
   return (
@@ -224,6 +241,18 @@ function App() {
             path="/alert"
             element={
               <Alert />
+            }
+          />
+
+
+          {/* ========================================
+              알림 상세
+          ======================================== */}
+
+          <Route
+            path="/alert/:alertId"
+            element={
+              <DetailedAlert />
             }
           />
 
