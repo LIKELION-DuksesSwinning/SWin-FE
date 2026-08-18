@@ -26,11 +26,6 @@ import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
 /* ========================================
    Alert
-======================================== */
-
-import Alert from './pages/Alert/Alert.jsx';
-import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
-
 
 import BottomNav from './components/BottomNav/BottomNav.jsx';
 
@@ -108,6 +103,17 @@ function App() {
 
   /* ========================================
      Bottom Navigation 숨김
+     
+     숨김:
+     - Login / Starting
+     - UserRecord
+     - RecordDone
+     - BeforeSwimming
+     - AfterSwimming
+     - Additional
+     - Furthermore
+     - Alert
+     - DetailedAlert
   ======================================== */
 
   const hideBottomNav =
@@ -130,10 +136,8 @@ function App() {
 
     location.pathname ===
       '/archive/furthermore' ||
-
     location.pathname ===
       '/alert' ||
-
     location.pathname.startsWith(
       '/alert/'
     );

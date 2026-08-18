@@ -2,10 +2,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-
-import {
-  useNavigate,
-} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import MonthlyCalendar from './MonthlyCalendar/MonthlyCalendar';
 import ArchiveBtn from './ArchiveBtn/ArchiveBtn';
@@ -23,6 +20,43 @@ import {
 } from '../../api/notifications';
 
 import './Main.css';
+
+
+
+const READ_ALERTS_KEY =
+  'swinning-read-alert-ids';
+
+
+/* ========================================
+   읽은 알림 ID 가져오기
+======================================== */
+
+const getReadAlertIds = () => {
+  try {
+    const saved =
+      localStorage.getItem(
+        READ_ALERTS_KEY
+      );
+
+    if (!saved) {
+      return [];
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+  } catch (error) {
+    console.error(
+      '읽은 알림 상태를 불러오지 못했습니다.',
+      error
+    );
+
+    return [];
+  }
+};
 
 
 function Main() {
