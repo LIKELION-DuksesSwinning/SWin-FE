@@ -1,58 +1,82 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './PoolSearch.css';
+
+const API_BASE_URL = 'https://miseno.store/api/v1/pools';
 
 const PoolSearch = () => {
     const [step, setStep] = useState(1);
-    const [city, setCity] = useState(null);
-    const [district, setDistrict] = useState(null);
-    const [town, setTown] = useState(null);
+    
+    const [selectedCity, setSelectedCity] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const [selectedTown, setSelectedTown] = useState(null);
 
-    // 임시 하드코딩 데이터 - 백엔드 API 연동 시 제거 예정
-    const cityList = ['서울특별시'];
-    const districtList = [
-        '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', 
-        '노원구', '도봉구', '동작구', '동대문구', '마포구', '서초구', '서대문구', '성동구', 
-        '성북구', '송파구', '양천구', '용산구', '영등포구', '은평구', '종로구', '중구', '중랑구'
-    ];
-    const townList = [
-        '신사동', '논현1동', '논현2동', '압구정동', '청담동', '삼성1동', 
-        '삼성2동', '대치1동', '대치2동', '대치4동', '역삼1동', '역삼2동', 
-        '도곡1동', '도곡2동', '개포1동', '개포2동', '개포3동', '개포4동', 
-        '일원본동', '일원1동', '수서동', '세곡동'
-    ];
-    const poolList = [
-        { id: 1, name: '더논현스포츠센터', address: '강남구 강남대로120길 33, 논현초등학교 내' }
-    ];
+    const [cityList, setCityList] = useState([]);
+    const [districtList, setDistrictList] = useState([]);
+    const [townList, setTownList] = useState([]);
+    const [poolList, setPoolList] = useState([]);
+
+    const fetchAPI = async (endpoint) => {
+        const token = localStorage.getItem('accessToken');
+        const headers = { 'Content-Type': 'application/json' };
+        
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, { headers });
+        
+        if (!response.ok) {
+            console.error('API 호출 에러', response.status);
+            return [];
+        }
+        
+        const data = await response.json();
+        return data.results || data; 
+    };
+
+    useEffect(() => {
+        fetchAPI('/regions/cities/')
+            .then(data => setCityList(data));
+    }, []);
 
     const handleTabClick = (targetStep) => {
         if (targetStep === 1) {
-            setCity(null);
-            setDistrict(null);
-            setTown(null);
+            setSelectedCity(null);
+            setSelectedDistrict(null);
+            setSelectedTown(null);
             setStep(1);
-        } else if (targetStep === 2 && city) {
-            setDistrict(null);
-            setTown(null);
+        } else if (targetStep === 2 && selectedCity) {
+            setSelectedDistrict(null);
+            setSelectedTown(null);
             setStep(2);
-        } else if (targetStep === 3 && district) {
-            setTown(null);
+        } else if (targetStep === 3 && selectedDistrict) {
+            setSelectedTown(null);
             setStep(3);
         }
     };
 
-    const handleCitySelect = (selected) => {
-        setCity(selected);
+    const handleCitySelect = (cityObj) => {
+        setSelectedCity(cityObj);
         setStep(2);
+        
+        fetchAPI(`/regions/districts/?city=${cityObj.id}`)
+            .then(data => setDistrictList(data));
     };
 
-    const handleDistrictSelect = (selected) => {
-        setDistrict(selected);
+    const handleDistrictSelect = (districtObj) => {
+        setSelectedDistrict(districtObj);
         setStep(3);
+        
+        fetchAPI(`/regions/dongs/?district=${districtObj.id}`)
+            .then(data => setTownList(data));
     };
 
-    const handleTownSelect = (selected) => {
-        setTown(selected);
+    const handleTownSelect = (townObj) => {
+        setSelectedTown(townObj);
         setStep(4);
+        
+        fetchAPI(`/?dong=${townObj.id}`)
+            .then(data => setPoolList(data));
     };
 
     return (
@@ -60,22 +84,22 @@ const PoolSearch = () => {
             <div className="title">수영장 찾기</div>
             <div className="tab-header">
                 <div 
-                    className={`tab-item ${city ? 'selected-text' : ''}`} 
+                    className={`tab-item ${selectedCity ? 'selected-text' : ''}`} 
                     onClick={() => handleTabClick(1)}
                 >
-                    {city ? city : '시/도'}
+                    {selectedCity ? selectedCity.name : '시/도'}
                 </div>
                 <div 
-                    className={`tab-item ${district ? 'selected-text' : ''} ${!city ? 'disabled' : ''}`} 
+                    className={`tab-item ${selectedDistrict ? 'selected-text' : ''} ${!selectedCity ? 'disabled' : ''}`} 
                     onClick={() => handleTabClick(2)}
                 >
-                    {district ? district : '시/군/구'}
+                    {selectedDistrict ? selectedDistrict.name : '시/군/구'}
                 </div>
                 <div 
-                    className={`tab-item ${town ? 'selected-text' : ''} ${!district ? 'disabled' : ''}`} 
+                    className={`tab-item ${selectedTown ? 'selected-text' : ''} ${!selectedDistrict ? 'disabled' : ''}`} 
                     onClick={() => handleTabClick(3)}
                 >
-                    {town ? town : '읍/면/동'}
+                    {selectedTown ? selectedTown.name : '읍/면/동'}
                 </div>
             </div>
 
@@ -83,8 +107,8 @@ const PoolSearch = () => {
                 {step === 1 && (
                     <div className="list-grid three-columns">
                         {cityList.map((item) => (
-                            <div key={item} className="list-item" onClick={() => handleCitySelect(item)}>
-                                {item}
+                            <div key={item.id} className="list-item" onClick={() => handleCitySelect(item)}>
+                                {item.name}
                             </div>
                         ))}
                     </div>
@@ -93,8 +117,8 @@ const PoolSearch = () => {
                 {step === 2 && (
                     <div className="list-grid three-columns">
                         {districtList.map((item) => (
-                            <div key={item} className="list-item" onClick={() => handleDistrictSelect(item)}>
-                                {item}
+                            <div key={item.id} className="list-item" onClick={() => handleDistrictSelect(item)}>
+                                {item.name}
                             </div>
                         ))}
                     </div>
@@ -103,8 +127,8 @@ const PoolSearch = () => {
                 {step === 3 && (
                     <div className="list-grid three-columns">
                         {townList.map((item) => (
-                            <div key={item} className="list-item" onClick={() => handleTownSelect(item)}>
-                                {item}
+                            <div key={item.id} className="list-item" onClick={() => handleTownSelect(item)}>
+                                {item.name}
                             </div>
                         ))}
                     </div>

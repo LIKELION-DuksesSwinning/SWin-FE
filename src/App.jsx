@@ -1,13 +1,6 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
-
-import {
-  Routes,
-  Route,
-  useLocation,
-} from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import './App.css';
 
 import Login from './pages/Login/Login.jsx';
 import Starting from './pages/Starting/Starting.jsx';
@@ -23,18 +16,8 @@ import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
-
-/* ========================================
-   Alert
-======================================== */
-
 import Alert from './pages/Alert/Alert.jsx';
 import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
-
-
-/* ========================================
-   My
-======================================== */
 
 import My from './pages/My/My.jsx';
 import Info from './pages/My/Info/Info.jsx';
@@ -42,63 +25,27 @@ import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
 import Policy from './pages/My/Policy/Policy.jsx';
 import LogOut from './pages/My/LogOut/LogOut.jsx';
 
-
-/* ========================================
-   Bottom Navigation
-======================================== */
-
 import BottomNav from './components/BottomNav/BottomNav.jsx';
-
-
-/* ========================================
-   Clinic
-======================================== */
 
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
 import ReservationTime from './pages/Clinic/ReservationTime.jsx';
 import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 
-
-/* ========================================
-   Pool
-======================================== */
-
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
-
-
-/* ========================================
-   Analysis
-======================================== */
 
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
+import ClinicReportTab from './pages/Analysis/ClinicReportTab.jsx';
 import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
 import Loading from './pages/Analysis/Loading.jsx';
-
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
+import SWinTab from './pages/Analysis/SWinTab.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
-
-
-import './App.css';
-
-/* ========================================
-   App
-======================================== */
 
 function App() {
   const location = useLocation();
-
-
-  const [
-    showStarting,
-    setShowStarting,
-  ] = useState(true);
-
-
-  /* ========================================
-     Starting → Login
-  ======================================== */
+  const [showStarting, setShowStarting] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -109,22 +56,6 @@ function App() {
       clearTimeout(timer);
     };
   }, []);
-
-
-  /* ========================================
-     Bottom Navigation 숨김
-     
-     숨김:
-     - Login / Starting
-     - UserRecord
-     - RecordDone
-     - BeforeSwimming
-     - AfterSwimming
-     - Additional
-     - Furthermore
-     - Alert
-     - DetailedAlert
-  ======================================== */
 
   const hideBottomNav =
     location.pathname === '/' ||
@@ -137,323 +68,55 @@ function App() {
     location.pathname === '/alert' ||
     location.pathname.startsWith('/alert/');
 
-
   return (
     <div className="app-container">
-
       <div className="content-area">
-
         <Routes>
 
-          {/* ========================================
-              Starting → Login
-          ======================================== */}
-
-          <Route
-            path="/"
-            element={
-              showStarting
-                ? <Starting />
-                : <Login />
-            }
-          />
-
-
-          {/* ========================================
-              사용자 기록
-          ======================================== */}
-
-          <Route
-            path="/user-record"
-            element={
-              <UserRecord />
-            }
-          />
-
-
-          <Route
-            path="/record-done"
-            element={
-              <RecordDone />
-            }
-          />
-
-
-          {/* ========================================
-              홈
-          ======================================== */}
-
-          <Route
-            path="/home"
-            element={
-              <Main />
-            }
-          />
-
-
-          {/* ========================================
-              캘린더
-          ======================================== */}
-
-          <Route
-            path="/calendar"
-            element={
-              <Calendar />
-            }
-          />
-
-
-          {/* ========================================
-              수영 전 기록
-          ======================================== */}
-
-          <Route
-            path="/archive/before-swimming"
-            element={
-              <BeforeSwimming />
-            }
-          />
-
-
-          {/* ========================================
-              수영 후 기록
-          ======================================== */}
-
-          <Route
-            path="/archive/after-swimming"
-            element={
-              <AfterSwimming />
-            }
-          />
-
-
-          {/* ========================================
-              추가 기록
-          ======================================== */}
-
-          <Route
-            path="/archive/additional"
-            element={
-              <Additional />
-            }
-          />
-
-
-          {/* ========================================
-              수영 기록 상세
-          ======================================== */}
-
-          <Route
-            path="/archive/furthermore"
-            element={
-              <Furthermore />
-            }
-          />
-
-
-          {/* ========================================
-              알림 목록
-          ======================================== */}
-
-          <Route
-            path="/alert"
-            element={
-              <Alert />
-            }
-          />
-
-
-          {/* ========================================
-              알림 상세
-              
-              예:
-              /alert/501
-              /alert/502
-          ======================================== */}
-
-          <Route
-            path="/alert/:alertId"
-            element={
-              <DetailedAlert />
-            }
-          />
-
-
-          {/* ========================================
-              수영장
-          ======================================== */}
-
-          <Route
-            path="/pool"
-            element={
-              <PoolSearch />
-            }
-          />
-
-
-          {/* ========================================
-              클리닉
-          ======================================== */}
-
-          <Route
-            path="/clinic"
-            element={
-              <ReservationDate />
-            }
-          />
-
-
-          <Route
-            path="/clinic/time"
-            element={
-              <ReservationTime />
-            }
-          />
-
-
-          <Route
-            path="/clinic/complete"
-            element={
-              <ReservationComplete />
-            }
-          />
-
-
-          <Route
-            path="/clinic/history"
-            element={
-              <ReservationHistory />
-            }
-          />
-
-
-          {/* ========================================
-              분석
-              → 팀원 작업 유지
-          ======================================== */}
-
-          <Route
-            path="/analysis/loading"
-            element={
-              <Loading />
-            }
-          />
-
-
-          <Route
-            path="/analysis"
-            element={
-              <ClickForAnalysis />
-            }
-          />
-
-
-          <Route
-            path="/analysis/swim-report"
-            element={
-              <NoRecords />
-            }
-          />
-
-
-          <Route
-            path="/analysis/clinic-report"
-            element={
-              <NoClinicReport />
-            }
-          />
-
-
-          <Route
-            path="/analysis/swim-report-data"
-            element={
-              <SwimReport />
-            }
-          />
-
-          {/* 현재 import 되어 있지만 기존 구조 유지 */}
-          <Route
-            path="/analysis/ai"
-            element={
-              <AIanalysis />
-            }
-          />
-
-
-          {/* ========================================
-              마이페이지
-          ======================================== */}
-
-          <Route
-            path="/my"
-            element={
-              <My />
-            }
-          />
-
-          {/* ========================================
-              마이페이지 > 나의 정보
-          ======================================== */}
-
-          <Route
-            path="/my/info"
-            element={
-              <Info />
-            }
-          />
-
-          {/* ========================================
-              마이페이지 > 푸시 알람
-          ======================================== */}
-
-          <Route
-            path="/my/push-alarm"
-            element={
-              <PushAlarm />
-            }
-          />
-
-          {/* ========================================
-              마이페이지 > 약관 및 정책
-          ======================================== */}
-
-          <Route
-            path="/my/policy"
-            element={
-              <Policy />
-            }
-          />
-
-          {/* ========================================
-              마이페이지 > 로그아웃 팝업
-          ======================================== */}
-
-          <Route
-            path="/my/logout"
-            element={
-              <LogOut />
-            }
-          />
+          <Route path="/" element={showStarting ? <Starting /> : <Login />} />
+
+          <Route path="/user-record" element={<UserRecord />} />
+          <Route path="/record-done" element={<RecordDone />} />
+
+          <Route path="/home" element={<Main />} />
+          <Route path="/calendar" element={<Calendar />} />
+
+          <Route path="/archive/before-swimming" element={<BeforeSwimming />} />
+          <Route path="/archive/after-swimming" element={<AfterSwimming />} />
+          <Route path="/archive/additional" element={<Additional />} />
+          <Route path="/archive/furthermore" element={<Furthermore />} />
+
+          <Route path="/alert" element={<Alert />} />
+          <Route path="/alert/:alertId" element={<DetailedAlert />} />
+
+          <Route path="/pool" element={<PoolSearch />} />
+
+          <Route path="/clinic" element={<ReservationDate />} />
+          <Route path="/clinic/time" element={<ReservationTime />} />
+          <Route path="/clinic/complete" element={<ReservationComplete />} />
+          <Route path="/clinic/history" element={<ReservationHistory />} />
+
+          <Route path="/analysis/loading" element={<Loading />} />
+          <Route path="/analysis" element={<ClickForAnalysis />} />
+          <Route path="/analysis/result" element={<AIanalysis />} />
+          <Route path="/analysis/ai" element={<AIanalysis />} />
+          
+          <Route path="/analysis/swim-report" element={<SWinTab />} />
+          <Route path="/analysis/clinic-report" element={<NoClinicReport />} />
+          <Route path="/analysis/swim-report-data" element={<SwimReport />} />
+
+          <Route path="/my" element={<My />} />
+          <Route path="/my/info" element={<Info />} />
+          <Route path="/my/push-alarm" element={<PushAlarm />} />
+          <Route path="/my/policy" element={<Policy />} />
+          <Route path="/my/logout" element={<LogOut />} />
 
         </Routes>
-
       </div>
 
-
-      {/* ========================================
-          Bottom Navigation
-          
-          My 페이지에서도 이 BottomNav를 사용함.
-          My.jsx 내부에 BottomNav를 추가하면 안 됨.
-      ======================================== */}
-
-      {!hideBottomNav && (
-        <BottomNav />
-      )}
-
+      {!hideBottomNav && <BottomNav />}
     </div>
   );
 }
-
 
 export default App;
