@@ -1,11 +1,33 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useState,
+} from 'react';
+
+import {
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 
 import prevBtn from '../../../assets/images/prev-btn.svg';
 import recordProcessDone from '../../../assets/images/record-process-done.svg';
 
+import {
+  createAdditionalRecord,
+} from '../../../api/records';
+
 import './Additional.css';
 
+
+/* ========================================
+   localStorage
+======================================== */
+
+const ADDITIONAL_RECORD_STORAGE_KEY =
+  'swinAdditionalRecords';
+
+
+/* ========================================
+   증상
+======================================== */
 
 const SYMPTOM_OPTIONS = [
   '당김',
@@ -17,6 +39,10 @@ const SYMPTOM_OPTIONS = [
 ];
 
 
+/* ========================================
+   증상 강도
+======================================== */
+
 const SEVERITY_OPTIONS = [
   '상',
   '중',
@@ -24,14 +50,111 @@ const SEVERITY_OPTIONS = [
 ];
 
 
+/* ========================================
+   추가 기록 ID 저장
+
+   구조:
+
+   {
+     "13": [15, 16],
+     "12": [20]
+   }
+
+   key = 부모 수영 기록 ID
+   value = 추가 기록 ID 배열
+======================================== */
+
+const saveAdditionalRecordId = (
+  parentRecordId,
+  additionalRecordId
+) => {
+  if (
+    !parentRecordId ||
+    !additionalRecordId
+  ) {
+    return;
+  }
+
+
+  try {
+    const stored =
+      JSON.parse(
+        localStorage.getItem(
+          ADDITIONAL_RECORD_STORAGE_KEY
+        ) || '{}'
+      );
+
+
+    const key =
+      String(parentRecordId);
+
+
+    const existingIds =
+      Array.isArray(
+        stored[key]
+      )
+        ? stored[key]
+        : [];
+
+
+    const id =
+      Number(
+        additionalRecordId
+      );
+
+
+    if (
+      Number.isNaN(id)
+    ) {
+      return;
+    }
+
+
+    if (
+      !existingIds.includes(id)
+    ) {
+      existingIds.push(id);
+    }
+
+
+    stored[key] =
+      existingIds;
+
+
+    localStorage.setItem(
+      ADDITIONAL_RECORD_STORAGE_KEY,
+      JSON.stringify(stored)
+    );
+  } catch (error) {
+    console.error(
+      '추가 기록 ID 저장 실패:',
+      error
+    );
+  }
+};
+
+
 function Additional() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate =
+    useNavigate();
+
+  const location =
+    useLocation();
+
+
+  /* ========================================
+     Query Parameter
+  ======================================== */
 
   const searchParams =
     new URLSearchParams(
       location.search
     );
+
+
+  const recordId =
+    searchParams.get('id');
+
 
   const recordDate =
     searchParams.get('date') || '';
@@ -41,178 +164,203 @@ function Additional() {
      State
   ======================================== */
 
-  const [photo, setPhoto] =
-    useState(null);
-
-  const [symptoms, setSymptoms] =
-    useState([]);
-
-  const [symptomSeverity, setSymptomSeverity] =
-    useState({});
-
-  const [memo, setMemo] =
-    useState('');
-
-  const [isSaved, setIsSaved] =
-    useState(false);
+  const [
+    photo,
+    setPhoto,
+  ] = useState(null);
 
 
-  /* ========================================
-     사진 업로드
-  ======================================== */
-
-  const handlePhotoChange = (
-    event
-  ) => {
-    const file =
-      event.target.files?.[0];
-
-    if (!file) return;
+  const [
+    symptoms,
+    setSymptoms,
+  ] = useState([]);
 
 
-    if (
-      !file.type.startsWith(
-        'image/'
-      )
-    ) {
-      alert(
-        '이미지 파일만 업로드할 수 있습니다.'
-      );
-
-      return;
-    }
+  const [
+    symptomSeverity,
+    setSymptomSeverity,
+  ] = useState({});
 
 
-    const reader =
-      new FileReader();
+  const [
+    memo,
+    setMemo,
+  ] = useState('');
 
 
-    reader.onload = () => {
-      setPhoto({
-        file,
-        preview: reader.result,
-      });
-    };
+  const [
+    isSaved,
+    setIsSaved,
+  ] = useState(false);
 
 
-    reader.readAsDataURL(file);
+  const [
+    isSaving,
+    setIsSaving,
+  ] = useState(false);
 
 
-    // 같은 파일을 다시 선택할 수 있도록 초기화
-    event.target.value = '';
-  };
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState('');
 
 
   /* ========================================
-     사진 삭제
+     사진
   ======================================== */
 
-  const handlePhotoRemove = () => {
-    setPhoto(null);
-  };
+  const handlePhotoChange =
+    (event) => {
+      const file =
+        event.target.files?.[0];
 
 
-  /* ========================================
-     증상 선택
-  ======================================== */
-
-  const handleSymptomClick = (
-    option
-  ) => {
-
-    /* ----------------------------
-       없음
-    ---------------------------- */
-
-    if (option === '없음') {
-
-      setSymptoms((prev) => {
-
-        if (
-          prev.includes('없음')
-        ) {
-          return [];
-        }
-
-        return ['없음'];
-      });
-
-
-      setSymptomSeverity({});
-
-      return;
-    }
-
-
-    /* ----------------------------
-       일반 증상
-    ---------------------------- */
-
-    setSymptoms((prev) => {
-
-      const withoutNone =
-        prev.filter(
-          (item) =>
-            item !== '없음'
-        );
+      if (!file) {
+        return;
+      }
 
 
       if (
-        withoutNone.includes(
-          option
+        !file.type.startsWith(
+          'image/'
         )
       ) {
+        alert(
+          '이미지 파일만 업로드할 수 있습니다.'
+        );
 
-        const nextSymptoms =
-          withoutNone.filter(
-            (item) =>
-              item !== option
-          );
+        event.target.value =
+          '';
+
+        return;
+      }
 
 
-        setSymptomSeverity(
-          (prevSeverity) => {
+      const reader =
+        new FileReader();
 
-            const next = {
-              ...prevSeverity,
-            };
 
-            delete next[option];
+      reader.onload = () => {
+        setPhoto({
+          file,
+          preview:
+            reader.result,
+        });
+      };
 
-            return next;
+
+      reader.readAsDataURL(
+        file
+      );
+
+
+      event.target.value =
+        '';
+    };
+
+
+  const handlePhotoRemove =
+    () => {
+      setPhoto(null);
+    };
+
+
+  /* ========================================
+     증상
+  ======================================== */
+
+  const handleSymptomClick =
+    (option) => {
+      if (
+        option === '없음'
+      ) {
+        setSymptoms(
+          (prev) => {
+            if (
+              prev.includes(
+                '없음'
+              )
+            ) {
+              return [];
+            }
+
+            return ['없음'];
           }
         );
 
 
-        return nextSymptoms;
+        setSymptomSeverity(
+          {}
+        );
+
+
+        return;
       }
 
 
-      return [
-        ...withoutNone,
-        option,
-      ];
-    });
-  };
+      setSymptoms(
+        (prev) => {
+          const withoutNone =
+            prev.filter(
+              (item) =>
+                item !== '없음'
+            );
+
+
+          if (
+            withoutNone.includes(
+              option
+            )
+          ) {
+            return withoutNone.filter(
+              (item) =>
+                item !== option
+            );
+          }
+
+
+          return [
+            ...withoutNone,
+            option,
+          ];
+        }
+      );
+
+
+      setSymptomSeverity(
+        (prev) => {
+          const next = {
+            ...prev,
+          };
+
+
+          delete next[option];
+
+
+          return next;
+        }
+      );
+    };
 
 
   /* ========================================
-     증상 강도 선택
+     강도
   ======================================== */
 
-  const handleSeverityClick = (
-    symptom,
-    severity
-  ) => {
-
-    setSymptomSeverity(
-      (prev) => ({
-        ...prev,
-        [symptom]:
-          severity,
-      })
-    );
-  };
+  const handleSeverityClick =
+    (
+      symptom,
+      severity
+    ) => {
+      setSymptomSeverity(
+        (prev) => ({
+          ...prev,
+          [symptom]:
+            severity,
+        })
+      );
+    };
 
 
   /* ========================================
@@ -220,7 +368,9 @@ function Additional() {
   ======================================== */
 
   const hasAllSeverity =
-    symptoms.includes('없음') ||
+    symptoms.includes(
+      '없음'
+    ) ||
     (
       symptoms.length > 0 &&
       symptoms.every(
@@ -235,64 +385,128 @@ function Additional() {
 
 
   const isComplete =
+    Boolean(recordId) &&
     photo !== null &&
     symptoms.length > 0 &&
     hasAllSeverity;
 
 
   /* ========================================
-     저장
+     symptoms payload
   ======================================== */
 
-  const handleSave = () => {
+  const buildSymptomsPayload =
+    () => {
+      if (
+        symptoms.length === 0 ||
+        symptoms.includes(
+          '없음'
+        )
+      ) {
+        return [];
+      }
 
-    if (
-      !isComplete ||
-      isSaved
-    ) {
-      return;
-    }
 
-
-    const recordData = {
-      type: 'additional',
-
-      date:
-        recordDate || null,
-
-      photo:
-        photo.file,
-
-      symptoms,
-
-      symptomSeverity,
-
-      memo,
+      return symptoms.map(
+        (symptom) => ({
+          type: symptom,
+          score:
+            symptomSeverity[
+              symptom
+            ],
+        })
+      );
     };
 
 
-    console.log(
-      '추가 기록:',
-      recordData
-    );
+  /* ========================================
+     저장
+  ======================================== */
+
+  const handleSave =
+    async () => {
+      if (
+        !isComplete ||
+        isSaving ||
+        isSaved
+      ) {
+        return;
+      }
 
 
-    // TODO:
-    // 실제 추가 기록 API 연결
-
-
-    setIsSaved(true);
-
-
-    setTimeout(() => {
-      navigate(
-        '/home',
-        {
-          replace: true,
-        }
+      setIsSaving(
+        true
       );
-    }, 2000);
-  };
+
+
+      setErrorMessage('');
+
+
+      try {
+        const response =
+          await createAdditionalRecord({
+            recordId,
+            photo:
+              photo.file,
+            symptoms:
+              buildSymptomsPayload(),
+            memo,
+          });
+
+
+        /*
+         * API 응답:
+         *
+         * {
+         *   additional_record_id: 15,
+         *   message: "저장되었습니다."
+         * }
+         */
+
+        const additionalRecordId =
+          response?.additional_record_id;
+
+
+        if (
+          additionalRecordId
+        ) {
+          saveAdditionalRecordId(
+            recordId,
+            additionalRecordId
+          );
+        }
+
+
+        setIsSaved(
+          true
+        );
+
+
+        setTimeout(() => {
+          navigate(
+            '/home',
+            {
+              replace: true,
+            }
+          );
+        }, 2000);
+      } catch (error) {
+        console.error(
+          '추가 기록 저장 오류:',
+          error
+        );
+
+
+        setErrorMessage(
+          error?.message ||
+            '추가 기록 저장에 실패했습니다.'
+        );
+      } finally {
+        setIsSaving(
+          false
+        );
+      }
+    };
 
 
   /* ========================================
@@ -313,6 +527,7 @@ function Additional() {
             className="additional-done-icon"
           />
 
+
           <p>
             저장되었습니다
           </p>
@@ -324,12 +539,12 @@ function Additional() {
   }
 
 
+  /* ========================================
+     Render
+  ======================================== */
+
   return (
     <main className="additional-page">
-
-      {/* ================================
-          Header
-      ================================= */}
 
       <header className="additional-header">
 
@@ -341,26 +556,19 @@ function Additional() {
           }
           aria-label="이전"
         >
-
           <img
             src={prevBtn}
             alt="이전"
           />
-
         </button>
 
       </header>
 
 
-      {/* ================================
-          Content
-      ================================= */}
-
       <section className="additional-content">
 
-
         {/* ================================
-            추가 기록 사진
+            사진
         ================================= */}
 
         <section className="additional-section">
@@ -373,7 +581,6 @@ function Additional() {
           <div className="additional-photo-row">
 
             {photo ? (
-
               <div className="additional-photo-preview-wrapper">
 
                 <div className="additional-photo-frame">
@@ -399,9 +606,7 @@ function Additional() {
                 </button>
 
               </div>
-
             ) : (
-
               <label
                 htmlFor="additional-photo"
                 className="additional-photo-upload"
@@ -411,11 +616,13 @@ function Additional() {
                   +
                 </span>
 
+
                 <span>
                   이곳을 눌러
                   <br />
                   얼굴 사진을 첨부해 주세요
                 </span>
+
 
                 <input
                   id="additional-photo"
@@ -428,7 +635,6 @@ function Additional() {
                 />
 
               </label>
-
             )}
 
 
@@ -454,7 +660,7 @@ function Additional() {
 
 
         {/* ================================
-            증상 선택
+            증상
         ================================= */}
 
         <section className="additional-section">
@@ -475,7 +681,6 @@ function Additional() {
 
             {SYMPTOM_OPTIONS.map(
               (option) => (
-
                 <button
                   key={option}
                   type="button"
@@ -494,7 +699,6 @@ function Additional() {
                 >
                   {option}
                 </button>
-
               )
             )}
 
@@ -504,14 +708,13 @@ function Additional() {
 
 
         {/* ================================
-            증상 강도
+            강도
         ================================= */}
 
         {symptoms.length > 0 &&
           !symptoms.includes(
             '없음'
           ) && (
-
             <section className="additional-section">
 
               <h2>
@@ -523,7 +726,6 @@ function Additional() {
 
                 {symptoms.map(
                   (symptom) => (
-
                     <div
                       key={symptom}
                       className="additional-severity-row"
@@ -538,7 +740,6 @@ function Additional() {
 
                         {SEVERITY_OPTIONS.map(
                           (severity) => (
-
                             <button
                               key={
                                 severity
@@ -561,26 +762,23 @@ function Additional() {
                             >
                               {severity}
                             </button>
-
                           )
                         )}
 
                       </div>
 
                     </div>
-
                   )
                 )}
 
               </div>
 
             </section>
-
           )}
 
 
         {/* ================================
-            특이 사항
+            메모
         ================================= */}
 
         <section className="additional-section">
@@ -604,9 +802,44 @@ function Additional() {
         </section>
 
 
-        {/* ================================
-            저장
-        ================================= */}
+        {!recordId && (
+          <p
+            role="alert"
+            style={{
+              color: '#d33',
+              marginBottom:
+                '12px',
+            }}
+          >
+            연결된 수영 기록을 찾을 수 없습니다.
+          </p>
+        )}
+
+
+        {recordDate && (
+          <p
+            style={{
+              display: 'none',
+            }}
+          >
+            {recordDate}
+          </p>
+        )}
+
+
+        {errorMessage && (
+          <p
+            role="alert"
+            style={{
+              color: '#d33',
+              marginBottom:
+                '12px',
+            }}
+          >
+            {errorMessage}
+          </p>
+        )}
+
 
         <button
           type="button"
@@ -615,10 +848,17 @@ function Additional() {
               ? 'active'
               : ''
           }`}
-          disabled={!isComplete}
-          onClick={handleSave}
+          disabled={
+            !isComplete ||
+            isSaving
+          }
+          onClick={
+            handleSave
+          }
         >
-          저장
+          {isSaving
+            ? '저장 중...'
+            : '저장'}
         </button>
 
       </section>
@@ -626,5 +866,6 @@ function Additional() {
     </main>
   );
 }
+
 
 export default Additional;

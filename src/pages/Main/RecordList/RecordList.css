@@ -270,6 +270,12 @@
   border-bottom: 1px solid #E5E5E5;
 }
 
+.record-item-status {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+
+  color: var(--color-report-blue);
+}
 
 .record-item-date {
   color: var(--color-text);

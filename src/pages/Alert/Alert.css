@@ -195,6 +195,22 @@
   text-overflow: ellipsis;
 }
 
+/* ================================
+   Content
+================================ */
+
+.alert-content {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--color-text);
+
+  font-size: 11px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.5;
+}
 
 /* ================================
    Date
@@ -252,6 +268,27 @@
   outline-offset: -2px;
 }
 
+/* ================================
+   Empty / Error
+================================ */
+
+.alert-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 180px;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+}
+
+.alert-error {
+  color: #e53935;
+}
 
 /* ================================
    Active

@@ -9,10 +9,20 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar';
+import WeeklyCalendar
+  from '../../components/WeeklyCalendar/WeeklyCalendar';
 
-import prevBtn from '../../assets/images/prev-btn.svg';
-import moreRecords from '../../assets/images/more-records.svg';
+import prevBtn
+  from '../../assets/images/prev-btn.svg';
+
+import moreRecords
+  from '../../assets/images/more-records.svg';
+
+import {
+  getSchedulesByMonth,
+  createSchedule,
+  updateSchedule,
+} from '../../api/schedules';
 
 import './Calendar.css';
 
@@ -21,9 +31,15 @@ import './Calendar.css';
    날짜 파싱
 ======================================== */
 
-const parseDateParam = (dateParam) => {
+const parseDateParam = (
+  dateParam
+) => {
   if (!dateParam) {
-    return new Date(2026, 7, 14);
+    return new Date(
+      2026,
+      7,
+      14
+    );
   }
 
   const [
@@ -34,22 +50,38 @@ const parseDateParam = (dateParam) => {
     .split('-')
     .map(Number);
 
-  if (!year || !month || !day) {
-    return new Date(2026, 7, 14);
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
+    return new Date(
+      2026,
+      7,
+      14
+    );
   }
 
-  const parsedDate = new Date(
-    year,
-    month - 1,
-    day
-  );
+  const parsedDate =
+    new Date(
+      year,
+      month - 1,
+      day
+    );
 
   if (
-    parsedDate.getFullYear() !== year ||
-    parsedDate.getMonth() !== month - 1 ||
-    parsedDate.getDate() !== day
+    parsedDate.getFullYear() !==
+      year ||
+    parsedDate.getMonth() !==
+      month - 1 ||
+    parsedDate.getDate() !==
+      day
   ) {
-    return new Date(2026, 7, 14);
+    return new Date(
+      2026,
+      7,
+      14
+    );
   }
 
   return parsedDate;
@@ -58,20 +90,23 @@ const parseDateParam = (dateParam) => {
 
 /* ========================================
    화면용 날짜
-   2026.08.14
 ======================================== */
 
-const formatDate = (date) => {
+const formatDate = (
+  date
+) => {
   const year =
     date.getFullYear();
 
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, '0');
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(2, '0');
 
-  const day = String(
-    date.getDate()
-  ).padStart(2, '0');
+  const day =
+    String(
+      date.getDate()
+    ).padStart(2, '0');
 
   return `${year}.${month}.${day}`;
 };
@@ -79,61 +114,116 @@ const formatDate = (date) => {
 
 /* ========================================
    URL용 날짜
-   2026-08-14
 ======================================== */
 
-const formatDateForInput = (date) => {
+const formatDateForInput = (
+  date
+) => {
   const year =
     date.getFullYear();
 
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, '0');
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(2, '0');
 
-  const day = String(
-    date.getDate()
-  ).padStart(2, '0');
+  const day =
+    String(
+      date.getDate()
+    ).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 };
 
 
 /* ========================================
-   월의 마지막 날짜
+   API schedule → 화면용 schedule
 ======================================== */
 
-const getDaysInMonth = (
-  year,
-  month
-) => {
-  return new Date(
-    year,
-    month,
-    0
-  ).getDate();
-};
+const normalizeSchedule = (
+  schedule
+) => ({
+  id:
+    schedule.schedule_id,
+
+  date: String(
+    schedule.start_datetime
+  ).slice(0, 10),
+
+  type:
+    schedule.category ===
+    'SWIM'
+      ? 'swim'
+      : schedule.category ===
+        'CLINIC'
+        ? 'clinic'
+        : null,
+
+  category:
+    schedule.category,
+
+  categoryDisplay:
+    schedule.category_display,
+
+  start_datetime:
+    schedule.start_datetime,
+
+  end_datetime:
+    schedule.end_datetime,
+
+  memo:
+    schedule.memo ?? '',
+
+  is_repeat:
+    Boolean(
+      schedule.is_repeat
+    ),
+
+  repeat_interval_weeks:
+    schedule.repeat_interval_weeks ??
+    null,
+
+  repeat_end_type:
+    schedule.repeat_end_type ??
+    null,
+
+  repeat_count:
+    schedule.repeat_count ??
+    null,
+
+  repeat_until:
+    schedule.repeat_until ??
+    null,
+
+  clinic_reservation:
+    schedule.clinic_reservation ??
+    null,
+});
 
 
 /* ========================================
-   종료 날짜 범위
+   API 응답 → 화면용 schedules
 ======================================== */
 
-const YEAR_START = 2026;
-const YEAR_END = 2100;
+const normalizeSchedulesResponse =
+  (data) => {
+    const schedules =
+      Array.isArray(
+        data?.schedules
+      )
+        ? data.schedules
+        : [];
 
-const YEAR_OPTIONS = Array.from(
-  {
-    length:
-      YEAR_END - YEAR_START + 1,
-  },
-  (_, index) =>
-    YEAR_START + index
-);
-
-const MONTH_OPTIONS = Array.from(
-  { length: 12 },
-  (_, index) => index + 1
-);
+    return schedules
+      .map(
+        normalizeSchedule
+      )
+      .filter(
+        (schedule) =>
+          schedule.date &&
+          schedule.type
+      );
+  };
 
 
 /* ========================================
@@ -154,10 +244,6 @@ function WheelColumn({
     useRef(null);
 
 
-  /* ========================================
-     현재 선택값을 중앙으로 이동
-  ======================================== */
-
   useEffect(() => {
     const container =
       containerRef.current;
@@ -171,7 +257,10 @@ function WheelColumn({
         selectedValue
       );
 
-    if (selectedIndex === -1) {
+    if (
+      selectedIndex ===
+      -1
+    ) {
       return;
     }
 
@@ -182,7 +271,8 @@ function WheelColumn({
 
     container.scrollTo({
       top:
-        selectedIndex * itemHeight,
+        selectedIndex *
+        itemHeight,
       behavior: 'auto',
     });
   }, [
@@ -191,70 +281,67 @@ function WheelColumn({
   ]);
 
 
-  /* ========================================
-     스크롤 종료
-  ======================================== */
+  const handleScroll =
+    () => {
+      const container =
+        containerRef.current;
 
-  const handleScroll = () => {
-    const container =
-      containerRef.current;
+      if (!container) {
+        return;
+      }
 
-    if (!container) {
-      return;
-    }
+      clearTimeout(
+        scrollTimerRef.current
+      );
 
-    clearTimeout(
-      scrollTimerRef.current
-    );
+      scrollTimerRef.current =
+        setTimeout(() => {
+          const itemHeight =
+            window.innerWidth <= 375
+              ? 52
+              : 56;
 
-    scrollTimerRef.current =
-      setTimeout(() => {
-        const itemHeight =
-          window.innerWidth <= 375
-            ? 52
-            : 56;
+          const rawIndex =
+            container.scrollTop /
+            itemHeight;
 
-        const rawIndex =
-          container.scrollTop /
-          itemHeight;
+          const index =
+            Math.round(
+              rawIndex
+            );
 
-        const index =
-          Math.round(rawIndex);
+          const clampedIndex =
+            Math.max(
+              0,
+              Math.min(
+                index,
+                values.length - 1
+              )
+            );
 
-        const clampedIndex =
-          Math.max(
-            0,
-            Math.min(
-              index,
-              values.length - 1
-            )
-          );
+          const nextValue =
+            values[
+              clampedIndex
+            ];
 
-        const nextValue =
-          values[clampedIndex];
+          if (
+            nextValue !==
+            selectedValue
+          ) {
+            onChange(
+              nextValue
+            );
+          }
 
-        if (
-          nextValue !==
-          selectedValue
-        ) {
-          onChange(
-            nextValue
-          );
-        }
+          container.scrollTo({
+            top:
+              clampedIndex *
+              itemHeight,
+            behavior: 'smooth',
+          });
+        }, 120);
+    };
 
-        container.scrollTo({
-          top:
-            clampedIndex *
-            itemHeight,
-          behavior: 'smooth',
-        });
-      }, 120);
-  };
-
-
-  /* ========================================
-     정리
-  ======================================== */
 
   useEffect(() => {
     return () => {
@@ -270,13 +357,13 @@ function WheelColumn({
       className="calendar-wheel-column"
       aria-label={ariaLabel}
     >
-
       <div
         ref={containerRef}
         className="calendar-wheel-scroll"
-        onScroll={handleScroll}
+        onScroll={
+          handleScroll
+        }
       >
-
         <div className="calendar-wheel-spacer" />
 
         {values.map(
@@ -285,12 +372,15 @@ function WheelColumn({
               key={value}
               type="button"
               className={`calendar-wheel-item ${
-                value === selectedValue
+                value ===
+                selectedValue
                   ? 'selected'
                   : ''
               }`}
               onClick={() =>
-                onChange(value)
+                onChange(
+                  value
+                )
               }
             >
               {renderValue(
@@ -301,9 +391,7 @@ function WheelColumn({
         )}
 
         <div className="calendar-wheel-spacer" />
-
       </div>
-
     </div>
   );
 }
@@ -317,8 +405,9 @@ function Calendar() {
   const navigate =
     useNavigate();
 
-  const [searchParams] =
-    useSearchParams();
+  const [
+    searchParams,
+  ] = useSearchParams();
 
 
   /* ========================================
@@ -326,12 +415,20 @@ function Calendar() {
   ======================================== */
 
   const dateParam =
-    searchParams.get('date');
+    searchParams.get(
+      'date'
+    );
 
   const selectedDate =
     parseDateParam(
       dateParam
     );
+
+  const selectedYear =
+    selectedDate.getFullYear();
+
+  const selectedMonth =
+    selectedDate.getMonth() + 1;
 
 
   /* ========================================
@@ -339,68 +436,566 @@ function Calendar() {
   ======================================== */
 
   const [
+    schedules,
+    setSchedules,
+  ] = useState([]);
+
+  const [
     selectedEvent,
     setSelectedEvent,
   ] = useState('');
 
+  const [
+    selectedScheduleId,
+    setSelectedScheduleId,
+  ] = useState(null);
 
   const [
     startTime,
     setStartTime,
   ] = useState('10:00');
 
-
   const [
     endTime,
     setEndTime,
   ] = useState('11:00');
-
 
   const [
     isRepeat,
     setIsRepeat,
   ] = useState(false);
 
+  const [
+    repeatIntervalWeeks,
+    setRepeatIntervalWeeks,
+  ] = useState('1');
 
   const repeatType =
     '주마다';
-
 
   const [
     repeatEndType,
     setRepeatEndType,
   ] = useState('');
 
-
   const [
     repeatCount,
     setRepeatCount,
-  ] = useState('10');
-
+  ] = useState('');
 
   const [
     repeatEndDate,
     setRepeatEndDate,
   ] = useState(
-    new Date(2027, 7, 14)
+    new Date(
+      2027,
+      7,
+      14
+    )
   );
-
 
   const [
     isDatePickerOpen,
     setIsDatePickerOpen,
   ] = useState(false);
 
-
   const [
     memo,
     setMemo,
   ] = useState('');
 
+  const [
+    isSaving,
+    setIsSaving,
+  ] = useState(false);
+
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(true);
+
+  const [
+    saveMessage,
+    setSaveMessage,
+  ] = useState('');
+
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState('');
+
+  const saveMessageTimerRef =
+    useRef(null);
+
 
   /* ========================================
-     종료 날짜 값
+     API 반복 종료 조건 ↔ UI
   ======================================== */
+
+  const mapApiEndTypeToUi =
+    (value) => {
+      if (
+        value ===
+        'FOREVER'
+      ) {
+        return 'continue';
+      }
+
+      if (
+        value ===
+        'COUNT'
+      ) {
+        return 'count';
+      }
+
+      if (
+        value ===
+        'UNTIL_DATE'
+      ) {
+        return 'date';
+      }
+
+      return '';
+    };
+
+
+  const mapUiEndTypeToApi =
+    (value) => {
+      if (
+        value ===
+        'continue'
+      ) {
+        return 'FOREVER';
+      }
+
+      if (
+        value ===
+        'count'
+      ) {
+        return 'COUNT';
+      }
+
+      if (
+        value ===
+        'date'
+      ) {
+        return 'UNTIL_DATE';
+      }
+
+      return null;
+    };
+
+
+  /* ========================================
+     일정 → 입력 폼 반영
+  ======================================== */
+
+  const applyScheduleToForm =
+    (
+      schedule,
+      baseDate =
+        selectedDate
+    ) => {
+      if (!schedule) {
+        setSelectedEvent(
+          ''
+        );
+
+        setSelectedScheduleId(
+          null
+        );
+
+        setStartTime(
+          '10:00'
+        );
+
+        setEndTime(
+          '11:00'
+        );
+
+        setIsRepeat(
+          false
+        );
+
+        setRepeatIntervalWeeks(
+          '1'
+        );
+
+        setRepeatEndType(
+          ''
+        );
+
+        setRepeatCount(
+          ''
+        );
+
+        setRepeatEndDate(
+          new Date(
+            baseDate.getFullYear() +
+              1,
+            baseDate.getMonth(),
+            baseDate.getDate()
+          )
+        );
+
+        setMemo(
+          ''
+        );
+
+        return;
+      }
+
+
+      setSelectedEvent(
+        schedule.type
+      );
+
+      setSelectedScheduleId(
+        schedule.id
+      );
+
+
+      if (
+        schedule.start_datetime
+      ) {
+        const start =
+          String(
+            schedule.start_datetime
+          ).slice(
+            11,
+            16
+          );
+
+        if (start) {
+          setStartTime(
+            start
+          );
+        }
+      }
+
+
+      if (
+        schedule.end_datetime
+      ) {
+        const end =
+          String(
+            schedule.end_datetime
+          ).slice(
+            11,
+            16
+          );
+
+        if (end) {
+          setEndTime(
+            end
+          );
+        }
+      }
+
+
+      setMemo(
+        schedule.memo || ''
+      );
+
+      setIsRepeat(
+        Boolean(
+          schedule.is_repeat
+        )
+      );
+
+      setRepeatIntervalWeeks(
+        String(
+          schedule.repeat_interval_weeks ??
+            1
+        )
+      );
+
+      setRepeatEndType(
+        schedule.repeat_end_type
+          ? mapApiEndTypeToUi(
+              schedule.repeat_end_type
+            )
+          : ''
+      );
+
+      setRepeatCount(
+        schedule.repeat_count !=
+          null
+          ? String(
+              schedule.repeat_count
+            )
+          : ''
+      );
+
+
+      if (
+        schedule.repeat_until
+      ) {
+        const [
+          year,
+          month,
+          day,
+        ] = String(
+          schedule.repeat_until
+        )
+          .split('-')
+          .map(Number);
+
+        if (
+          year &&
+          month &&
+          day
+        ) {
+          setRepeatEndDate(
+            new Date(
+              year,
+              month - 1,
+              day
+            )
+          );
+        }
+      }
+    };
+
+
+  /* ========================================
+     일정 목록 조회
+  ======================================== */
+
+  const loadSchedules =
+    async () => {
+      setIsLoading(
+        true
+      );
+
+      setErrorMessage(
+        ''
+      );
+
+      try {
+        const data =
+          await getSchedulesByMonth(
+            selectedYear,
+            selectedMonth
+          );
+
+        const result =
+          normalizeSchedulesResponse(
+            data
+          );
+
+        setSchedules(
+          result
+        );
+
+        return result;
+      } catch (error) {
+        console.error(
+          '캘린더 일정 조회 실패:',
+          error
+        );
+
+        setSchedules(
+          []
+        );
+
+        setErrorMessage(
+          error?.message ||
+            '일정을 불러오지 못했습니다.'
+        );
+
+        return [];
+      } finally {
+        setIsLoading(
+          false
+        );
+      }
+    };
+
+
+  useEffect(() => {
+    let isMounted =
+      true;
+
+    const fetchInitialSchedules =
+      async () => {
+        setIsLoading(
+          true
+        );
+
+        try {
+          const data =
+            await getSchedulesByMonth(
+              selectedYear,
+              selectedMonth
+            );
+
+          const result =
+            normalizeSchedulesResponse(
+              data
+            );
+
+          if (isMounted) {
+            setSchedules(
+              result
+            );
+
+            setErrorMessage(
+              ''
+            );
+          }
+        } catch (error) {
+          console.error(
+            '캘린더 일정 조회 실패:',
+            error
+          );
+
+          if (isMounted) {
+            setSchedules(
+              []
+            );
+
+            setErrorMessage(
+              error?.message ||
+                '일정을 불러오지 못했습니다.'
+            );
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoading(
+              false
+            );
+          }
+        }
+      };
+
+    fetchInitialSchedules();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    selectedYear,
+    selectedMonth,
+  ]);
+
+
+  /* ========================================
+     현재 날짜의 일정
+  ======================================== */
+
+  const selectedDateKey =
+    formatDateForInput(
+      selectedDate
+    );
+
+  const selectedDateSchedules =
+    schedules.filter(
+      (schedule) =>
+        schedule.date ===
+        selectedDateKey
+    );
+
+
+  /* ========================================
+     이벤트 선택
+  ======================================== */
+
+  const handleEventSelect =
+    (eventType) => {
+      setSelectedEvent(
+        eventType
+      );
+
+      const existingSchedule =
+        selectedDateSchedules.find(
+          (schedule) =>
+            schedule.type ===
+            eventType
+        );
+
+      if (
+        existingSchedule
+      ) {
+        applyScheduleToForm(
+          existingSchedule
+        );
+      } else {
+        setSelectedScheduleId(
+          null
+        );
+
+        setStartTime(
+          '10:00'
+        );
+
+        setEndTime(
+          '11:00'
+        );
+
+        setMemo(
+          ''
+        );
+
+        setIsRepeat(
+          false
+        );
+
+        setRepeatIntervalWeeks(
+          '1'
+        );
+
+        setRepeatEndType(
+          ''
+        );
+
+        setRepeatCount(
+          ''
+        );
+      }
+    };
+
+
+  /* ========================================
+     반복 날짜 옵션
+  ======================================== */
+
+  const YEAR_START =
+    2026;
+
+  const YEAR_END =
+    2100;
+
+
+  const YEAR_OPTIONS =
+    Array.from(
+      {
+        length:
+          YEAR_END -
+          YEAR_START +
+          1,
+      },
+      (
+        _,
+        index
+      ) =>
+        YEAR_START +
+        index
+    );
+
+
+  const MONTH_OPTIONS =
+    Array.from(
+      {
+        length: 12,
+      },
+      (
+        _,
+        index
+      ) =>
+        index + 1
+    );
+
 
   const repeatEndYear =
     repeatEndDate.getFullYear();
@@ -412,6 +1007,18 @@ function Calendar() {
     repeatEndDate.getDate();
 
 
+  const getDaysInMonth =
+    (
+      year,
+      month
+    ) =>
+      new Date(
+        year,
+        month,
+        0
+      ).getDate();
+
+
   const repeatEndDayOptions =
     Array.from(
       {
@@ -421,128 +1028,390 @@ function Calendar() {
             repeatEndMonth
           ),
       },
-      (_, index) =>
+      (
+        _,
+        index
+      ) =>
         index + 1
     );
 
 
   /* ========================================
-     종료 날짜 변경
+     반복 종료 날짜 변경
   ======================================== */
 
-  const updateRepeatEndDate = ({
-    year = repeatEndYear,
-    month = repeatEndMonth,
-    day = repeatEndDay,
-  }) => {
-    const maxDay =
-      getDaysInMonth(
-        year,
-        month
-      );
+  const updateRepeatEndDate =
+    ({
+      year =
+        repeatEndYear,
+      month =
+        repeatEndMonth,
+      day =
+        repeatEndDay,
+    }) => {
+      const maxDay =
+        getDaysInMonth(
+          year,
+          month
+        );
 
-    const safeDay =
-      Math.min(
-        day,
-        maxDay
-      );
+      const safeDay =
+        Math.min(
+          day,
+          maxDay
+        );
 
-    setRepeatEndDate(
-      new Date(
-        year,
-        month - 1,
-        safeDay
-      )
-    );
-  };
+      setRepeatEndDate(
+        new Date(
+          year,
+          month - 1,
+          safeDay
+        )
+      );
+    };
 
 
   /* ========================================
      WeeklyCalendar 날짜 변경
   ======================================== */
 
-  const handleDateChange = (
-    date
-  ) => {
-    navigate(
-      `/calendar?date=${formatDateForInput(
-        date
-      )}`,
-      {
-        replace: true,
-      }
-    );
-  };
+  const handleDateChange =
+    (date) => {
+      navigate(
+        `/calendar?date=${formatDateForInput(
+          date
+        )}`,
+        {
+          replace: true,
+        }
+      );
+    };
 
 
   /* ========================================
      이전
   ======================================== */
 
-  const handleBack = () => {
-    navigate(-1);
-  };
+  const handleBack =
+    () => {
+      navigate(-1);
+    };
+
+
+  /* ========================================
+     저장 성공 메시지
+  ======================================== */
+
+  const showSaveMessage =
+    () => {
+      setSaveMessage(
+        '저장되었습니다.'
+      );
+
+      clearTimeout(
+        saveMessageTimerRef.current
+      );
+
+      saveMessageTimerRef.current =
+        setTimeout(() => {
+          setSaveMessage(
+            ''
+          );
+        }, 2000);
+    };
+
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(
+        saveMessageTimerRef.current
+      );
+    };
+  }, []);
+
+
+  /* ========================================
+     반복 값 검증
+  ======================================== */
+
+  const getSafeRepeatInterval =
+    () => {
+      const value =
+        Number(
+          repeatIntervalWeeks
+        );
+
+      if (
+        !Number.isFinite(
+          value
+        )
+      ) {
+        return 1;
+      }
+
+      return Math.max(
+        1,
+        Math.min(
+          100,
+          value
+        )
+      );
+    };
+
+
+  const getSafeRepeatCount =
+    () => {
+      const value =
+        Number(
+          repeatCount
+        );
+
+      if (
+        !Number.isFinite(
+          value
+        )
+      ) {
+        return null;
+      }
+
+      return Math.max(
+        1,
+        Math.min(
+          100,
+          value
+        )
+      );
+    };
+
+
+  /* ========================================
+     Request Body
+  ======================================== */
+
+  const buildRequestBody =
+    () => {
+      const category =
+        selectedEvent ===
+        'swim'
+          ? 'SWIM'
+          : 'CLINIC';
+
+
+      const apiEndType =
+        isRepeat
+          ? mapUiEndTypeToApi(
+              repeatEndType
+            )
+          : null;
+
+
+      return {
+        category,
+
+        start_datetime:
+          `${selectedDateKey}T${startTime}:00`,
+
+        end_datetime:
+          `${selectedDateKey}T${endTime}:00`,
+
+        memo:
+          memo.trim() ||
+          null,
+
+        is_repeat:
+          isRepeat,
+
+        repeat_interval_weeks:
+          isRepeat
+            ? getSafeRepeatInterval()
+            : null,
+
+        repeat_end_type:
+          apiEndType,
+
+        repeat_count:
+          isRepeat &&
+          repeatEndType ===
+            'count'
+            ? getSafeRepeatCount()
+            : null,
+
+        repeat_until:
+          isRepeat &&
+          repeatEndType ===
+            'date'
+            ? formatDateForInput(
+                repeatEndDate
+              )
+            : null,
+      };
+    };
 
 
   /* ========================================
      저장
+     POST /api/v1/schedules/
+     PATCH /api/v1/schedules/{schedule_id}/
   ======================================== */
 
-  const handleSave = () => {
-    const calendarData = {
-      date: formatDate(
-        selectedDate
-      ),
+  const handleSave =
+    async () => {
+      if (
+        isSaving ||
+        !selectedEvent
+      ) {
+        return;
+      }
 
-      event:
-        selectedEvent,
 
-      startTime,
+      if (
+        startTime >=
+        endTime
+      ) {
+        alert(
+          '종료 시간은 시작 시간보다 늦어야 합니다.'
+        );
 
-      endTime,
+        return;
+      }
 
-      repeat:
-        isRepeat,
 
-      repeatType:
-        isRepeat
-          ? repeatType
-          : null,
+      if (
+        isRepeat &&
+        !repeatEndType
+      ) {
+        alert(
+          '반복 종료 조건을 선택해 주세요.'
+        );
 
-      repeatEndType:
-        isRepeat
-          ? repeatEndType
-          : null,
+        return;
+      }
 
-      repeatCount:
+
+      if (
         isRepeat &&
         repeatEndType ===
-          'count'
-          ? Number(
-              repeatCount
-            )
-          : null,
+          'count' &&
+        !repeatCount
+      ) {
+        alert(
+          '반복 횟수를 입력해 주세요.'
+        );
 
-      repeatEndDate:
-        isRepeat &&
-        repeatEndType ===
-          'date'
-          ? formatDate(
-              repeatEndDate
-            )
-          : null,
+        return;
+      }
 
-      memo,
+
+      setIsSaving(
+        true
+      );
+
+      setErrorMessage(
+        ''
+      );
+
+
+      try {
+        const requestBody =
+          buildRequestBody();
+
+
+        const isEdit =
+          Boolean(
+            selectedScheduleId
+          );
+
+
+        const responseData =
+          isEdit
+            ? await updateSchedule(
+                selectedScheduleId,
+                requestBody
+              )
+            : await createSchedule(
+                requestBody
+              );
+
+
+        console.log(
+          isEdit
+            ? '캘린더 일정 수정 성공:'
+            : '캘린더 일정 등록 성공:',
+          responseData
+        );
+
+
+        /*
+         * 저장 후 현재 월의 최신 일정 재조회
+         */
+
+        const refreshedData =
+          await getSchedulesByMonth(
+            selectedDate.getFullYear(),
+            selectedDate.getMonth() +
+              1
+          );
+
+
+        const refreshedSchedules =
+          normalizeSchedulesResponse(
+            refreshedData
+          );
+
+
+        setSchedules(
+          refreshedSchedules
+        );
+
+
+        /*
+         * 새로 저장/수정된 일정 다시 선택
+         */
+
+        const savedScheduleId =
+          responseData?.schedule_id ??
+          selectedScheduleId;
+
+
+        const savedSchedule =
+          refreshedSchedules.find(
+            (schedule) =>
+              schedule.id ===
+              savedScheduleId
+          );
+
+
+        if (
+          savedSchedule
+        ) {
+          applyScheduleToForm(
+            savedSchedule
+          );
+        }
+
+
+        showSaveMessage();
+      } catch (error) {
+        console.error(
+          '캘린더 일정 저장 실패:',
+          error
+        );
+
+        setErrorMessage(
+          error?.message ||
+            '일정 저장에 실패했습니다.'
+        );
+
+        alert(
+          error?.message ||
+            '일정 저장에 실패했습니다.'
+        );
+      } finally {
+        setIsSaving(
+          false
+        );
+      }
     };
-
-    console.log(
-      '캘린더 일정 저장:',
-      calendarData
-    );
-
-    // TODO:
-    // 실제 일정 등록 API 연결
-  };
 
 
   return (
@@ -557,7 +1426,9 @@ function Calendar() {
         <button
           type="button"
           className="calendar-back-button"
-          onClick={handleBack}
+          onClick={
+            handleBack
+          }
           aria-label="이전"
         >
           <img
@@ -576,9 +1447,9 @@ function Calendar() {
       <section className="calendar-weekly-section">
 
         <WeeklyCalendar
-          selectedDate={
-            selectedDate
-          }
+          key={selectedDateKey}
+          schedules={schedules}
+          selectedDate={selectedDate}
           onDateChange={
             handleDateChange
           }
@@ -593,9 +1464,7 @@ function Calendar() {
 
       <section className="calendar-detail">
 
-        {/* ================================
-            Selected Date
-        ================================= */}
+        {/* 선택 날짜 */}
 
         <div className="calendar-selected-date">
           {formatDate(
@@ -604,9 +1473,7 @@ function Calendar() {
         </div>
 
 
-        {/* ================================
-            일정
-        ================================= */}
+        {/* 일정 */}
 
         <section className="calendar-detail-section">
 
@@ -625,7 +1492,7 @@ function Calendar() {
                   : ''
               }`}
               onClick={() =>
-                setSelectedEvent(
+                handleEventSelect(
                   'swim'
                 )
               }
@@ -643,7 +1510,7 @@ function Calendar() {
                   : ''
               }`}
               onClick={() =>
-                setSelectedEvent(
+                handleEventSelect(
                   'clinic'
                 )
               }
@@ -656,9 +1523,7 @@ function Calendar() {
         </section>
 
 
-        {/* ================================
-            시간
-        ================================= */}
+        {/* 시간 */}
 
         <section className="calendar-detail-section">
 
@@ -680,10 +1545,15 @@ function Calendar() {
 
                 <input
                   type="time"
-                  value={startTime}
-                  onChange={(event) =>
+                  value={
+                    startTime
+                  }
+                  onChange={(
+                    event
+                  ) =>
                     setStartTime(
-                      event.target.value
+                      event.target
+                        .value
                     )
                   }
                   aria-label="시작 시간"
@@ -714,10 +1584,15 @@ function Calendar() {
 
                 <input
                   type="time"
-                  value={endTime}
-                  onChange={(event) =>
+                  value={
+                    endTime
+                  }
+                  onChange={(
+                    event
+                  ) =>
                     setEndTime(
-                      event.target.value
+                      event.target
+                        .value
                     )
                   }
                   aria-label="종료 시간"
@@ -732,9 +1607,7 @@ function Calendar() {
         </section>
 
 
-        {/* ================================
-            반복
-        ================================= */}
+        {/* 반복 */}
 
         <section className="calendar-detail-section">
 
@@ -771,7 +1644,7 @@ function Calendar() {
           {isRepeat && (
             <div className="calendar-repeat-content">
 
-              {/* 반복 규칙 */}
+              {/* 반복 주기 */}
 
               <div className="calendar-repeat-rule">
 
@@ -781,40 +1654,33 @@ function Calendar() {
                   inputMode="numeric"
                   pattern="[0-9]*"
                   maxLength={3}
-                  value={repeatCount}
-                  onChange={(event) => {
+                  value={
+                    repeatIntervalWeeks
+                  }
+                  onChange={(
+                    event
+                  ) => {
                     const value =
                       event.target.value.replace(
                         /\D/g,
                         ''
                       );
 
-                    setRepeatCount(
+                    setRepeatIntervalWeeks(
                       value
                     );
                   }}
                   onBlur={() => {
-
-                    if (
-                      repeatCount ===
-                      ''
-                    ) {
-                      setRepeatCount(
-                        '1'
-                      );
-
-                      return;
-                    }
-
-                    const number =
+                    const value =
                       Number(
-                        repeatCount
+                        repeatIntervalWeeks
                       );
 
                     if (
-                      number < 1
+                      !repeatIntervalWeeks ||
+                      value < 1
                     ) {
-                      setRepeatCount(
+                      setRepeatIntervalWeeks(
                         '1'
                       );
 
@@ -822,14 +1688,14 @@ function Calendar() {
                     }
 
                     if (
-                      number > 100
+                      value > 100
                     ) {
-                      setRepeatCount(
+                      setRepeatIntervalWeeks(
                         '100'
                       );
                     }
                   }}
-                  aria-label="반복 횟수"
+                  aria-label="반복 주기"
                 />
 
                 <span>
@@ -915,8 +1781,12 @@ function Calendar() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={3}
-                    value={repeatCount}
-                    onChange={(event) => {
+                    value={
+                      repeatCount
+                    }
+                    onChange={(
+                      event
+                    ) => {
                       const value =
                         event.target.value.replace(
                           /\D/g,
@@ -928,10 +1798,8 @@ function Calendar() {
                       );
                     }}
                     onBlur={() => {
-
                       if (
-                        repeatCount ===
-                        ''
+                        !repeatCount
                       ) {
                         setRepeatCount(
                           '1'
@@ -980,8 +1848,6 @@ function Calendar() {
                 'date' && (
                 <div className="calendar-repeat-date">
 
-                  {/* 선택 날짜 */}
-
                   <button
                     type="button"
                     className="calendar-repeat-date-trigger"
@@ -997,13 +1863,21 @@ function Calendar() {
                   >
 
                     <span>
-                      {repeatEndYear}년{' '}
-                      {repeatEndMonth}월{' '}
-                      {repeatEndDay}일
+                      {
+                        repeatEndYear
+                      }년{' '}
+                      {
+                        repeatEndMonth
+                      }월{' '}
+                      {
+                        repeatEndDay
+                      }일
                     </span>
 
                     <img
-                      src={moreRecords}
+                      src={
+                        moreRecords
+                      }
                       alt=""
                       aria-hidden="true"
                       className={`calendar-repeat-date-icon ${
@@ -1016,17 +1890,11 @@ function Calendar() {
                   </button>
 
 
-                  {/* ================================
-                      Wheel Picker
-                  ================================= */}
-
                   {isDatePickerOpen && (
                     <div className="calendar-wheel-picker">
 
                       <div className="calendar-wheel-selected-line" />
 
-
-                      {/* 년 */}
 
                       <WheelColumn
                         values={
@@ -1050,8 +1918,6 @@ function Calendar() {
                         ariaLabel="연도 선택"
                       />
 
-
-                      {/* 월 */}
 
                       <WheelColumn
                         values={
@@ -1080,8 +1946,6 @@ function Calendar() {
                         ariaLabel="월 선택"
                       />
 
-
-                      {/* 일 */}
 
                       <WheelColumn
                         values={
@@ -1117,9 +1981,7 @@ function Calendar() {
         </section>
 
 
-        {/* ================================
-            메모
-        ================================= */}
+        {/* 메모 */}
 
         <section className="calendar-detail-section">
 
@@ -1131,9 +1993,12 @@ function Calendar() {
             type="text"
             className="calendar-memo-input"
             value={memo}
-            onChange={(event) =>
+            onChange={(
+              event
+            ) =>
               setMemo(
-                event.target.value
+                event.target
+                  .value
               )
             }
             placeholder="메모를 입력하세요."
@@ -1142,22 +2007,84 @@ function Calendar() {
         </section>
 
 
-        {/* ================================
-            저장
-        ================================= */}
+        {/* API 로딩/에러 */}
+
+        {isLoading && (
+          <p
+            style={{
+              margin:
+                '10px 0 0',
+              textAlign:
+                'center',
+              fontSize:
+                '12px',
+            }}
+          >
+            일정을 불러오는 중입니다.
+          </p>
+        )}
+
+
+        {errorMessage && (
+          <p
+            role="alert"
+            style={{
+              margin:
+                '10px 0 0',
+              textAlign:
+                'center',
+              fontSize:
+                '12px',
+              color:
+                '#d33',
+            }}
+          >
+            {errorMessage}
+          </p>
+        )}
+
+
+        {/* 저장 */}
 
         <button
           type="button"
           className="calendar-save-button"
-          onClick={handleSave}
+          onClick={
+            handleSave
+          }
+          disabled={
+            isSaving ||
+            !selectedEvent
+          }
         >
-          저장
+          {isSaving
+            ? '저장 중...'
+            : '저장'}
         </button>
+
+
+        {saveMessage && (
+          <p
+            style={{
+              margin:
+                '10px 0 0',
+              textAlign:
+                'center',
+              fontSize:
+                '12px',
+              color:
+                '#0068F5',
+            }}
+          >
+            {saveMessage}
+          </p>
+        )}
 
       </section>
 
     </main>
   );
 }
+
 
 export default Calendar;

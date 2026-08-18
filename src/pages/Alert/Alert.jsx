@@ -3,222 +3,22 @@ import { useNavigate } from 'react-router-dom';
 
 import prevBtn from '../../assets/images/prev-btn.svg';
 
+import {
+  getNotifications,
+  markNotificationAsRead,
+} from '../../api/notifications';
+
 import './Alert.css';
 
 
-const INITIAL_ALERTS = [
-  {
-    id: 1,
-    title: '수영 기록 미완료',
-    date: '2026년 8월 10일 오후 1시',
-    isRead: false,
-  },
-  {
-    id: 2,
-    title: 'AAC 클리닉 예약 안내',
-    date: '2026년 8월 9일 오전 10시',
-    isRead: false,
-  },
-  {
-    id: 3,
-    title: '내일 수영이 예정되어 있어요',
-    date: '2026년 8월 9일 오전 9시',
-    isRead: true,
-  },
-  {
-    id: 4,
-    title: '내일 수영이 예정되어 있어요',
-    date: '2026년 8월 8일 오전 9시',
-    isRead: true,
-  },
-  {
-    id: 5,
-    title: '내일 수영이 예정되어 있어요',
-    date: '2026년 8월 7일 오전 9시',
-    isRead: true,
-  },
-  {
-    id: 6,
-    title: '내일 수영이 예정되어 있어요',
-    date: '2026년 8월 6일 오전 9시',
-    isRead: true,
-  },
-  {
-    id: 7,
-    title: '주간 리포트 도착',
-    date: '2026년 8월 3일 오전 9시',
-    isRead: false,
-  },
-  {
-    id: 8,
-    title: '시스템 점검',
-    date: '2026년 8월 1일 오후 1시',
-    isRead: true,
-  },
-  {
-    id: 9,
-    title: '주간 리포트 도착',
-    date: '2026년 7월 27일 오전 9시',
-    isRead: false,
-  },
-  {
-    id: 10,
-    title: '내일 수영이 예정되어 있어요',
-    date: '2026년 7월 25일 오전 9시',
-    isRead: true,
-  },
-];
-
-
-const READ_ALERTS_KEY =
-  'swinning-read-alert-ids';
-
-
 /* ========================================
-   localStorage에서 읽은 알림 ID 가져오기
-======================================== */
-
-const getReadAlertIds = () => {
-  try {
-    const saved =
-      localStorage.getItem(
-        READ_ALERTS_KEY
-      );
-
-    if (!saved) {
-      return [];
-    }
-
-    const parsed = JSON.parse(saved);
-
-    return Array.isArray(parsed)
-      ? parsed
-      : [];
-  } catch (error) {
-    console.error(
-      '읽은 알림 상태를 불러오지 못했습니다.',
-      error
-    );
-
-    return [];
-  }
-};
-
-
-/* ========================================
-   읽은 알림 ID 저장
-======================================== */
-
-const saveReadAlertIds = (
-  readIds
-) => {
-  try {
-    localStorage.setItem(
-      READ_ALERTS_KEY,
-      JSON.stringify(readIds)
-    );
-  } catch (error) {
-    console.error(
-      '읽은 알림 상태를 저장하지 못했습니다.',
-      error
-    );
-  }
-};
-
-
-function Alert() {
-  const navigate = useNavigate();
-
-  const [alerts, setAlerts] =
-    useState([]);
-
-
-  /* ========================================
-     알림 목록 + 읽음 상태 초기화
-  ======================================== */
-
-  useEffect(() => {
-    const readAlertIds =
-      getReadAlertIds();
-
-    const nextAlerts =
-      INITIAL_ALERTS.map(
-        (alert) => ({
-          ...alert,
-          isRead:
-            alert.isRead ||
-            readAlertIds.includes(
-              alert.id
-            ),
-        })
-      );
-
-    setAlerts(nextAlerts);
-  }, []);
-
-
-  /* ========================================
-     뒤로가기
-  ======================================== */
-
-  const handleBack = () => {
-    navigate(-1);
-  };
-
-
-  /* ========================================
-     알림 클릭
-     → 읽음 처리
-     → localStorage 저장
-     → 상세 페이지 이동
-  ======================================== */
-
-  const handleAlertClick = (
-    alertId
-  ) => {
-
-    const previousReadIds =
-      getReadAlertIds();
-
-    const nextReadIds =
-      previousReadIds.includes(
-        alertId
-      )
-        ? previousReadIds
-        : [
-            ...previousReadIds,
-            alertId,
-          ];
-
-    saveReadAlertIds(
-      nextReadIds
-    );
-
-
-    setAlerts((prev) =>
-      prev.map((alert) =>
-        alert.id === alertId
-          ? {
-              ...alert,
-              isRead: true,
-            }
-          : alert
-      )
-    );
-
-
-    navigate(
-      `/alert/${alertId}`
-    );
-  };
+   날짜 표시
 
 
   return (
     <main className="alert-page">
 
-      {/* ================================
-          Header
-      ================================= */}
+      {/* Header */}
 
       <header className="alert-header">
 
@@ -242,44 +42,92 @@ function Alert() {
       </header>
 
 
-      {/* ================================
-          Alert List
-      ================================= */}
+      {/* Loading */}
 
-      <section
-        className="alert-list"
-        aria-label="알림 목록"
-      >
+      {isLoading && (
+        <section className="alert-list">
 
-        {alerts.map((alert) => (
-          <button
-            key={alert.id}
-            type="button"
-            className={`alert-item ${
-              alert.isRead
-                ? 'read'
-                : 'unread'
-            }`}
-            onClick={() =>
-              handleAlertClick(
-                alert.id
+          <div className="alert-empty">
+            알림을 불러오는 중입니다.
+          </div>
+
+        </section>
+      )}
+
+
+      {/* Error */}
+
+      {!isLoading &&
+        error && (
+          <section className="alert-list">
+
+            <div className="alert-empty alert-error">
+              {error}
+            </div>
+
+          </section>
+        )}
+
+
+      {/* Empty */}
+
+      {!isLoading &&
+        !error &&
+        alerts.length === 0 && (
+          <section className="alert-list">
+
+            <div className="alert-empty">
+              새로운 알림이 없습니다.
+            </div>
+
+          </section>
+        )}
+
+
+      {/* Alert List */}
+
+      {!isLoading &&
+        !error &&
+        alerts.length > 0 && (
+          <section className="alert-list">
+
+            {alerts.map(
+              (alert) => (
+                <button
+                  key={alert.id}
+                  type="button"
+                  className={`alert-item ${
+                    alert.isRead
+                      ? 'read'
+                      : 'unread'
+                  }`}
+                  onClick={() =>
+                    handleAlertClick(
+                      alert
+                    )
+                  }
+                >
+
+                  <span className="alert-title">
+                    {alert.title}
+                  </span>
+
+
+                  <span className="alert-content">
+                    {alert.content}
+                  </span>
+
+
+                  <span className="alert-date">
+                    {alert.date}
+                  </span>
+
+                </button>
               )
-            }
-          >
+            )}
 
-            <span className="alert-title">
-              {alert.title}
-            </span>
-
-
-            <span className="alert-date">
-              {alert.date}
-            </span>
-
-          </button>
-        ))}
-
-      </section>
+          </section>
+        )}
 
     </main>
   );
