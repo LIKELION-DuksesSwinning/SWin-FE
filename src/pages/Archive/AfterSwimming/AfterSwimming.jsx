@@ -273,44 +273,82 @@ function AfterSwimming() {
   /* 저장 */
 
   const handleSave =
-    async () => {
-      if (
-        !isComplete ||
-        isSaved ||
-        isSaving
-      ) {
-        return;
-      }
+  async () => {
+    if (
+      !isComplete ||
+      isSaved ||
+      isSaving
+    ) {
+      return;
+    }
 
-      setIsSaving(true);
-      setErrorMessage('');
+    setIsSaving(true);
+    setErrorMessage('');
 
-      try {
-        await createSwimRecord({
-          timing: 'AFTER',
-          photo:
-            photo.file,
-          swimTime,
-          symptoms:
-            buildSymptomsPayload(),
-          memo,
-        });
+    try {
+      const now =
+        new Date();
 
-        setIsSaved(true);
-      } catch (error) {
-        console.error(
-          '수영 후 기록 저장 오류:',
-          error
-        );
+      const date =
+        now
+          .toISOString()
+          .split('T')[0];
 
-        setErrorMessage(
-          error?.message ||
-            '기록 저장에 실패했습니다.'
-        );
-      } finally {
-        setIsSaving(false);
-      }
-    };
+      const startTime =
+        now
+          .toTimeString()
+          .slice(0, 5);
+
+
+      const durationMap = {
+        '30분 미만': 30,
+        '30~60분': 60,
+        '60~90분': 90,
+        '90분 이상': 90,
+      };
+
+
+      const durationMinutes =
+        durationMap[
+          swimTime
+        ] ?? 0;
+
+
+      await createSwimRecord({
+        timing: 'AFTER',
+
+        date,
+
+        startTime,
+
+        durationMinutes,
+
+        photo:
+          photo.file,
+
+        swimTime,
+
+        symptoms:
+          buildSymptomsPayload(),
+
+        memo,
+      });
+
+      setIsSaved(true);
+    } catch (error) {
+      console.error(
+        '수영 후 기록 저장 오류:',
+        error
+      );
+
+      setErrorMessage(
+        error?.message ||
+          '기록 저장에 실패했습니다.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
 
   if (isSaved) {

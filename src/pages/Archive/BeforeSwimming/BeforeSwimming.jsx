@@ -107,6 +107,14 @@ function BeforeSwimming() {
     const reader =
       new FileReader();
 
+      console.log('선택한 실제 파일:', {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      });
+
+      window.__testPhotoFile = file;
+
     reader.onload = () => {
       setPhoto({
         file,
@@ -225,6 +233,9 @@ function BeforeSwimming() {
     photo !== null &&
     hasAllSeverity;
 
+  // const isComplete =
+  // hasAllSeverity;
+
 
   /* API용 symptoms */
 
@@ -254,43 +265,65 @@ function BeforeSwimming() {
   /* 저장 */
 
   const handleSave =
-    async () => {
-      if (
-        !isComplete ||
-        isSaved ||
-        isSaving
-      ) {
-        return;
-      }
+  async () => {
+    if (
+      !isComplete ||
+      isSaved ||
+      isSaving
+    ) {
+      return;
+    }
 
-      setIsSaving(true);
-      setErrorMessage('');
+    setIsSaving(true);
+    setErrorMessage('');
 
-      try {
-        await createSwimRecord({
-          timing: 'BEFORE',
-          photo:
-            photo.file,
-          symptoms:
-            buildSymptomsPayload(),
-          memo,
-        });
+    try {
+      const now =
+        new Date();
 
-        setIsSaved(true);
-      } catch (error) {
-        console.error(
-          '수영 전 기록 저장 오류:',
-          error
-        );
+      const date =
+        now
+          .toISOString()
+          .slice(0, 10);
 
-        setErrorMessage(
-          error?.message ||
-            '기록 저장에 실패했습니다.'
-        );
-      } finally {
-        setIsSaving(false);
-      }
-    };
+      const startTime =
+        now
+          .toTimeString()
+          .slice(0, 5);
+
+      await createSwimRecord({
+        timing: 'BEFORE',
+
+        date,
+
+        startTime,
+
+        durationMinutes: 60,
+
+        photo:
+          photo?.file,
+
+        symptoms:
+          buildSymptomsPayload(),
+
+        memo,
+      });
+
+      setIsSaved(true);
+    } catch (error) {
+      console.error(
+        '수영 전 기록 저장 오류:',
+        error
+      );
+
+      setErrorMessage(
+        error?.message ||
+          '기록 저장에 실패했습니다.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
 
   if (isSaved) {
