@@ -92,19 +92,26 @@ function MonthlyCalendar() {
     useNavigate();
 
 
-  const [
-    currentDate,
-    setCurrentDate,
-  ] = useState(
-    new Date(2026, 7, 1)
-  );
+    const today = new Date();
 
-
-  const [
-    selectedDate,
-    setSelectedDate,
-  ] = useState(14);
-
+    const [
+      currentDate,
+      setCurrentDate,
+    ] = useState(
+      new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      )
+    );
+    
+    
+    const [
+      selectedDate,
+      setSelectedDate,
+    ] = useState(
+      today.getDate()
+    );
 
   const [
     schedules,
