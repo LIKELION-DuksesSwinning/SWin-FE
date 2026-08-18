@@ -17,6 +17,18 @@ import {
 import './Additional.css';
 
 
+/* ========================================
+   localStorage
+======================================== */
+
+const ADDITIONAL_RECORD_STORAGE_KEY =
+  'swinAdditionalRecords';
+
+
+/* ========================================
+   증상
+======================================== */
+
 const SYMPTOM_OPTIONS = [
   '당김',
   '건조',
@@ -27,11 +39,99 @@ const SYMPTOM_OPTIONS = [
 ];
 
 
+/* ========================================
+   증상 강도
+======================================== */
+
 const SEVERITY_OPTIONS = [
   '상',
   '중',
   '하',
 ];
+
+
+/* ========================================
+   추가 기록 ID 저장
+
+   구조:
+
+   {
+     "13": [15, 16],
+     "12": [20]
+   }
+
+   key = 부모 수영 기록 ID
+   value = 추가 기록 ID 배열
+======================================== */
+
+const saveAdditionalRecordId = (
+  parentRecordId,
+  additionalRecordId
+) => {
+  if (
+    !parentRecordId ||
+    !additionalRecordId
+  ) {
+    return;
+  }
+
+
+  try {
+    const stored =
+      JSON.parse(
+        localStorage.getItem(
+          ADDITIONAL_RECORD_STORAGE_KEY
+        ) || '{}'
+      );
+
+
+    const key =
+      String(parentRecordId);
+
+
+    const existingIds =
+      Array.isArray(
+        stored[key]
+      )
+        ? stored[key]
+        : [];
+
+
+    const id =
+      Number(
+        additionalRecordId
+      );
+
+
+    if (
+      Number.isNaN(id)
+    ) {
+      return;
+    }
+
+
+    if (
+      !existingIds.includes(id)
+    ) {
+      existingIds.push(id);
+    }
+
+
+    stored[key] =
+      existingIds;
+
+
+    localStorage.setItem(
+      ADDITIONAL_RECORD_STORAGE_KEY,
+      JSON.stringify(stored)
+    );
+  } catch (error) {
+    console.error(
+      '추가 기록 ID 저장 실패:',
+      error
+    );
+  }
+};
 
 
 function Additional() {
@@ -42,6 +142,10 @@ function Additional() {
     useLocation();
 
 
+  /* ========================================
+     Query Parameter
+  ======================================== */
+
   const searchParams =
     new URLSearchParams(
       location.search
@@ -51,42 +155,71 @@ function Additional() {
   const recordId =
     searchParams.get('id');
 
+
   const recordDate =
     searchParams.get('date') || '';
 
 
-  const [photo, setPhoto] =
-    useState(null);
+  /* ========================================
+     State
+  ======================================== */
 
-  const [symptoms, setSymptoms] =
-    useState([]);
-
-  const [symptomSeverity, setSymptomSeverity] =
-    useState({});
-
-  const [memo, setMemo] =
-    useState('');
-
-  const [isSaved, setIsSaved] =
-    useState(false);
-
-  const [isSaving, setIsSaving] =
-    useState(false);
-
-  const [errorMessage, setErrorMessage] =
-    useState('');
+  const [
+    photo,
+    setPhoto,
+  ] = useState(null);
 
 
-  /* 사진 */
+  const [
+    symptoms,
+    setSymptoms,
+  ] = useState([]);
+
+
+  const [
+    symptomSeverity,
+    setSymptomSeverity,
+  ] = useState({});
+
+
+  const [
+    memo,
+    setMemo,
+  ] = useState('');
+
+
+  const [
+    isSaved,
+    setIsSaved,
+  ] = useState(false);
+
+
+  const [
+    isSaving,
+    setIsSaving,
+  ] = useState(false);
+
+
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState('');
+
+
+  /* ========================================
+     사진
+  ======================================== */
 
   const handlePhotoChange =
     (event) => {
       const file =
         event.target.files?.[0];
 
+
       if (!file) {
         return;
       }
+
 
       if (
         !file.type.startsWith(
@@ -97,13 +230,16 @@ function Additional() {
           '이미지 파일만 업로드할 수 있습니다.'
         );
 
-        event.target.value = '';
+        event.target.value =
+          '';
 
         return;
       }
 
+
       const reader =
         new FileReader();
+
 
       reader.onload = () => {
         setPhoto({
@@ -113,11 +249,14 @@ function Additional() {
         });
       };
 
+
       reader.readAsDataURL(
         file
       );
 
-      event.target.value = '';
+
+      event.target.value =
+        '';
     };
 
 
@@ -127,50 +266,66 @@ function Additional() {
     };
 
 
-  /* 증상 */
+  /* ========================================
+     증상
+  ======================================== */
 
   const handleSymptomClick =
     (option) => {
-      if (option === '없음') {
-        setSymptoms((prev) => {
-          if (
-            prev.includes('없음')
-          ) {
-            return [];
+      if (
+        option === '없음'
+      ) {
+        setSymptoms(
+          (prev) => {
+            if (
+              prev.includes(
+                '없음'
+              )
+            ) {
+              return [];
+            }
+
+            return ['없음'];
           }
+        );
 
-          return ['없음'];
-        });
 
-        setSymptomSeverity({});
+        setSymptomSeverity(
+          {}
+        );
+
 
         return;
       }
 
 
-      setSymptoms((prev) => {
-        const withoutNone =
-          prev.filter(
-            (item) =>
-              item !== '없음'
-          );
+      setSymptoms(
+        (prev) => {
+          const withoutNone =
+            prev.filter(
+              (item) =>
+                item !== '없음'
+            );
 
-        if (
-          withoutNone.includes(
-            option
-          )
-        ) {
-          return withoutNone.filter(
-            (item) =>
-              item !== option
-          );
+
+          if (
+            withoutNone.includes(
+              option
+            )
+          ) {
+            return withoutNone.filter(
+              (item) =>
+                item !== option
+            );
+          }
+
+
+          return [
+            ...withoutNone,
+            option,
+          ];
         }
-
-        return [
-          ...withoutNone,
-          option,
-        ];
-      });
+      );
 
 
       setSymptomSeverity(
@@ -179,7 +334,9 @@ function Additional() {
             ...prev,
           };
 
+
           delete next[option];
+
 
           return next;
         }
@@ -187,7 +344,9 @@ function Additional() {
     };
 
 
-  /* 강도 */
+  /* ========================================
+     강도
+  ======================================== */
 
   const handleSeverityClick =
     (
@@ -203,6 +362,10 @@ function Additional() {
       );
     };
 
+
+  /* ========================================
+     저장 가능 여부
+  ======================================== */
 
   const hasAllSeverity =
     symptoms.includes(
@@ -228,6 +391,10 @@ function Additional() {
     hasAllSeverity;
 
 
+  /* ========================================
+     symptoms payload
+  ======================================== */
+
   const buildSymptomsPayload =
     () => {
       if (
@@ -238,6 +405,7 @@ function Additional() {
       ) {
         return [];
       }
+
 
       return symptoms.map(
         (symptom) => ({
@@ -251,7 +419,9 @@ function Additional() {
     };
 
 
-  /* 저장 */
+  /* ========================================
+     저장
+  ======================================== */
 
   const handleSave =
     async () => {
@@ -263,20 +433,54 @@ function Additional() {
         return;
       }
 
-      setIsSaving(true);
+
+      setIsSaving(
+        true
+      );
+
+
       setErrorMessage('');
 
-      try {
-        await createAdditionalRecord({
-          recordId,
-          photo:
-            photo.file,
-          symptoms:
-            buildSymptomsPayload(),
-          memo,
-        });
 
-        setIsSaved(true);
+      try {
+        const response =
+          await createAdditionalRecord({
+            recordId,
+            photo:
+              photo.file,
+            symptoms:
+              buildSymptomsPayload(),
+            memo,
+          });
+
+
+        /*
+         * API 응답:
+         *
+         * {
+         *   additional_record_id: 15,
+         *   message: "저장되었습니다."
+         * }
+         */
+
+        const additionalRecordId =
+          response?.additional_record_id;
+
+
+        if (
+          additionalRecordId
+        ) {
+          saveAdditionalRecordId(
+            recordId,
+            additionalRecordId
+          );
+        }
+
+
+        setIsSaved(
+          true
+        );
+
 
         setTimeout(() => {
           navigate(
@@ -292,15 +496,22 @@ function Additional() {
           error
         );
 
+
         setErrorMessage(
           error?.message ||
             '추가 기록 저장에 실패했습니다.'
         );
       } finally {
-        setIsSaving(false);
+        setIsSaving(
+          false
+        );
       }
     };
 
+
+  /* ========================================
+     저장 완료
+  ======================================== */
 
   if (isSaved) {
     return (
@@ -316,6 +527,7 @@ function Additional() {
             className="additional-done-icon"
           />
 
+
           <p>
             저장되었습니다
           </p>
@@ -326,6 +538,10 @@ function Additional() {
     );
   }
 
+
+  /* ========================================
+     Render
+  ======================================== */
 
   return (
     <main className="additional-page">
@@ -351,13 +567,16 @@ function Additional() {
 
       <section className="additional-content">
 
-        {/* 사진 */}
+        {/* ================================
+            사진
+        ================================= */}
 
         <section className="additional-section">
 
           <h2>
             추가 기록
           </h2>
+
 
           <div className="additional-photo-row">
 
@@ -374,6 +593,7 @@ function Additional() {
                   />
 
                 </div>
+
 
                 <button
                   type="button"
@@ -396,11 +616,13 @@ function Additional() {
                   +
                 </span>
 
+
                 <span>
                   이곳을 눌러
                   <br />
                   얼굴 사진을 첨부해 주세요
                 </span>
+
 
                 <input
                   id="additional-photo"
@@ -414,6 +636,7 @@ function Additional() {
 
               </label>
             )}
+
 
             <div className="additional-photo-guide">
 
@@ -436,7 +659,9 @@ function Additional() {
         </section>
 
 
-        {/* 증상 */}
+        {/* ================================
+            증상
+        ================================= */}
 
         <section className="additional-section">
 
@@ -444,11 +669,13 @@ function Additional() {
             증상 선택
           </h2>
 
+
           <p className="additional-description">
             현재 느끼고 있는 피부 불편 증상을
             선택해 주세요.
             (중복 선택 가능)
           </p>
+
 
           <div className="additional-symptom-list">
 
@@ -480,7 +707,9 @@ function Additional() {
         </section>
 
 
-        {/* 강도 */}
+        {/* ================================
+            강도
+        ================================= */}
 
         {symptoms.length > 0 &&
           !symptoms.includes(
@@ -491,6 +720,7 @@ function Additional() {
               <h2>
                 증상 강도
               </h2>
+
 
               <div className="additional-severity-list">
 
@@ -505,12 +735,15 @@ function Additional() {
                         {symptom}
                       </span>
 
+
                       <div className="additional-severity-buttons">
 
                         {SEVERITY_OPTIONS.map(
                           (severity) => (
                             <button
-                              key={severity}
+                              key={
+                                severity
+                              }
                               type="button"
                               className={`additional-severity-button ${
                                 symptomSeverity[
@@ -544,13 +777,16 @@ function Additional() {
           )}
 
 
-        {/* 메모 */}
+        {/* ================================
+            메모
+        ================================= */}
 
         <section className="additional-section">
 
           <h2>
             특이 사항
           </h2>
+
 
           <textarea
             className="additional-memo"
@@ -579,6 +815,7 @@ function Additional() {
           </p>
         )}
 
+
         {recordDate && (
           <p
             style={{
@@ -588,6 +825,7 @@ function Additional() {
             {recordDate}
           </p>
         )}
+
 
         {errorMessage && (
           <p

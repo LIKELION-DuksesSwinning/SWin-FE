@@ -17,6 +17,10 @@ import './RecordList.css';
 const PAGE_SIZE = 5;
 
 
+/* ========================================
+   날짜 파싱
+======================================== */
+
 const parseRecordDate = (
   dateValue
 ) => {
@@ -40,13 +44,11 @@ const parseRecordDate = (
     return date;
   }
 
-
   const normalized =
     String(dateValue)
       .trim()
       .replace(/\./g, '-')
       .split('T')[0];
-
 
   const [
     year,
@@ -57,7 +59,6 @@ const parseRecordDate = (
       .split('-')
       .map(Number);
 
-
   if (
     !year ||
     !month ||
@@ -66,14 +67,12 @@ const parseRecordDate = (
     return null;
   }
 
-
   const date =
     new Date(
       year,
       month - 1,
       day
     );
-
 
   if (
     Number.isNaN(
@@ -82,7 +81,6 @@ const parseRecordDate = (
   ) {
     return null;
   }
-
 
   date.setHours(
     0,
@@ -94,6 +92,68 @@ const parseRecordDate = (
   return date;
 };
 
+
+/* ========================================
+   기록 날짜 가져오기
+
+   우선순위:
+   1. date
+   2. created_at
+======================================== */
+
+const getRecordDateValue = (
+  record
+) => {
+  return (
+    record?.date ??
+    record?.created_at ??
+    null
+  );
+};
+
+
+/* ========================================
+   YYYY-MM-DD 날짜 key
+======================================== */
+
+const getDateKey = (
+  dateValue
+) => {
+  const date =
+    parseRecordDate(
+      dateValue
+    );
+
+  if (!date) {
+    return null;
+  }
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  return `${year}-${month}-${day}`;
+};
+
+
+/* ========================================
+   화면 표시 날짜
+======================================== */
 
 const formatDisplayDate = (
   dateValue
@@ -113,16 +173,26 @@ const formatDisplayDate = (
   const month =
     String(
       date.getMonth() + 1
-    ).padStart(2, '0');
+    ).padStart(
+      2,
+      '0'
+    );
 
   const day =
     String(
       date.getDate()
-    ).padStart(2, '0');
+    ).padStart(
+      2,
+      '0'
+    );
 
   return `${year}.${month}.${day}`;
 };
 
+
+/* ========================================
+   오늘
+======================================== */
 
 const getToday = () => {
   const today =
@@ -139,6 +209,12 @@ const getToday = () => {
 };
 
 
+/* ========================================
+   기록 추가 가능 여부
+
+   오늘 포함 최근 3일
+======================================== */
+
 const isRecordAddable = (
   recordDateValue
 ) => {
@@ -151,7 +227,6 @@ const isRecordAddable = (
     return false;
   }
 
-
   const today =
     getToday();
 
@@ -162,12 +237,148 @@ const isRecordAddable = (
     today.getDate() - 3
   );
 
-
   return (
     recordDate >=
       threeDaysAgo &&
     recordDate <=
       today
+  );
+};
+
+
+/* ========================================
+   수영 전/후 기록 그룹화
+
+   같은 날짜의
+
+   BEFORE
+   AFTER
+
+   를 하나의 수영 기록으로 묶는다.
+======================================== */
+
+const groupRecordsByDate = (
+  records
+) => {
+  const grouped =
+    new Map();
+
+  records.forEach(
+    (record) => {
+      if (!record) {
+        return;
+      }
+
+      const dateValue =
+        getRecordDateValue(
+          record
+        );
+
+      const dateKey =
+        getDateKey(
+          dateValue
+        );
+
+      if (!dateKey) {
+        return;
+      }
+
+
+      if (
+        !grouped.has(
+          dateKey
+        )
+      ) {
+        grouped.set(
+          dateKey,
+          {
+            id:
+              record?.id ??
+              record?.record_id ??
+              dateKey,
+
+            date:
+              dateValue,
+
+            beforeRecord:
+              null,
+
+            afterRecord:
+              null,
+
+            records: [],
+          }
+        );
+      }
+
+
+      const group =
+        grouped.get(
+          dateKey
+        );
+
+
+      group.records.push(
+        record
+      );
+
+
+      /*
+       * timing 기준으로
+       * 수영 전 / 수영 후 분리
+       */
+      if (
+        record?.timing ===
+          'BEFORE' ||
+        record?.timing ===
+          'before'
+      ) {
+        group.beforeRecord =
+          record;
+      } else if (
+        record?.timing ===
+          'AFTER' ||
+        record?.timing ===
+          'after'
+      ) {
+        group.afterRecord =
+          record;
+      } else if (
+        !group.beforeRecord
+      ) {
+        /*
+         * timing이 없는 기존/더미 데이터
+         */
+        group.beforeRecord =
+          record;
+      }
+    }
+  );
+
+
+  return Array.from(
+    grouped.values()
+  ).map(
+    (group) => ({
+      ...group,
+
+      /*
+       * 상세 보기 / 기록 추가의
+       * 대표 record
+       *
+       * AFTER가 있으면 AFTER,
+       * 없으면 BEFORE를 사용
+       */
+      id:
+        group.afterRecord?.id ??
+        group.afterRecord?.record_id ??
+        group.beforeRecord?.id ??
+        group.beforeRecord?.record_id ??
+        group.id,
+
+      date:
+        group.date,
+    })
   );
 };
 
@@ -178,6 +389,7 @@ function RecordList({
   const navigate =
     useNavigate();
 
+
   const [
     sortOrder,
     setSortOrder,
@@ -185,12 +397,14 @@ function RecordList({
     'latest'
   );
 
+
   const [
     visibleCount,
     setVisibleCount,
   ] = useState(
     PAGE_SIZE
   );
+
 
   const [
     isSortOpen,
@@ -204,10 +418,30 @@ function RecordList({
       : [];
 
 
+  /* ========================================
+     같은 날짜 기록 묶기
+  ======================================== */
+
+  const groupedRecords =
+    useMemo(
+      () =>
+        groupRecordsByDate(
+          safeRecords
+        ),
+      [
+        safeRecords,
+      ]
+    );
+
+
+  /* ========================================
+     정렬
+  ======================================== */
+
   const sortedRecords =
     useMemo(() => {
       const copiedRecords = [
-        ...safeRecords,
+        ...groupedRecords,
       ];
 
       copiedRecords.sort(
@@ -230,9 +464,11 @@ function RecordList({
             return 0;
           }
 
+
           if (!dateA) {
             return 1;
           }
+
 
           if (!dateB) {
             return -1;
@@ -248,12 +484,17 @@ function RecordList({
         }
       );
 
+
       return copiedRecords;
     }, [
-      safeRecords,
+      groupedRecords,
       sortOrder,
     ]);
 
+
+  /* ========================================
+     현재 표시할 기록
+  ======================================== */
 
   const visibleRecords =
     sortedRecords.slice(
@@ -266,10 +507,15 @@ function RecordList({
     visibleCount >
     PAGE_SIZE;
 
+
   const hasExpandableRecords =
     sortedRecords.length >
     PAGE_SIZE;
 
+
+  /* ========================================
+     정렬 변경
+  ======================================== */
 
   const handleSortChange =
     (nextOrder) => {
@@ -284,6 +530,10 @@ function RecordList({
       setIsSortOpen(false);
     };
 
+
+  /* ========================================
+     더보기
+  ======================================== */
 
   const handleMoreToggle =
     () => {
@@ -306,13 +556,36 @@ function RecordList({
     };
 
 
-  /* 기록 추가 */
+  /* ========================================
+     기록 추가
+
+     같은 날짜 그룹에서
+     AFTER가 있으면 AFTER,
+     없으면 BEFORE를 사용
+  ======================================== */
 
   const handleAddRecord =
     (record) => {
+      const targetRecord =
+        record?.afterRecord ??
+        record?.beforeRecord ??
+        record;
+
+
+      const targetId =
+        targetRecord?.id ??
+        targetRecord?.record_id;
+
+
+      const dateValue =
+        record?.date ??
+        targetRecord?.date ??
+        targetRecord?.created_at;
+
+
       if (
-        !record?.id ||
-        !record?.date
+        !targetId ||
+        !dateValue
       ) {
         return;
       }
@@ -320,8 +593,9 @@ function RecordList({
 
       const recordDate =
         parseRecordDate(
-          record.date
+          dateValue
         );
+
 
       if (!recordDate) {
         return;
@@ -334,12 +608,18 @@ function RecordList({
       const month =
         String(
           recordDate.getMonth() + 1
-        ).padStart(2, '0');
+        ).padStart(
+          2,
+          '0'
+        );
 
       const day =
         String(
           recordDate.getDate()
-        ).padStart(2, '0');
+        ).padStart(
+          2,
+          '0'
+        );
 
 
       const dateKey =
@@ -348,7 +628,7 @@ function RecordList({
 
       navigate(
         `/archive/additional?id=${encodeURIComponent(
-          record.id
+          targetId
         )}&date=${encodeURIComponent(
           dateKey
         )}`
@@ -356,20 +636,37 @@ function RecordList({
     };
 
 
-  /* 자세히 보기 */
+  /* ========================================
+     자세히 보기
+
+     같은 날짜에 BEFORE / AFTER가
+     모두 있으면 대표적으로 AFTER를
+     먼저 사용한다.
+  ======================================== */
 
   const handleDetail =
     (record) => {
-      if (
-        !record?.id
-      ) {
+      const targetRecord =
+        record?.afterRecord ??
+        record?.beforeRecord ??
+        record;
+
+
+      const targetId =
+        targetRecord?.id ??
+        targetRecord?.record_id;
+
+
+      if (!targetId) {
         return;
       }
 
 
       const recordDate =
         parseRecordDate(
-          record.date
+          record?.date ??
+          targetRecord?.date ??
+          targetRecord?.created_at
         );
 
 
@@ -377,15 +674,21 @@ function RecordList({
         recordDate
           ? `${recordDate.getFullYear()}-${String(
               recordDate.getMonth() + 1
-            ).padStart(2, '0')}-${String(
+            ).padStart(
+              2,
+              '0'
+            )}-${String(
               recordDate.getDate()
-            ).padStart(2, '0')}`
+            ).padStart(
+              2,
+              '0'
+            )}`
           : '';
 
 
       navigate(
         `/archive/furthermore?id=${encodeURIComponent(
-          record.id
+          targetId
         )}&date=${encodeURIComponent(
           dateKey
         )}`
@@ -393,7 +696,9 @@ function RecordList({
     };
 
 
-  /* 기록 없음 */
+  /* ========================================
+     기록 없음
+  ======================================== */
 
   if (
     safeRecords.length === 0
@@ -431,9 +736,11 @@ function RecordList({
             className="record-empty-icon"
           />
 
+
           <p className="record-empty-title">
             아직 수영 기록이 없어요.
           </p>
+
 
           <p className="record-empty-description">
             수영을 기록하면
@@ -450,6 +757,10 @@ function RecordList({
 
   return (
     <section className="record-list">
+
+      {/* ========================================
+          Header
+      ======================================== */}
 
       <div className="record-list-header">
 
@@ -506,6 +817,7 @@ function RecordList({
                 최신순
               </button>
 
+
               <button
                 type="button"
                 className={
@@ -531,6 +843,10 @@ function RecordList({
       </div>
 
 
+      {/* ========================================
+          Record Feed
+      ======================================== */}
+
       <div className="record-feed">
 
         {visibleRecords.map(
@@ -540,11 +856,28 @@ function RecordList({
                 record?.date
               );
 
+
+            const hasBefore =
+              Boolean(
+                record?.beforeRecord
+              );
+
+
+            const hasAfter =
+              Boolean(
+                record?.afterRecord
+              );
+
+
             return (
               <article
-                key={record.id}
+                key={
+                  `record-${record?.date ?? record?.id}`
+                }
                 className="record-item"
               >
+
+                {/* 날짜 */}
 
                 <div className="record-item-date">
                   {formatDisplayDate(
@@ -552,6 +885,40 @@ function RecordList({
                   )}
                 </div>
 
+
+                {/* ========================================
+                    기록 상태
+                ======================================== */}
+
+                <div
+                  className="record-item-status"
+                >
+
+                  {hasBefore && (
+                    <span>
+                      수영 전
+                    </span>
+                  )}
+
+                  {hasBefore &&
+                    hasAfter && (
+                      <span>
+                        {' · '}
+                      </span>
+                    )}
+
+                  {hasAfter && (
+                    <span>
+                      수영 후
+                    </span>
+                  )}
+
+                </div>
+
+
+                {/* ========================================
+                    Actions
+                ======================================== */}
 
                 <div className="record-item-actions">
 
@@ -592,6 +959,10 @@ function RecordList({
       </div>
 
 
+      {/* ========================================
+          More
+      ======================================== */}
+
       {hasExpandableRecords && (
         <button
           type="button"
@@ -613,6 +984,7 @@ function RecordList({
               ? '접기'
               : '더보기'}
           </span>
+
 
           <img
             src={moreRecords}
