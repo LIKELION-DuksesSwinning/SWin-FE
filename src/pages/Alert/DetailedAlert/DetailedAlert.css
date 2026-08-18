@@ -1,0 +1,269 @@
+.detailed-alert-page {
+    display: flex;
+    flex-direction: column;
+  
+    width: 100%;
+    min-height: 100dvh;
+  
+    box-sizing: border-box;
+  
+    background-color: var(--color-background);
+  
+    color: var(--color-text);
+  }
+  
+  
+  .detailed-alert-header {
+    position: relative;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    width: 343px;
+    max-width: calc(100% - 32px);
+  
+    height: 52px;
+  
+    margin: 0 auto;
+  
+    box-sizing: border-box;
+  
+    flex-shrink: 0;
+  }
+  
+  
+  .detailed-alert-header h1 {
+    margin: 0;
+  
+    color: var(--color-text);
+  
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+  
+    line-height: 1.4;
+  
+    text-align: center;
+  }
+  
+  
+  .detailed-alert-back-button {
+    position: absolute;
+  
+    left: 0;
+    top: 50%;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    width: 30px;
+    height: 30px;
+  
+    margin: 0;
+    padding: 0;
+  
+    border: none;
+  
+    background-color: transparent;
+  
+    transform: translateY(-50%);
+  
+    cursor: pointer;
+  }
+  
+  
+  .detailed-alert-back-button img {
+    display: block;
+  
+    width: 30px;
+    height: 30px;
+  
+    object-fit: contain;
+  }
+  
+  
+  .detailed-alert-back-button:focus-visible {
+    outline: 2px solid #0068F5;
+    outline-offset: 2px;
+  }
+  
+  
+  .detailed-alert-content {
+    width: 343px;
+    max-width: calc(100% - 32px);
+  
+    margin: 0 auto;
+  
+    padding: 28px 0 40px;
+  
+    box-sizing: border-box;
+  }
+  
+  
+  .detailed-alert-date {
+    margin-bottom: 8px;
+  
+    color: var(--color-text-gray);
+  
+    font-size: 10px;
+    font-weight: var(--font-weight-regular);
+  
+    line-height: 1.4;
+  }
+  
+  
+  .detailed-alert-title {
+    margin: 0;
+  
+    color: var(--color-text);
+  
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-medium);
+  
+    line-height: 1.4;
+  }
+  
+  
+  .detailed-alert-type {
+    width: 100%;
+    height: 1px;
+  
+    margin: 20px 0 24px;
+  
+    background-color: #E5E5E5;
+  }
+  
+  
+  .detailed-alert-message {
+    margin: 0;
+  
+    color: var(--color-text);
+  
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-regular);
+  
+    line-height: 1.8;
+  
+    white-space: pre-line;
+  }
+  
+  
+  .detailed-alert-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    width: 100%;
+    height: 44px;
+  
+    margin-top: 32px;
+    padding: 0;
+  
+    border: none;
+    border-radius: 3px;
+  
+    background-color: #0068F5;
+  
+    color: #FFFFFF;
+  
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+  
+    cursor: pointer;
+  
+    transition:
+      background-color 0.15s ease,
+      transform 0.15s ease;
+  }
+  
+  
+  .detailed-alert-action:hover {
+    background-color: #0059D1;
+  }
+  
+  
+  .detailed-alert-action:active {
+    transform: scale(0.99);
+  }
+  
+  
+  .detailed-alert-action:focus-visible {
+    outline: 2px solid #0068F5;
+    outline-offset: 2px;
+  }
+  
+  
+  .detailed-alert-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    flex: 1;
+  
+    min-height: 300px;
+  
+    color: var(--color-text-gray);
+  
+    font-size: var(--font-size-14);
+  
+    text-align: center;
+  }
+  
+  
+  .detailed-alert-empty p {
+    margin: 0;
+  }
+  
+  
+  @media (max-width: 375px) {
+  
+    .detailed-alert-header {
+      width: 100%;
+      max-width: 343px;
+  
+      height: 50px;
+    }
+  
+  
+    .detailed-alert-back-button {
+      width: 30px;
+      height: 30px;
+    }
+  
+  
+    .detailed-alert-back-button img {
+      width: 30px;
+      height: 30px;
+    }
+  
+  
+    .detailed-alert-content {
+      width: 100%;
+      max-width: 343px;
+  
+      padding: 24px 0 32px;
+    }
+  
+  
+    .detailed-alert-date {
+      font-size: 9px;
+    }
+  
+  
+    .detailed-alert-title {
+      font-size: var(--font-size-20);
+    }
+  
+  
+    .detailed-alert-message {
+      font-size: var(--font-size-14);
+      line-height: 1.75;
+    }
+  
+  
+    .detailed-alert-action {
+      height: 42px;
+      margin-top: 28px;
+    }
+  }

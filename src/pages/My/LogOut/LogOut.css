@@ -1,0 +1,245 @@
+/* ================================
+   Logout Page
+================================ */
+
+.logout-page {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100dvh;
+
+  box-sizing: border-box;
+
+  background: transparent;
+
+  /*
+   * BottomNav를 포함한
+   * 기존 화면보다 위에 표시
+   */
+  z-index: 9999;
+}
+
+
+/* ================================
+   Background Content
+================================ */
+
+.logout-dimmed-content {
+  width: 100%;
+  height: 100%;
+
+  background: #ffffff;
+}
+
+
+.logout-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ================================
+   Overlay
+================================ */
+
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100dvh;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  /*
+   * BottomNav보다 확실히 높은 레이어
+   */
+  z-index: 10000;
+
+  background: rgba(0, 0, 0, 0.32);
+
+  /*
+   * 오버레이가 화면 전체를 클릭받음
+   */
+  cursor: default;
+}
+
+
+/* ================================
+   Modal
+================================ */
+
+.logout-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 333px;
+
+  box-sizing: border-box;
+
+  padding: 28px 22px 20px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.12);
+
+  /*
+   * Overlay보다 한 단계 위
+   */
+  z-index: 10001;
+}
+
+
+/* ================================
+   Title
+================================ */
+
+.logout-modal h1 {
+  margin: 0;
+
+  color: #111111;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+
+/* ================================
+   Actions
+================================ */
+
+.logout-actions {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 26px;
+}
+
+
+.logout-actions button {
+  flex: 1;
+
+  height: 42px;
+
+  padding: 0;
+
+  border-radius: 4px;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Cancel
+================================ */
+
+.logout-cancel {
+  border: 1px solid #dddddd;
+
+  background: #ffffff;
+
+  color: #555555;
+}
+
+
+/* ================================
+   Confirm
+================================ */
+
+.logout-confirm {
+  border: none;
+
+  background: #111111;
+
+  color: #ffffff;
+}
+
+
+/* ================================
+   Disabled
+================================ */
+
+.logout-actions button:disabled {
+  opacity: 0.6;
+
+  cursor: default;
+}
+
+
+/* ================================
+   Focus
+================================ */
+
+.logout-actions button:focus-visible {
+  outline: 2px solid #0068f5;
+  outline-offset: 2px;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+  .logout-overlay {
+    padding: 16px;
+  }
+
+
+  .logout-modal {
+    max-width: 100%;
+
+    padding:
+      28px 20px 20px;
+  }
+}
+
+
+/* ================================
+   Desktop
+================================ */
+
+@media (min-width: 768px) {
+  /*
+   * 실제 앱 화면이 375px 기준이므로
+   * 가운데에 위치
+   */
+  .logout-page {
+    display: flex;
+    justify-content: center;
+  }
+
+
+  .logout-overlay {
+    width: 375px;
+
+    left: 50%;
+    right: auto;
+
+    transform: translateX(-50%);
+  }
+
+
+  .logout-modal {
+    max-width: 310px;
+  }
+}

@@ -1,0 +1,351 @@
+/* ================================
+   Alert Page
+================================ */
+
+.alert-page {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100dvh;
+
+  box-sizing: border-box;
+
+  background-color: var(--color-background);
+
+  color: var(--color-text);
+
+  overflow-x: hidden;
+}
+
+
+/* ================================
+   Header
+================================ */
+
+.alert-header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 343px;
+  max-width: calc(100% - 32px);
+
+  height: 52px;
+
+  margin: 0 auto;
+
+  box-sizing: border-box;
+
+  background-color: var(--color-background);
+}
+
+
+.alert-header h1 {
+  margin: 0;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+
+/* ================================
+   Back Button
+================================ */
+
+.alert-back-button {
+  position: absolute;
+
+  left: 0;
+  top: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  margin: 0;
+  padding: 0;
+
+  border: none;
+
+  background-color: transparent;
+
+  transform: translateY(-50%);
+
+  cursor: pointer;
+}
+
+
+.alert-back-button img {
+  display: block;
+
+  width: 30px;
+  height: 30px;
+
+  object-fit: contain;
+}
+
+
+.alert-back-button:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: 2px;
+}
+
+
+/* ================================
+   Alert List
+================================ */
+
+.alert-list {
+  display: flex;
+  flex-direction: column;
+
+  width: 343px;
+  max-width: calc(100% - 32px);
+
+  margin: 0 auto;
+
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   Alert Item
+================================ */
+
+.alert-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 69px;
+
+  margin: 0;
+  padding: 12px 10px;
+
+  box-sizing: border-box;
+
+  border: none;
+  border-bottom: 1px solid #D9D9D9;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease;
+}
+
+
+/* ================================
+   Unread
+   읽지 않은 알림 = 회색
+================================ */
+
+.alert-item.unread {
+  background-color: #EAEAEA;
+}
+
+
+/* ================================
+   Read
+   읽은 알림 = 흰색
+================================ */
+
+.alert-item.read {
+  background-color: #FFFFFF;
+}
+
+
+/* ================================
+   Title
+================================ */
+
+.alert-title {
+  display: block;
+
+  width: 100%;
+
+  margin-bottom: 5px;
+
+  color: var(--color-text);
+
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+/* ================================
+   Content
+================================ */
+
+.alert-content {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--color-text);
+
+  font-size: 11px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.5;
+}
+
+/* ================================
+   Date
+================================ */
+
+.alert-date {
+  display: block;
+
+  width: 100%;
+
+  color: var(--color-text-gray);
+
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+}
+
+
+/* ================================
+   Hover
+================================ */
+
+/*
+  피그마에서는 hover 상태가 별도로 없으므로
+  읽음/안읽음 배경을 유지
+*/
+
+.alert-item.read:hover {
+  background-color: #FFFFFF;
+}
+
+
+.alert-item.unread:hover {
+  background-color: #EAEAEA;
+}
+
+
+/* ================================
+   Focus
+================================ */
+
+/*
+  클릭 후 파란 테두리가 화면에 보이지 않도록
+  일반 focus는 제거하고 키보드 접근 시에만 표시
+*/
+
+.alert-item:focus {
+  outline: none;
+}
+
+
+.alert-item:focus-visible {
+  outline: 2px solid #0068F5;
+  outline-offset: -2px;
+}
+
+/* ================================
+   Empty / Error
+================================ */
+
+.alert-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 180px;
+
+  color: var(--color-text-gray);
+
+  font-size: var(--font-size-12);
+}
+
+.alert-error {
+  color: #e53935;
+}
+
+/* ================================
+   Active
+================================ */
+
+.alert-item:active {
+  transform: none;
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 375px) {
+
+  .alert-header {
+    width: 100%;
+    max-width: 343px;
+
+    height: 50px;
+  }
+
+
+  .alert-back-button {
+    width: 30px;
+    height: 30px;
+  }
+
+
+  .alert-back-button img {
+    width: 30px;
+    height: 30px;
+  }
+
+
+  .alert-list {
+    width: 100%;
+    max-width: 343px;
+  }
+
+
+  .alert-item {
+    min-height: 66px;
+
+    padding: 11px 10px;
+  }
+
+
+  .alert-title {
+    font-size: var(--font-size-14);
+
+    margin-bottom: 4px;
+  }
+
+
+  .alert-date {
+    font-size: 9px;
+  }
+}
