@@ -41,8 +41,9 @@ function Login() {
 
     let hasError = false;
 
-
-    /* 아이디 */
+    // ========================================
+    // 아이디 입력 확인
+    // ========================================
 
     if (!id.trim()) {
       setIdError(
@@ -54,8 +55,9 @@ function Login() {
       setIdError('');
     }
 
-
-    /* 비밀번호 */
+    // ========================================
+    // 비밀번호 입력 확인
+    // ========================================
 
     if (!password) {
       setPasswordError(
@@ -88,36 +90,111 @@ function Login() {
         });
 
 
-      /* JWT */
+/* ========================================
+   로그인 성공
+======================================== */
 
-      if (data?.token) {
-        localStorage.setItem(
-          'accessToken',
-          data.token
-        );
-      }
-
-      if (
-        data?.user_id !==
-        undefined
-      ) {
-        localStorage.setItem(
-          'userId',
-          String(data.user_id)
-        );
-      }
-
-      if (data?.name) {
-        localStorage.setItem(
-          'userName',
-          data.name
-        );
-      }
+console.log(
+  '로그인 응답:',
+  data
+);
 
 
-      navigate(
-        '/user-record'
-      );
+/* ========================================
+   Access Token
+======================================== */
+
+const accessToken =
+  data?.token;
+
+
+/* ========================================
+   Refresh Token
+
+   백엔드에서 이제
+   refresh_token을 내려줌
+======================================== */
+
+const refreshToken =
+  data?.refresh_token ??
+  data?.refreshToken ??
+  data?.refresh ??
+  null;
+
+
+/* ========================================
+   Access Token 저장
+======================================== */
+
+if (accessToken) {
+  localStorage.setItem(
+    'accessToken',
+    accessToken
+  );
+}
+
+
+/* ========================================
+   Refresh Token 저장
+======================================== */
+
+if (refreshToken) {
+  localStorage.setItem(
+    'refreshToken',
+    refreshToken
+  );
+}
+
+
+/* ========================================
+   User ID
+======================================== */
+
+if (
+  data?.user_id !==
+  undefined
+) {
+  localStorage.setItem(
+    'userId',
+    String(data.user_id)
+  );
+}
+
+
+/* ========================================
+   User Name
+======================================== */
+
+if (data?.name) {
+  localStorage.setItem(
+    'userName',
+    data.name
+  );
+}
+
+
+/* ========================================
+   저장 확인
+======================================== */
+
+console.log(
+  'accessToken 저장:',
+  Boolean(accessToken)
+);
+
+console.log(
+  'refreshToken 저장:',
+  Boolean(refreshToken)
+);
+
+
+/* ========================================
+   사용자 기록 페이지 이동
+======================================== */
+
+navigate(
+  '/user-record'
+);
     } catch (error) {
       console.error(
         '로그인 오류:',
@@ -239,6 +316,7 @@ function Login() {
                     setPassword(
                       event.target.value
                     );
+
                     setPasswordError('');
                   }}
                   placeholder="비밀번호를 입력해주세요."
@@ -253,8 +331,7 @@ function Login() {
                   className="password-toggle"
                   onClick={() =>
                     setShowPassword(
-                      (prev) =>
-                        !prev
+                      (prev) => !prev
                     )
                   }
                   aria-label={
@@ -302,6 +379,7 @@ function Login() {
           </form>
 
         </div>
+
       </section>
 
     </main>

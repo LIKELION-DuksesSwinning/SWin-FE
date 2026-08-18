@@ -1,0 +1,163 @@
+.push-alarm-page {
+    width: 100%;
+    min-height: 100vh;
+  
+    background: #ffffff;
+    color: #111111;
+  
+    box-sizing: border-box;
+  }
+  
+  .push-alarm-header {
+    width: 100%;
+    height: 68px;
+  
+    padding: 0 20px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    box-sizing: border-box;
+  }
+  
+  .push-alarm-back {
+    width: 32px;
+    height: 32px;
+  
+    padding: 0;
+  
+    border: none;
+    background: transparent;
+  
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 300;
+  
+    cursor: pointer;
+  }
+  
+  .push-alarm-header h1 {
+    margin: 0;
+  
+    font-size: 17px;
+    font-weight: 600;
+  }
+  
+  .push-alarm-header-space {
+    width: 32px;
+  }
+  
+  .push-alarm-content {
+    width: 100%;
+  
+    padding: 14px 20px 30px;
+  
+    box-sizing: border-box;
+  }
+  
+  .push-alarm-item {
+    width: 100%;
+  
+    padding: 20px 0;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .push-alarm-text {
+    padding-right: 20px;
+  }
+  
+  .push-alarm-text h2 {
+    margin: 0 0 6px;
+  
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 400;
+  
+    color: #111111;
+  }
+  
+  .push-alarm-text p {
+    margin: 0;
+  
+    font-size: 12px;
+    line-height: 1.5;
+  
+    color: #999999;
+  }
+  
+  .push-toggle {
+    width: 42px;
+    height: 24px;
+  
+    padding: 2px;
+  
+    border: none;
+    border-radius: 999px;
+  
+    background: #dddddd;
+  
+    position: relative;
+  
+    flex-shrink: 0;
+  
+    cursor: pointer;
+  
+    transition:
+      background-color 0.2s ease;
+  }
+  
+  .push-toggle span {
+    width: 20px;
+    height: 20px;
+  
+    border-radius: 50%;
+  
+    background: #ffffff;
+  
+    position: absolute;
+    left: 2px;
+    top: 2px;
+  
+    transition:
+      transform 0.2s ease;
+  }
+  
+  .push-toggle.on {
+    background: #111111;
+  }
+  
+  .push-toggle.on span {
+    transform: translateX(18px);
+  }
+  
+  .push-toggle:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  
+  .push-alarm-loading {
+    margin: 0;
+    padding-top: 100px;
+  
+    text-align: center;
+  
+    font-size: 13px;
+    color: #888888;
+  }
+  
+  @media (min-width: 768px) {
+    .push-alarm-page {
+      width: 375px;
+      margin: 0 auto;
+    }
+  }
