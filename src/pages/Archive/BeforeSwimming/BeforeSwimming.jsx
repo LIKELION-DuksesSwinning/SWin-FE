@@ -6,6 +6,7 @@ import recordProcessDone from '../../../assets/images/record-process-done.svg';
 
 import './BeforeSwimming.css';
 
+
 const SYMPTOM_OPTIONS = [
   '당김',
   '건조',
@@ -15,11 +16,13 @@ const SYMPTOM_OPTIONS = [
   '없음',
 ];
 
+
 const SEVERITY_OPTIONS = [
   '하',
   '중',
   '상',
 ];
+
 
 function BeforeSwimming() {
   const navigate = useNavigate();
@@ -31,9 +34,9 @@ function BeforeSwimming() {
   const [isSaved, setIsSaved] = useState(false);
 
 
-  // ========================================
-  // 저장 완료 → 2초 후 홈
-  // ========================================
+  /* ========================================
+     저장 완료 → 2초 후 홈
+  ======================================== */
 
   useEffect(() => {
     if (!isSaved) return;
@@ -46,9 +49,9 @@ function BeforeSwimming() {
   }, [isSaved, navigate]);
 
 
-  // ========================================
-  // 사진 업로드
-  // ========================================
+  /* ========================================
+     사진 업로드
+  ======================================== */
 
   const handlePhotoChange = (event) => {
     const file = event.target.files?.[0];
@@ -73,24 +76,20 @@ function BeforeSwimming() {
   };
 
 
-  // ========================================
-  // 사진 삭제
-  // ========================================
+  /* ========================================
+     사진 삭제
+  ======================================== */
 
   const handlePhotoRemove = () => {
     setPhoto(null);
   };
 
 
-  // ========================================
-  // 증상 선택
-  //
-  // 여러 증상 중복 선택 가능
-  // '없음'은 다른 증상과 중복 불가
-  // ========================================
+  /* ========================================
+     증상 선택
+  ======================================== */
 
   const handleSymptomClick = (option) => {
-    // '없음'
     if (option === '없음') {
       setSymptoms((prev) => {
         if (prev.includes('없음')) {
@@ -104,24 +103,20 @@ function BeforeSwimming() {
       return;
     }
 
-    // 다른 증상을 선택하면 '없음' 제거
     setSymptoms((prev) => {
       const withoutNone = prev.filter(
         (item) => item !== '없음'
       );
 
-      // 이미 선택된 증상 → 해제
       if (withoutNone.includes(option)) {
         return withoutNone.filter(
           (item) => item !== option
         );
       }
 
-      // 선택되지 않은 증상 → 추가
       return [...withoutNone, option];
     });
 
-    // 선택 해제되는 증상의 강도도 삭제
     setSymptomSeverity((prev) => {
       if (!prev[option]) {
         return prev;
@@ -138,9 +133,9 @@ function BeforeSwimming() {
   };
 
 
-  // ========================================
-  // 증상 강도 선택
-  // ========================================
+  /* ========================================
+     증상 강도 선택
+  ======================================== */
 
   const handleSeverityClick = (
     symptom,
@@ -153,15 +148,17 @@ function BeforeSwimming() {
   };
 
 
-  // ========================================
-  // 저장 가능 여부
-  // ========================================
+  /* ========================================
+     저장 가능 여부
+  ======================================== */
 
   const hasAllSeverity =
     symptoms.length === 0 ||
     symptoms.includes('없음') ||
     symptoms.every(
-      (symptom) => Boolean(symptomSeverity[symptom])
+      (symptom) => Boolean(
+        symptomSeverity[symptom]
+      )
     );
 
   const isComplete =
@@ -169,9 +166,9 @@ function BeforeSwimming() {
     hasAllSeverity;
 
 
-  // ========================================
-  // 저장
-  // ========================================
+  /* ========================================
+     저장
+  ======================================== */
 
   const handleSave = () => {
     if (!isComplete || isSaved) return;
@@ -184,31 +181,38 @@ function BeforeSwimming() {
       memo,
     };
 
-    console.log('수영 전 기록:', recordData);
+    console.log(
+      '수영 전 기록:',
+      recordData
+    );
 
     // TODO: 실제 API 연결
     setIsSaved(true);
   };
 
 
-  // ========================================
-  // 저장 완료 화면
-  // ========================================
+  /* ========================================
+     저장 완료 화면
+  ======================================== */
 
   if (isSaved) {
     return (
       <main className="before-swimming-done">
-        <div className="record-done-content">
+
+        <div className="before-record-done-content">
 
           <img
             src={recordProcessDone}
             alt="저장 완료"
-            className="record-done-icon"
+            className="before-record-done-icon"
           />
 
-          <p>저장되었습니다</p>
+          <p>
+            저장되었습니다
+          </p>
 
         </div>
+
       </main>
     );
   }
@@ -221,11 +225,11 @@ function BeforeSwimming() {
           Header
       ================================= */}
 
-      <header className="archive-record-header">
+      <header className="before-archive-record-header">
 
         <button
           type="button"
-          className="archive-record-back"
+          className="before-archive-record-back"
           onClick={() => navigate(-1)}
           aria-label="이전"
         >
@@ -242,30 +246,38 @@ function BeforeSwimming() {
           Content
       ================================= */}
 
-      <section className="archive-record-content">
+      <section className="before-archive-record-content">
 
-        {/* 사진 */}
+        {/* ================================
+            사진
+        ================================= */}
 
-        <section className="archive-record-section">
+        <section className="before-archive-record-section">
 
-          <h2>수영 전 사진</h2>
+          <h2>
+            수영 전 사진
+          </h2>
 
-          <div className="photo-upload-row">
+          <div className="before-photo-upload-row">
 
             {photo ? (
-              <div className="photo-preview-wrapper">
+              <div className="before-photo-preview-wrapper">
 
-                <div className="photo-frame">
+                <div className="before-photo-frame">
+
                   <img
                     src={photo.preview}
                     alt="수영 전 사진"
                   />
+
                 </div>
 
                 <button
                   type="button"
-                  className="photo-remove-button"
-                  onClick={handlePhotoRemove}
+                  className="before-photo-remove-button"
+                  onClick={
+                    handlePhotoRemove
+                  }
                 >
                   사진 삭제
                 </button>
@@ -274,9 +286,10 @@ function BeforeSwimming() {
             ) : (
               <label
                 htmlFor="before-photo"
-                className="photo-upload-box"
+                className="before-photo-upload-box"
               >
-                <span className="photo-upload-plus">
+
+                <span className="before-photo-upload-plus">
                   +
                 </span>
 
@@ -290,17 +303,30 @@ function BeforeSwimming() {
                   id="before-photo"
                   type="file"
                   accept="image/*"
-                  onChange={handlePhotoChange}
+                  onChange={
+                    handlePhotoChange
+                  }
                   hidden
                 />
+
               </label>
             )}
 
-            <div className="photo-guide">
-              <strong>사진 첨부 팁</strong>
 
-              <p>· 선명한 얼굴 사진을 첨부해 주세요.</p>
-              <p>· 화장하지 않은 상태로 찍어주세요.</p>
+            <div className="before-photo-guide">
+
+              <strong>
+                사진 첨부 팁
+              </strong>
+
+              <p>
+                · 선명한 얼굴 사진을 첨부해 주세요.
+              </p>
+
+              <p>
+                · 화장하지 않은 상태로 찍어주세요.
+              </p>
+
             </div>
 
           </div>
@@ -308,88 +334,104 @@ function BeforeSwimming() {
         </section>
 
 
-        {/* 증상 */}
+        {/* ================================
+            증상
+        ================================= */}
 
-        <section className="archive-record-section">
+        <section className="before-archive-record-section">
 
-          <h2>증상 선택</h2>
+          <h2>
+            증상 선택
+          </h2>
 
-          <p className="archive-record-description">
+          <p className="before-archive-record-description">
             현재 느끼고 있는 피부 불편 증상을
             선택해 주세요. (중복 선택 가능)
           </p>
 
-          <div className="symptom-list">
+          <div className="before-symptom-list">
 
-            {SYMPTOM_OPTIONS.map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={`symptom-button ${
-                  symptoms.includes(option)
-                    ? 'selected'
-                    : ''
-                }`}
-                onClick={() =>
-                  handleSymptomClick(option)
-                }
-              >
-                {option}
-              </button>
-            ))}
+            {SYMPTOM_OPTIONS.map(
+              (option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={`before-symptom-button ${
+                    symptoms.includes(option)
+                      ? 'selected'
+                      : ''
+                  }`}
+                  onClick={() =>
+                    handleSymptomClick(
+                      option
+                    )
+                  }
+                >
+                  {option}
+                </button>
+              )
+            )}
 
           </div>
 
         </section>
 
 
-        {/* 증상 강도 */}
+        {/* ================================
+            증상 강도
+        ================================= */}
 
         {symptoms.length > 0 &&
           !symptoms.includes('없음') && (
-            <section className="archive-record-section">
+            <section className="before-archive-record-section">
 
-              <h2>증상 강도</h2>
+              <h2>
+                증상 강도
+              </h2>
 
-              <div className="severity-list">
+              <div className="before-severity-list">
 
-                {symptoms.map((symptom) => (
-                  <div
-                    key={symptom}
-                    className="severity-row"
-                  >
-                    <span className="severity-name">
-                      {symptom}
-                    </span>
+                {symptoms.map(
+                  (symptom) => (
+                    <div
+                      key={symptom}
+                      className="before-severity-row"
+                    >
 
-                    <div className="severity-buttons">
+                      <span className="before-severity-name">
+                        {symptom}
+                      </span>
 
-                      {SEVERITY_OPTIONS.map(
-                        (severity) => (
-                          <button
-                            key={severity}
-                            type="button"
-                            className={`severity-button ${
-                              symptomSeverity[symptom] ===
-                              severity
-                                ? 'selected'
-                                : ''
-                            }`}
-                            onClick={() =>
-                              handleSeverityClick(
-                                symptom,
+                      <div className="before-severity-buttons">
+
+                        {SEVERITY_OPTIONS.map(
+                          (severity) => (
+                            <button
+                              key={severity}
+                              type="button"
+                              className={`before-severity-button ${
+                                symptomSeverity[symptom] ===
                                 severity
-                              )
-                            }
-                          >
-                            {severity}
-                          </button>
-                        )
-                      )}
+                                  ? 'selected'
+                                  : ''
+                              }`}
+                              onClick={() =>
+                                handleSeverityClick(
+                                  symptom,
+                                  severity
+                                )
+                              }
+                            >
+                              {severity}
+                            </button>
+                          )
+                        )}
+
+                      </div>
 
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
 
               </div>
 
@@ -397,14 +439,18 @@ function BeforeSwimming() {
           )}
 
 
-        {/* 특이 사항 */}
+        {/* ================================
+            특이 사항
+        ================================= */}
 
-        <section className="archive-record-section">
+        <section className="before-archive-record-section">
 
-          <h2>특이 사항</h2>
+          <h2>
+            특이 사항
+          </h2>
 
           <textarea
-            className="archive-record-memo"
+            className="before-archive-record-memo"
             value={memo}
             onChange={(event) =>
               setMemo(event.target.value)
@@ -415,12 +461,16 @@ function BeforeSwimming() {
         </section>
 
 
-        {/* 저장 */}
+        {/* ================================
+            저장
+        ================================= */}
 
         <button
           type="button"
-          className={`archive-record-save ${
-            isComplete ? 'active' : ''
+          className={`before-archive-record-save ${
+            isComplete
+              ? 'active'
+              : ''
           }`}
           disabled={!isComplete}
           onClick={handleSave}

@@ -7,6 +7,8 @@
   width: 100%;
   min-height: 100vh;
 
+  box-sizing: border-box;
+
   background-color: var(--color-background);
 
   color: var(--color-text);
@@ -17,24 +19,28 @@
    Header
 ================================ */
 
-.archive-record-header {
+.before-archive-record-header {
   display: flex;
   align-items: center;
 
-  width: 100%;
-  height: 48px;
+  width: 343px;
+  max-width: calc(100% - 32px);
 
-  padding: 0 16px;
+  height: 52px;
+
+  margin: 0 auto;
+
+  box-sizing: border-box;
 }
 
 
-.archive-record-back {
+.before-archive-record-back {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
 
   padding: 0;
 
@@ -46,9 +52,11 @@
 }
 
 
-.archive-record-back img {
-  width: 18px;
-  height: 18px;
+.before-archive-record-back img {
+  display: block;
+
+  width: 30px;
+  height: 30px;
 
   object-fit: contain;
 }
@@ -58,13 +66,18 @@
    Content
 ================================ */
 
-.archive-record-content {
+.before-archive-record-content {
   display: flex;
   flex-direction: column;
 
-  width: 100%;
+  width: 343px;
+  max-width: calc(100% - 32px);
 
-  padding: 0 16px 30px;
+  margin: 0 auto;
+
+  padding: 0 0 32px;
+
+  box-sizing: border-box;
 }
 
 
@@ -72,35 +85,36 @@
    Section
 ================================ */
 
-.archive-record-section {
+.before-archive-record-section {
   width: 100%;
 
-  padding: 14px 0;
+  padding: 30px 0 16px;
 
-  border-bottom: 1px solid #eeeeee;
+  box-sizing: border-box;
 }
 
 
-.archive-record-section h2 {
-  margin: 0 0 8px;
+.before-archive-record-section h2 {
+  margin: 0 0 7px;
 
   color: var(--color-text);
 
-  font-size: var(--font-size-12);
+  font-size: var(--font-size-16);
   font-weight: var(--font-weight-medium);
 
   line-height: 1.4;
 }
 
 
-.archive-record-description {
-  margin: 0 0 10px;
+.before-archive-record-description {
+  margin: 0 0 11px;
 
   color: var(--color-text-gray);
 
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
 
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 
@@ -108,38 +122,50 @@
    Photo
 ================================ */
 
-.photo-upload-row {
+.before-photo-upload-row {
   display: flex;
   align-items: flex-start;
 
-  gap: 10px;
+  width: 100%;
+
+  gap: 12px;
 }
 
 
-.photo-upload-box,
-.photo-frame {
+.before-photo-upload-box,
+.before-photo-frame {
   flex-shrink: 0;
 
-  width: 100px;
-  height: 120px;
+  width: 112px;
+  height: 136px;
+
+  box-sizing: border-box;
 }
 
 
-.photo-upload-box {
+.before-photo-upload-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
+  width: 135px;
+  height: 160px;
+
   gap: 8px;
 
-  border: 1px dashed #bdbdbd;
+  padding: 12px 8px;
 
-  background-color: #ffffff;
+  border: 1px dashed #BDBDBD;
 
-  color: var(--color-text-gray);
+  background-color: #FFFFFF;
 
-  font-size: 10px;
+  color: var(--color-text);
+
+  font-size: 11px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.45;
 
   text-align: center;
 
@@ -147,17 +173,19 @@
 }
 
 
-.photo-upload-plus {
+.before-photo-upload-plus {
+  display: block;
+
   color: var(--color-text);
 
-  font-size: 25px;
+  font-size: 27px;
   font-weight: var(--font-weight-light);
 
   line-height: 1;
 }
 
 
-.photo-preview-wrapper {
+.before-photo-preview-wrapper {
   display: flex;
   flex-direction: column;
 
@@ -165,24 +193,24 @@
 }
 
 
-.photo-frame {
+.before-photo-frame {
   display: flex;
   align-items: center;
   justify-content: center;
 
   overflow: hidden;
 
-  background-color: #f4f4f4;
+  background-color: #F4F4F4;
 }
 
 
-.photo-frame img {
+.before-photo-frame img {
   display: block;
 
   width: 100%;
   height: 100%;
 
-  object-fit: contain;
+  object-fit: cover;
 }
 
 
@@ -190,8 +218,8 @@
    Photo Remove
 ================================ */
 
-.photo-remove-button {
-  width: 100px;
+.before-photo-remove-button {
+  width: 112px;
 
   padding: 3px 0;
 
@@ -211,27 +239,33 @@
    Photo Guide
 ================================ */
 
-.photo-guide {
+.before-photo-guide {
+  flex: 1;
+
   padding-top: 3px;
 
-  color: var(--color-text-gray);
+  color: var(--color-text);
 
-  font-size: 9px;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
 
-  line-height: 1.55;
+  line-height: 18px;
 }
 
 
-.photo-guide strong {
+.before-photo-guide strong {
   display: block;
 
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 
   color: var(--color-text);
+
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
 }
 
 
-.photo-guide p {
+.before-photo-guide p {
   margin: 0;
 }
 
@@ -240,36 +274,59 @@
    Symptom
 ================================ */
 
-.symptom-list {
+.before-symptom-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
 
-  gap: 8px;
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  column-gap: 9px;
+  row-gap: 12px;
+
+  width: 70%;
 }
 
 
-.symptom-button {
-  height: 34px;
+.before-symptom-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border: 1px solid #bdbdbd;
+  width: 100%;
+
+  padding: 12px 9px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #BDBDBD;
   border-radius: 5px;
 
   background-color: var(--color-background);
 
   color: var(--color-text-gray);
 
-  font-size: 11px;
+  font-size: 18px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.2;
+
+  white-space: nowrap;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 
-.symptom-button.selected {
-  border-color: #6b91ce;
+.before-symptom-button.selected {
+  border-color: #082567;
 
-  background-color: #dce8ff;
+  background-color: #005AE533;
 
-  color: #183b78;
+  color: #082567;
 }
 
 
@@ -277,61 +334,85 @@
    Severity
 ================================ */
 
-.severity-list {
+.before-severity-list {
   display: flex;
   flex-direction: column;
 
   gap: 10px;
+
+  width: 100%;
 }
 
 
-.severity-row {
+.before-severity-row {
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 40px;
+
+  width: 100%;
 }
 
 
-.severity-name {
+.before-severity-name {
+  flex-shrink: 0;
+
   width: 40px;
 
   color: var(--color-text);
 
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
 }
 
 
-.severity-buttons {
+.before-severity-buttons {
   display: flex;
+  align-items: center;
 
-  gap: 6px;
+  gap: 7px;
 }
 
 
-.severity-button {
-  width: 38px;
-  height: 32px;
+.before-severity-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border: 1px solid #bdbdbd;
+  width: 49px;
+  height: 44px;
+
+  padding: 0;
+
+  box-sizing: border-box;
+
+  border: 1px solid #BDBDBD;
   border-radius: 5px;
 
   background-color: var(--color-background);
 
   color: var(--color-text-gray);
 
-  font-size: 11px;
+  font-size: 18px;
+  font-weight: 400;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 
-.severity-button.selected {
-  border-color: #6b91ce;
+.before-severity-button.selected {
+  border-color: #082567;
 
-  background-color: #dce8ff;
+  background-color: #005AE533;
 
-  color: #183b78;
+  color: #082567;
 }
 
 
@@ -339,15 +420,18 @@
    Memo
 ================================ */
 
-.archive-record-memo {
+.before-archive-record-memo {
   display: block;
 
   width: 100%;
-  min-height: 62px;
+  min-height: 72px;
 
   padding: 10px;
 
-  border: 1px solid #dddddd;
+  box-sizing: border-box;
+
+  border: 1px solid #D9D9D9;
+  border-radius: 2px;
 
   outline: none;
 
@@ -357,14 +441,22 @@
 
   color: var(--color-text);
 
-  font-size: 10px;
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
 
   line-height: 1.5;
 }
 
 
-.archive-record-memo::placeholder {
-  color: #b5b5b5;
+.before-archive-record-memo::placeholder {
+  color: #B5B5B5;
+}
+
+
+.before-archive-record-memo:focus {
+  border-color: #7F9ED7;
 }
 
 
@@ -372,29 +464,39 @@
    Save
 ================================ */
 
-.archive-record-save {
-  width: 100%;
-  height: 42px;
+.before-archive-record-save {
+  display: block;
 
-  margin-top: 20px;
+  width: 100%;
+  height: 44px;
+
+  margin-top: 18px;
+
+  padding: 0;
 
   border: none;
   border-radius: 3px;
 
   background-color: var(--color-background-gray);
 
-  color: #ffffff;
+  color: #FFFFFF;
 
   font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
 
   cursor: not-allowed;
 }
 
 
-.archive-record-save.active {
-  background-color: #0068f5;
+.before-archive-record-save.active {
+  background-color: #0068F5;
 
   cursor: pointer;
+}
+
+
+.before-archive-record-save.active:hover {
+  background-color: #0059D1;
 }
 
 
@@ -406,10 +508,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  min-height: 100dvh;
 }
 
 
-.record-done-content {
+.before-record-done-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -418,7 +522,9 @@
 }
 
 
-.record-done-icon {
+.before-record-done-icon {
+  display: block;
+
   width: 72px;
   height: 72px;
 
@@ -426,7 +532,7 @@
 }
 
 
-.record-done-content p {
+.before-record-done-content p {
   margin: 0;
 
   color: var(--color-text);
@@ -440,17 +546,114 @@
 ================================ */
 
 @media (max-width: 375px) {
-  .archive-record-content {
-    padding: 0 14px 24px;
+
+  .before-archive-record-header {
+    width: 100%;
+    max-width: 343px;
+
+    height: 50px;
   }
 
-  .photo-upload-box,
-  .photo-frame {
-    width: 96px;
-    height: 116px;
+
+  .before-archive-record-content {
+    width: 100%;
+    max-width: 343px;
+
+    padding-bottom: 26px;
   }
 
-  .photo-guide {
+
+  .before-archive-record-section {
+    padding-top: 14px;
+    padding-bottom: 15px;
+  }
+
+
+  .before-photo-upload-row {
+    gap: 10px;
+  }
+
+
+  .before-photo-upload-box,
+  .before-photo-frame {
+    width: 108px;
+    height: 132px;
+  }
+
+
+  .before-photo-remove-button {
+    width: 108px;
+  }
+
+
+  .before-photo-guide {
     font-size: 8px;
+
+    line-height: 1.6;
+  }
+
+
+  .before-photo-guide strong {
+    font-size: 9px;
+  }
+
+
+  .before-symptom-list {
+    grid-template-columns:
+      repeat(3, 1fr);
+
+    column-gap: 9px;
+    row-gap: 12px;
+  }
+
+
+  .before-symptom-button {
+    width: 100%;
+
+    padding: 12px 9px;
+
+    font-size: 18px;
+  }
+
+
+  .before-severity-list {
+    gap: 9px;
+  }
+
+
+  .before-severity-row {
+    gap: 10px;
+  }
+
+
+  .before-severity-name {
+    width: 38px;
+
+    font-size: 10px;
+  }
+
+
+  .before-severity-buttons {
+    gap: 6px;
+  }
+
+
+  .before-severity-button {
+    width: 38px;
+    height: 32px;
+
+    font-size: 10px;
+  }
+
+
+  .before-archive-record-memo {
+    min-height: 68px;
+  }
+
+
+  .before-archive-record-save {
+    height: 42px;
+
+    margin-top: 18px;
   }
 }
