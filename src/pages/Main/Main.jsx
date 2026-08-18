@@ -11,95 +11,16 @@ import RecordList from './RecordList/RecordList';
 import alertActivated from '../../assets/images/alert-activated.svg';
 import alertDeactivated from '../../assets/images/alert-deactivated.svg';
 
+import {
+  getSwimRecords,
+} from '../../api/records';
+
+import {
+  getNotifications,
+} from '../../api/notifications';
+
 import './Main.css';
 
-
-const DEMO_RECORDS = [
-  {
-    id: 1,
-    date: '2026-08-17',
-  },
-  {
-    id: 2,
-    date: '2026-08-15',
-  },
-  {
-    id: 3,
-    date: '2026-08-14',
-  },
-  {
-    id: 4,
-    date: '2026-08-12',
-  },
-  {
-    id: 5,
-    date: '2026-08-01',
-  },
-  {
-    id: 6,
-    date: '2026-07-29',
-  },
-  {
-    id: 7,
-    date: '2026-07-26',
-  },
-  {
-    id: 8,
-    date: '2026-07-22',
-  },
-  {
-    id: 9,
-    date: '2026-07-18',
-  },
-  {
-    id: 10,
-    date: '2026-07-15',
-  },
-];
-
-
-const INITIAL_ALERTS = [
-  {
-    id: 1,
-    isRead: false,
-  },
-  {
-    id: 2,
-    isRead: false,
-  },
-  {
-    id: 3,
-    isRead: true,
-  },
-  {
-    id: 4,
-    isRead: true,
-  },
-  {
-    id: 5,
-    isRead: true,
-  },
-  {
-    id: 6,
-    isRead: true,
-  },
-  {
-    id: 7,
-    isRead: false,
-  },
-  {
-    id: 8,
-    isRead: true,
-  },
-  {
-    id: 9,
-    isRead: false,
-  },
-  {
-    id: 10,
-    isRead: true,
-  },
-];
 
 
 const READ_ALERTS_KEY =
@@ -139,84 +60,261 @@ const getReadAlertIds = () => {
 
 
 function Main() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
+
+  const [
+    records,
+    setRecords,
+  ] = useState([]);
+
+
+  /* ========================================
+     읽지 않은 알림 여부
+  ======================================== */
 
   const [
     hasUnreadAlert,
     setHasUnreadAlert,
+  ] = useState(false);
+
+
+  const [
+    isLoadingRecords,
+    setIsLoadingRecords,
   ] = useState(true);
 
 
+  const userName =
+    localStorage.getItem(
+      'userName'
+    ) || '멋사님';
+
+
   /* ========================================
-     읽지 않은 알림 여부 확인
+     수영 기록 조회
   ======================================== */
 
   useEffect(() => {
-    const readAlertIds =
-      getReadAlertIds();
+    let isMounted = true;
 
 
-    const hasUnread =
-      INITIAL_ALERTS.some(
-        (alert) =>
-          !(
-            alert.isRead ||
-            readAlertIds.includes(
-              alert.id
+    const loadRecords =
+      async () => {
+        setIsLoadingRecords(
+          true
+        );
+
+        try {
+          const data =
+            await getSwimRecords(
+              'latest'
+            );
+
+
+          const nextRecords =
+            Array.isArray(
+              data?.records
             )
-          )
-      );
+              ? data.records.map(
+                  (record) => ({
+                    id:
+                      record.record_id,
+
+                    date:
+                      record.created_at
+                        ?.split('T')[0] ||
+                      '',
+
+                    timing:
+                      record.timing,
+
+                    photoUrl:
+                      record.photo_url,
+
+                    swimTime:
+                      record.swim_time,
+
+                    symptoms:
+                      record.symptoms ||
+                      [],
+
+                    memo:
+                      record.memo ||
+                      '',
+                  })
+                )
+              : [];
 
 
-    setHasUnreadAlert(
-      hasUnread
-    );
+          if (isMounted) {
+            setRecords(
+              nextRecords
+            );
+          }
+        } catch (error) {
+          console.error(
+            '수영 기록 목록 조회 실패:',
+            error
+          );
+
+
+          if (isMounted) {
+            setRecords([]);
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoadingRecords(
+              false
+            );
+          }
+        }
+      };
+
+
+    loadRecords();
+
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
 
   /* ========================================
-     Main 진입 시 localStorage 상태 재확인
+     알림 조회
 
-     다른 페이지에서 읽음 처리한 뒤
-     /home으로 돌아왔을 때 반영
+     읽지 않은 알림이 하나라도 있으면
+     활성화 아이콘 표시
   ======================================== */
 
   useEffect(() => {
-    const handleStorageChange = () => {
-
-      const readAlertIds =
-        getReadAlertIds();
+    let isMounted = true;
 
 
-      const hasUnread =
-        INITIAL_ALERTS.some(
-          (alert) =>
-            !(
-              alert.isRead ||
-              readAlertIds.includes(
-                alert.id
-              )
-            )
-        );
+    const loadNotifications =
+      async () => {
+        try {
+          const data =
+            await getNotifications();
 
 
-      setHasUnreadAlert(
-        hasUnread
-      );
+          const notificationList =
+            Array.isArray(data)
+              ? data
+              : Array.isArray(
+                  data?.notifications
+                )
+              ? data.notifications
+              : [];
+
+
+          const hasUnread =
+            notificationList.some(
+              (notification) =>
+                notification.is_read ===
+                false
+            );
+
+
+          if (isMounted) {
+            setHasUnreadAlert(
+              hasUnread
+            );
+          }
+        } catch (error) {
+          console.error(
+            '알림 목록 조회 실패:',
+            error
+          );
+
+
+          /*
+           * 알림 API를 가져오지 못했을 때는
+           * 안전하게 비활성화 아이콘 표시
+           */
+          if (isMounted) {
+            setHasUnreadAlert(
+              false
+            );
+          }
+        }
+      };
+
+
+    loadNotifications();
+
+
+    return () => {
+      isMounted = false;
     };
+  }, []);
+
+
+  /* ========================================
+     화면으로 돌아왔을 때
+     알림 상태 다시 확인
+
+     예:
+     홈 → 알림 → 알림 클릭(읽음)
+        → 뒤로가기 → 홈
+  ======================================== */
+
+  useEffect(() => {
+    const handleFocus =
+      () => {
+        const loadNotifications =
+          async () => {
+            try {
+              const data =
+                await getNotifications();
+
+
+              const notificationList =
+                Array.isArray(data)
+                  ? data
+                  : Array.isArray(
+                      data?.notifications
+                    )
+                  ? data.notifications
+                  : [];
+
+
+              const hasUnread =
+                notificationList.some(
+                  (notification) =>
+                    notification.is_read ===
+                    false
+                );
+
+
+              setHasUnreadAlert(
+                hasUnread
+              );
+            } catch (error) {
+              console.error(
+                '알림 상태 갱신 실패:',
+                error
+              );
+            }
+          };
+
+
+        loadNotifications();
+      };
 
 
     window.addEventListener(
-      'storage',
-      handleStorageChange
+      'focus',
+      handleFocus
     );
 
 
     return () => {
       window.removeEventListener(
-        'storage',
-        handleStorageChange
+        'focus',
+        handleFocus
       );
     };
   }, []);
@@ -225,16 +323,14 @@ function Main() {
   return (
     <main className="main-page">
 
-      {/* ================================
-          Header
-      ================================= */}
+      {/* Header */}
 
       <header className="main-header">
 
         <div className="main-greeting">
 
           <p className="main-greeting-small">
-            안녕하세요, 멋사님
+            안녕하세요, {userName}
           </p>
 
 
@@ -246,10 +342,6 @@ function Main() {
 
         </div>
 
-
-        {/* ================================
-            Notification
-        ================================= */}
 
         <button
           type="button"
@@ -275,9 +367,7 @@ function Main() {
       </header>
 
 
-      {/* ================================
-          Monthly Calendar
-      ================================= */}
+      {/* Calendar */}
 
       <section className="main-calendar-section">
 
@@ -286,20 +376,18 @@ function Main() {
       </section>
 
 
-      {/* ================================
-          Swim Before / After Record
-      ================================= */}
+      {/* 수영 전/후 기록 */}
 
       <ArchiveBtn />
 
 
-      {/* ================================
-          My Swim Records
-      ================================= */}
+      {/* 기록 */}
 
-      <RecordList
-        records={DEMO_RECORDS}
-      />
+      {!isLoadingRecords && (
+        <RecordList
+          records={records}
+        />
+      )}
 
     </main>
   );

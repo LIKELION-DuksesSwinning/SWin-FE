@@ -1,4 +1,8 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
+
 import {
   Routes,
   Route,
@@ -19,17 +23,35 @@ import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
-import * as AlertPage from './pages/Alert/Alert.jsx';
+
+/* ========================================
+   Alert
+======================================== */
+
+import Alert from './pages/Alert/Alert.jsx';
 import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
 
-import BottomNav from './components/BottomNav/BottomNav.jsx';
+
+/* ========================================
+   Clinic
+======================================== */
 
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
 import ReservationTime from './pages/Clinic/ReservationTime.jsx';
 import ReservationComplete from './pages/Clinic/ReservationComplete.jsx';
 import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 
+
+/* ========================================
+   Pool
+======================================== */
+
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
+
+
+/* ========================================
+   Analysis
+======================================== */
 
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
@@ -41,7 +63,6 @@ import SwimReport from './pages/Analysis/SwimReport.jsx';
 
 /* ========================================
    My
-======================================== */
 
 import My from './pages/My/My.jsx';
 import Info from './pages/My/Info/Info.jsx';
@@ -51,22 +72,13 @@ import LogOut from './pages/My/LogOut/LogOut.jsx';
 
 import './App.css';
 
-
-/* ========================================
-   Alert export 방식 대응
-======================================== */
-
-const Alert =
-  AlertPage.default ||
-  AlertPage.Alert;
-
-
 /* ========================================
    App
 ======================================== */
 
 function App() {
   const location = useLocation();
+
 
   const [
     showStarting,
@@ -147,6 +159,7 @@ function App() {
               <UserRecord />
             }
           />
+
 
           <Route
             path="/record-done"
@@ -229,7 +242,7 @@ function App() {
 
 
           {/* ========================================
-              알림
+              알림 목록
           ======================================== */}
 
           <Route
@@ -242,6 +255,10 @@ function App() {
 
           {/* ========================================
               알림 상세
+              
+              예:
+              /alert/501
+              /alert/502
           ======================================== */}
 
           <Route
@@ -275,6 +292,7 @@ function App() {
             }
           />
 
+
           <Route
             path="/clinic/time"
             element={
@@ -282,12 +300,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/clinic/complete"
             element={
               <ReservationComplete />
             }
           />
+
 
           <Route
             path="/clinic/history"
@@ -309,12 +329,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/analysis"
             element={
               <ClickForAnalysis />
             }
           />
+
 
           <Route
             path="/analysis/swim-report"
@@ -323,12 +345,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/analysis/clinic-report"
             element={
               <NoClinicReport />
             }
           />
+
 
           <Route
             path="/analysis/swim-report-data"
@@ -420,5 +444,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

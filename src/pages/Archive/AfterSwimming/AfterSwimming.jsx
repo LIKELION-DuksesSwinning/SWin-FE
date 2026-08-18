@@ -1,8 +1,18 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  useNavigate,
+} from 'react-router-dom';
 
 import prevBtn from '../../../assets/images/prev-btn.svg';
 import recordProcessDone from '../../../assets/images/record-process-done.svg';
+
+import {
+  createSwimRecord,
+} from '../../../api/records';
 
 import './AfterSwimming.css';
 
@@ -33,166 +43,190 @@ const SEVERITY_OPTIONS = [
 
 
 function AfterSwimming() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [photo, setPhoto] = useState(null);
-  const [swimTime, setSwimTime] = useState('');
-  const [symptoms, setSymptoms] = useState([]);
-  const [symptomSeverity, setSymptomSeverity] = useState({});
-  const [memo, setMemo] = useState('');
-  const [isSaved, setIsSaved] = useState(false);
+  const [photo, setPhoto] =
+    useState(null);
 
+  const [swimTime, setSwimTime] =
+    useState('');
 
-  /* ========================================
-     저장 완료 → 2초 후 홈
-  ======================================== */
+  const [symptoms, setSymptoms] =
+    useState([]);
+
+  const [symptomSeverity, setSymptomSeverity] =
+    useState({});
+
+  const [memo, setMemo] =
+    useState('');
+
+  const [isSaved, setIsSaved] =
+    useState(false);
+
+  const [isSaving, setIsSaving] =
+    useState(false);
+
+  const [errorMessage, setErrorMessage] =
+    useState('');
+
 
   useEffect(() => {
-    if (!isSaved) return;
-
-    const timer = setTimeout(() => {
-      navigate('/home');
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [isSaved, navigate]);
-
-
-  /* ========================================
-     사진 업로드
-  ======================================== */
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드할 수 있습니다.');
-      return;
+    if (!isSaved) {
+      return undefined;
     }
 
-    const reader = new FileReader();
+    const timer =
+      setTimeout(() => {
+        navigate('/home');
+      }, 2000);
 
-    reader.onload = () => {
-      setPhoto({
-        file,
-        preview: reader.result,
-      });
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-
-  /* ========================================
-     사진 삭제
-  ======================================== */
-
-  const handlePhotoRemove = () => {
-    setPhoto(null);
-  };
+    return () =>
+      clearTimeout(timer);
+  }, [
+    isSaved,
+    navigate,
+  ]);
 
 
-  /* ========================================
-     수영 시간
-  ======================================== */
+  /* 사진 */
 
-  const handleSwimTimeClick = (
-    option
-  ) => {
-    setSwimTime(option);
-  };
+  const handlePhotoChange =
+    (event) => {
+      const file =
+        event.target.files?.[0];
 
-
-  /* ========================================
-     증상 선택
-  ======================================== */
-
-  const handleSymptomClick = (
-    option
-  ) => {
-
-    if (option === '없음') {
-
-      setSymptoms((prev) => {
-        if (prev.includes('없음')) {
-          return [];
-        }
-
-        return ['없음'];
-      });
-
-      setSymptomSeverity({});
-
-      return;
-    }
-
-
-    setSymptoms((prev) => {
-
-      const withoutNone =
-        prev.filter(
-          (item) =>
-            item !== '없음'
-        );
+      if (!file) {
+        return;
+      }
 
       if (
-        withoutNone.includes(
-          option
+        !file.type.startsWith(
+          'image/'
         )
       ) {
-        return withoutNone.filter(
-          (item) =>
-            item !== option
+        alert(
+          '이미지 파일만 업로드할 수 있습니다.'
         );
+
+        event.target.value = '';
+
+        return;
       }
 
-      return [
-        ...withoutNone,
-        option,
-      ];
-    });
+      const reader =
+        new FileReader();
 
-
-    setSymptomSeverity((prev) => {
-
-      if (!prev[option]) {
-        return prev;
-      }
-
-      const next = {
-        ...prev,
+      reader.onload = () => {
+        setPhoto({
+          file,
+          preview:
+            reader.result,
+        });
       };
 
-      delete next[option];
+      reader.readAsDataURL(
+        file
+      );
 
-      return next;
-    });
-  };
-
-
-  /* ========================================
-     증상 강도
-  ======================================== */
-
-  const handleSeverityClick = (
-    symptom,
-    severity
-  ) => {
-
-    setSymptomSeverity((prev) => ({
-      ...prev,
-      [symptom]:
-        severity,
-    }));
-
-  };
+      event.target.value = '';
+    };
 
 
-  /* ========================================
-     저장 가능 여부
-  ======================================== */
+  const handlePhotoRemove =
+    () => {
+      setPhoto(null);
+    };
+
+
+  /* 수영 시간 */
+
+  const handleSwimTimeClick =
+    (option) => {
+      setSwimTime(option);
+    };
+
+
+  /* 증상 */
+
+  const handleSymptomClick =
+    (option) => {
+      if (option === '없음') {
+        setSymptoms((prev) => {
+          if (
+            prev.includes('없음')
+          ) {
+            return [];
+          }
+
+          return ['없음'];
+        });
+
+        setSymptomSeverity({});
+
+        return;
+      }
+
+
+      setSymptoms((prev) => {
+        const withoutNone =
+          prev.filter(
+            (item) =>
+              item !== '없음'
+          );
+
+        if (
+          withoutNone.includes(
+            option
+          )
+        ) {
+          return withoutNone.filter(
+            (item) =>
+              item !== option
+          );
+        }
+
+        return [
+          ...withoutNone,
+          option,
+        ];
+      });
+
+
+      setSymptomSeverity(
+        (prev) => {
+          if (!prev[option]) {
+            return prev;
+          }
+
+          const next = {
+            ...prev,
+          };
+
+          delete next[option];
+
+          return next;
+        }
+      );
+    };
+
+
+  /* 강도 */
+
+  const handleSeverityClick =
+    (
+      symptom,
+      severity
+    ) => {
+      setSymptomSeverity(
+        (prev) => ({
+          ...prev,
+          [symptom]:
+            severity,
+        })
+      );
+    };
+
 
   const hasAllSeverity =
     symptoms.length === 0 ||
@@ -213,56 +247,111 @@ function AfterSwimming() {
     hasAllSeverity;
 
 
-  /* ========================================
-     저장
-  ======================================== */
+  const buildSymptomsPayload =
+    () => {
+      if (
+        symptoms.length === 0 ||
+        symptoms.includes(
+          '없음'
+        )
+      ) {
+        return [];
+      }
 
-  const handleSave = () => {
+      return symptoms.map(
+        (symptom) => ({
+          type: symptom,
+          score:
+            symptomSeverity[
+              symptom
+            ],
+        })
+      );
+    };
 
+
+  /* 저장 */
+
+  const handleSave =
+  async () => {
     if (
       !isComplete ||
-      isSaved
+      isSaved ||
+      isSaving
     ) {
       return;
     }
 
+    setIsSaving(true);
+    setErrorMessage('');
 
-    const recordData = {
-      type:
-        'after-swimming',
+    try {
+      const now =
+        new Date();
 
-      photo:
-        photo.file,
+      const date =
+        now
+          .toISOString()
+          .split('T')[0];
 
-      swimTime,
-
-      symptoms,
-
-      symptomSeverity,
-
-      memo,
-    };
-
-
-    console.log(
-      '수영 후 기록:',
-      recordData
-    );
+      const startTime =
+        now
+          .toTimeString()
+          .slice(0, 5);
 
 
-    // TODO:
-    // 실제 API 연결
+      const durationMap = {
+        '30분 미만': 30,
+        '30~60분': 60,
+        '60~90분': 90,
+        '90분 이상': 90,
+      };
 
-    setIsSaved(true);
+
+      const durationMinutes =
+        durationMap[
+          swimTime
+        ] ?? 0;
+
+
+      await createSwimRecord({
+        timing: 'AFTER',
+
+        date,
+
+        startTime,
+
+        durationMinutes,
+
+        photo:
+          photo.file,
+
+        swimTime,
+
+        symptoms:
+          buildSymptomsPayload(),
+
+        memo,
+      });
+
+      setIsSaved(true);
+    } catch (error) {
+      console.error(
+        '수영 후 기록 저장 오류:',
+        error
+      );
+
+      setErrorMessage(
+        error?.message ||
+          '기록 저장에 실패했습니다.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
 
-  /* ========================================
-     저장 완료 화면
-  ======================================== */
-
   if (isSaved) {
-
     return (
       <main className="after-swimming-done">
 
@@ -290,10 +379,6 @@ function AfterSwimming() {
   return (
     <main className="after-swimming-page">
 
-      {/* ================================
-          Header
-      ================================= */}
-
       <header className="after-archive-record-header">
 
         <button
@@ -304,26 +389,18 @@ function AfterSwimming() {
           }
           aria-label="이전"
         >
-
           <img
             src={prevBtn}
             alt="이전"
           />
-
         </button>
 
       </header>
 
 
-      {/* ================================
-          Content
-      ================================= */}
-
       <section className="after-archive-record-content">
 
-        {/* ================================
-            사진
-        ================================= */}
+        {/* 사진 */}
 
         <section className="after-archive-record-section">
 
@@ -331,11 +408,9 @@ function AfterSwimming() {
             수영 후 사진
           </h2>
 
-
           <div className="after-photo-upload-row">
 
             {photo ? (
-
               <div className="after-photo-preview-wrapper">
 
                 <div className="after-photo-frame">
@@ -349,7 +424,6 @@ function AfterSwimming() {
 
                 </div>
 
-
                 <button
                   type="button"
                   className="after-photo-remove-button"
@@ -361,25 +435,20 @@ function AfterSwimming() {
                 </button>
 
               </div>
-
             ) : (
-
               <label
                 htmlFor="after-photo"
                 className="after-photo-upload-box"
               >
-
                 <span className="after-photo-upload-plus">
                   +
                 </span>
-
 
                 <span>
                   이곳을 눌러
                   <br />
                   얼굴 사진을 첨부해 주세요
                 </span>
-
 
                 <input
                   id="after-photo"
@@ -393,7 +462,6 @@ function AfterSwimming() {
 
               </label>
             )}
-
 
             <div className="after-photo-guide">
 
@@ -420,9 +488,7 @@ function AfterSwimming() {
         </section>
 
 
-        {/* ================================
-            수영 시간
-        ================================= */}
+        {/* 수영 시간 */}
 
         <section className="after-archive-record-section">
 
@@ -430,12 +496,10 @@ function AfterSwimming() {
             수영 시간
           </h2>
 
-
           <div className="after-swim-time-list">
 
             {SWIM_TIME_OPTIONS.map(
               (option) => (
-
                 <button
                   key={option}
                   type="button"
@@ -453,7 +517,6 @@ function AfterSwimming() {
                 >
                   {option}
                 </button>
-
               )
             )}
 
@@ -462,9 +525,7 @@ function AfterSwimming() {
         </section>
 
 
-        {/* ================================
-            증상
-        ================================= */}
+        {/* 증상 */}
 
         <section className="after-archive-record-section">
 
@@ -472,18 +533,16 @@ function AfterSwimming() {
             증상 선택
           </h2>
 
-
           <p className="after-archive-record-description">
             현재 느끼고 있는 피부 불편 증상을
-            선택해 주세요. (중복 선택 가능)
+            선택해 주세요.
+            (중복 선택 가능)
           </p>
-
 
           <div className="after-symptom-list">
 
             {SYMPTOM_OPTIONS.map(
               (option) => (
-
                 <button
                   key={option}
                   type="button"
@@ -502,7 +561,6 @@ function AfterSwimming() {
                 >
                   {option}
                 </button>
-
               )
             )}
 
@@ -511,27 +569,22 @@ function AfterSwimming() {
         </section>
 
 
-        {/* ================================
-            증상 강도
-        ================================= */}
+        {/* 강도 */}
 
         {symptoms.length > 0 &&
           !symptoms.includes(
             '없음'
           ) && (
-
             <section className="after-archive-record-section">
 
               <h2>
                 증상 강도
               </h2>
 
-
               <div className="after-severity-list">
 
                 {symptoms.map(
                   (symptom) => (
-
                     <div
                       key={symptom}
                       className="after-severity-row"
@@ -541,16 +594,12 @@ function AfterSwimming() {
                         {symptom}
                       </span>
 
-
                       <div className="after-severity-buttons">
 
                         {SEVERITY_OPTIONS.map(
                           (severity) => (
-
                             <button
-                              key={
-                                severity
-                              }
+                              key={severity}
                               type="button"
                               className={`after-severity-button ${
                                 symptomSeverity[
@@ -567,38 +616,30 @@ function AfterSwimming() {
                                 )
                               }
                             >
-                              {
-                                severity
-                              }
+                              {severity}
                             </button>
-
                           )
                         )}
 
                       </div>
 
                     </div>
-
                   )
                 )}
 
               </div>
 
             </section>
-
           )}
 
 
-        {/* ================================
-            특이 사항
-        ================================= */}
+        {/* 메모 */}
 
         <section className="after-archive-record-section">
 
           <h2>
             특이 사항
           </h2>
-
 
           <textarea
             className="after-archive-record-memo"
@@ -614,9 +655,19 @@ function AfterSwimming() {
         </section>
 
 
-        {/* ================================
-            저장
-        ================================= */}
+        {errorMessage && (
+          <p
+            role="alert"
+            style={{
+              color: '#d33',
+              marginBottom:
+                '12px',
+            }}
+          >
+            {errorMessage}
+          </p>
+        )}
+
 
         <button
           type="button"
@@ -625,10 +676,17 @@ function AfterSwimming() {
               ? 'active'
               : ''
           }`}
-          disabled={!isComplete}
-          onClick={handleSave}
+          disabled={
+            !isComplete ||
+            isSaving
+          }
+          onClick={
+            handleSave
+          }
         >
-          저장
+          {isSaving
+            ? '저장 중...'
+            : '저장'}
         </button>
 
       </section>
@@ -636,5 +694,6 @@ function AfterSwimming() {
     </main>
   );
 }
+
 
 export default AfterSwimming;

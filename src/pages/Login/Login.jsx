@@ -4,19 +4,39 @@ import { useNavigate } from 'react-router-dom';
 import pwShown from '../../assets/images/pw-shown.svg';
 import pwHidden from '../../assets/images/pw-hidden.svg';
 
+import {
+  login,
+} from '../../api/accounts';
+
 import './Login.css';
 
+
 function Login() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [id, setId] =
+    useState('');
 
-  const [idError, setIdError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [password, setPassword] =
+    useState('');
 
-  async function handleSubmit(event) {
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [idError, setIdError] =
+    useState('');
+
+  const [passwordError, setPasswordError] =
+    useState('');
+
+  const [isLoading, setIsLoading] =
+    useState(false);
+
+
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
     let hasError = false;
@@ -26,7 +46,10 @@ function Login() {
     // ========================================
 
     if (!id.trim()) {
-      setIdError('아이디를 입력해 주세요.');
+      setIdError(
+        '아이디를 입력해 주세요.'
+      );
+
       hasError = true;
     } else {
       setIdError('');
@@ -37,129 +60,170 @@ function Login() {
     // ========================================
 
     if (!password) {
-      setPasswordError('비밀번호를 입력해 주세요.');
+      setPasswordError(
+        '비밀번호를 입력해 주세요.'
+      );
+
       hasError = true;
     } else {
       setPasswordError('');
     }
 
-    // 입력값이 없으면 로그인 요청하지 않음
+
     if (hasError) {
       return;
     }
 
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+
+
     try {
-      const response = await fetch(
-        'https://miseno.store/api/v1/accounts/login/',
-        {
-          method: 'POST',
+      const data =
+        await login({
+          username:
+            id.trim(),
+          password,
+        });
 
-          headers: {
-            'Content-Type': 'application/json',
-          },
 
-          body: JSON.stringify({
-            username: id,
-            password: password,
-          }),
-        }
-      );
+/* ========================================
+   로그인 성공
+======================================== */
 
-      const data = await response.json();
+console.log(
+  '로그인 응답:',
+  data
+);
 
-      console.log(
-        '로그인 응답 상태:',
-        response.status
-      );
 
-      console.log(
-        '로그인 응답:',
-        data
-      );
+/* ========================================
+   Access Token
+======================================== */
 
-      // ========================================
-      // 로그인 실패
-      // ========================================
+const accessToken =
+  data?.token;
 
-      if (!response.ok) {
-        setIdError('다시 입력해 주세요.');
-        setPasswordError('다시 입력해 주세요.');
-        return;
-      }
 
-      // ========================================
-      // 로그인 성공
-      // ========================================
+/* ========================================
+   Refresh Token
 
-      /*
-       * 현재 기존 코드에서는 data.token을
-       * access token으로 사용하고 있음.
-       */
-      const accessToken = data.token;
+   백엔드에서 이제
+   refresh_token을 내려줌
+======================================== */
 
-      /*
-       * 로그아웃 API는 refresh_token을 요구하므로
-       * 로그인 응답에 refresh_token이 있다면 저장.
-       *
-       * 백엔드 응답이 refreshToken이라는 이름을
-       * 사용하는 경우도 대응.
-       */
-      const refreshToken =
-        data.refresh_token ??
-        data.refreshToken ??
-        null;
+const refreshToken =
+  data?.refresh_token ??
+  data?.refreshToken ??
+  data?.refresh ??
+  null;
 
-      if (accessToken) {
-        localStorage.setItem(
-          'accessToken',
-          accessToken
-        );
-      }
 
-      if (refreshToken) {
-        localStorage.setItem(
-          'refreshToken',
-          refreshToken
-        );
-      }
+/* ========================================
+   Access Token 저장
+======================================== */
 
-      if (data.user_id !== undefined) {
-        localStorage.setItem(
-          'userId',
-          data.user_id
-        );
-      }
+if (accessToken) {
+  localStorage.setItem(
+    'accessToken',
+    accessToken
+  );
+}
 
-      if (data.name) {
-        localStorage.setItem(
-          'userName',
-          data.name
-        );
-      }
 
-      console.log(
-        'accessToken 저장:',
-        Boolean(accessToken)
-      );
+/* ========================================
+   Refresh Token 저장
+======================================== */
 
-      console.log(
-        'refreshToken 저장:',
-        Boolean(refreshToken)
-      );
+if (refreshToken) {
+  localStorage.setItem(
+    'refreshToken',
+    refreshToken
+  );
+}
 
-      navigate('/user-record');
 
+/* ========================================
+   User ID
+======================================== */
+
+if (
+  data?.user_id !==
+  undefined
+) {
+  localStorage.setItem(
+    'userId',
+    String(data.user_id)
+  );
+}
+
+
+/* ========================================
+   User Name
+======================================== */
+
+if (data?.name) {
+  localStorage.setItem(
+    'userName',
+    data.name
+  );
+}
+
+
+/* ========================================
+   저장 확인
+======================================== */
+
+console.log(
+  'accessToken 저장:',
+  Boolean(accessToken)
+);
+
+console.log(
+  'refreshToken 저장:',
+  Boolean(refreshToken)
+);
+
+
+/* ========================================
+   사용자 기록 페이지 이동
+======================================== */
+
+navigate(
+  '/user-record'
+);
     } catch (error) {
       console.error(
         '로그인 오류:',
         error
       );
 
-      setIdError(
-        '서버와 연결할 수 없습니다.'
-      );
+      if (
+        error.status === 400 ||
+        error.status === 401
+      ) {
+        setIdError(
+          '다시 입력해 주세요.'
+        );
+
+        setPasswordError(
+          '다시 입력해 주세요.'
+        );
+      } else {
+        setIdError(
+          '서버와 연결할 수 없습니다.'
+        );
+
+        setPasswordError('');
+      }
+    } finally {
+      setIsLoading(false);
     }
   }
+
 
   return (
     <main className="login-page">
@@ -179,22 +243,21 @@ function Login() {
 
           <form
             className="login-form"
-            onSubmit={handleSubmit}
+            onSubmit={
+              handleSubmit
+            }
           >
 
-            {/* ========================================
-                아이디
-            ======================================== */}
+            {/* 아이디 */}
 
             <div
-              className={
-                `input-group ${
-                  idError
-                    ? 'has-error'
-                    : ''
-                }`
-              }
+              className={`input-group ${
+                idError
+                  ? 'has-error'
+                  : ''
+              }`}
             >
+
               <label htmlFor="login-id">
                 아이디
               </label>
@@ -204,11 +267,16 @@ function Login() {
                 type="text"
                 value={id}
                 onChange={(event) => {
-                  setId(event.target.value);
+                  setId(
+                    event.target.value
+                  );
                   setIdError('');
                 }}
                 placeholder="아이디를 입력해주세요."
                 autoComplete="username"
+                disabled={
+                  isLoading
+                }
               />
 
               {idError && (
@@ -216,22 +284,20 @@ function Login() {
                   {idError}
                 </p>
               )}
+
             </div>
 
 
-            {/* ========================================
-                비밀번호
-            ======================================== */}
+            {/* 비밀번호 */}
 
             <div
-              className={
-                `input-group ${
-                  passwordError
-                    ? 'has-error'
-                    : ''
-                }`
-              }
+              className={`input-group ${
+                passwordError
+                  ? 'has-error'
+                  : ''
+              }`}
             >
+
               <label htmlFor="login-password">
                 비밀번호
               </label>
@@ -255,6 +321,9 @@ function Login() {
                   }}
                   placeholder="비밀번호를 입력해주세요."
                   autoComplete="current-password"
+                  disabled={
+                    isLoading
+                  }
                 />
 
                 <button
@@ -269,6 +338,9 @@ function Login() {
                     showPassword
                       ? '비밀번호 숨기기'
                       : '비밀번호 보기'
+                  }
+                  disabled={
+                    isLoading
                   }
                 >
                   <img
@@ -292,15 +364,16 @@ function Login() {
             </div>
 
 
-            {/* ========================================
-                로그인
-            ======================================== */}
-
             <button
               className="login-button"
               type="submit"
+              disabled={
+                isLoading
+              }
             >
-              로그인
+              {isLoading
+                ? '로그인 중...'
+                : '로그인'}
             </button>
 
           </form>
@@ -312,5 +385,6 @@ function Login() {
     </main>
   );
 }
+
 
 export default Login;

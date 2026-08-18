@@ -198,6 +198,11 @@
   align-items: center;
   justify-content: center;
 
+  width: 112px;
+  height: 136px;
+
+  box-sizing: border-box;
+
   overflow: hidden;
 
   background-color: #F4F4F4;
@@ -210,7 +215,7 @@
   width: 100%;
   height: 100%;
 
-  object-fit: cover;
+  object-fit: contain;
 }
 
 
