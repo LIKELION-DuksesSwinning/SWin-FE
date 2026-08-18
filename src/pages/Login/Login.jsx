@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import pwShown from '../../assets/images/pw-shown.svg';
 import pwHidden from '../../assets/images/pw-hidden.svg';
+
 import './Login.css';
 
 function Login() {
@@ -19,7 +21,10 @@ function Login() {
 
     let hasError = false;
 
+    // ========================================
     // 아이디 입력 확인
+    // ========================================
+
     if (!id.trim()) {
       setIdError('아이디를 입력해 주세요.');
       hasError = true;
@@ -27,7 +32,10 @@ function Login() {
       setIdError('');
     }
 
+    // ========================================
     // 비밀번호 입력 확인
+    // ========================================
+
     if (!password) {
       setPasswordError('비밀번호를 입력해 주세요.');
       hasError = true;
@@ -45,9 +53,11 @@ function Login() {
         'https://miseno.store/api/v1/accounts/login/',
         {
           method: 'POST',
+
           headers: {
             'Content-Type': 'application/json',
           },
+
           body: JSON.stringify({
             username: id,
             password: password,
@@ -57,42 +67,137 @@ function Login() {
 
       const data = await response.json();
 
+      console.log(
+        '로그인 응답 상태:',
+        response.status
+      );
+
+      console.log(
+        '로그인 응답:',
+        data
+      );
+
+      // ========================================
       // 로그인 실패
+      // ========================================
+
       if (!response.ok) {
         setIdError('다시 입력해 주세요.');
         setPasswordError('다시 입력해 주세요.');
         return;
       }
 
+      // ========================================
       // 로그인 성공
-      localStorage.setItem('accessToken', data.token);
-      localStorage.setItem('userId', data.user_id);
-      localStorage.setItem('userName', data.name);
+      // ========================================
+
+      /*
+       * 현재 기존 코드에서는 data.token을
+       * access token으로 사용하고 있음.
+       */
+      const accessToken = data.token;
+
+      /*
+       * 로그아웃 API는 refresh_token을 요구하므로
+       * 로그인 응답에 refresh_token이 있다면 저장.
+       *
+       * 백엔드 응답이 refreshToken이라는 이름을
+       * 사용하는 경우도 대응.
+       */
+      const refreshToken =
+        data.refresh_token ??
+        data.refreshToken ??
+        null;
+
+      if (accessToken) {
+        localStorage.setItem(
+          'accessToken',
+          accessToken
+        );
+      }
+
+      if (refreshToken) {
+        localStorage.setItem(
+          'refreshToken',
+          refreshToken
+        );
+      }
+
+      if (data.user_id !== undefined) {
+        localStorage.setItem(
+          'userId',
+          data.user_id
+        );
+      }
+
+      if (data.name) {
+        localStorage.setItem(
+          'userName',
+          data.name
+        );
+      }
+
+      console.log(
+        'accessToken 저장:',
+        Boolean(accessToken)
+      );
+
+      console.log(
+        'refreshToken 저장:',
+        Boolean(refreshToken)
+      );
 
       navigate('/user-record');
-    } catch (error) {
-      console.error('로그인 오류:', error);
 
-      setIdError('서버와 연결할 수 없습니다.');
+    } catch (error) {
+      console.error(
+        '로그인 오류:',
+        error
+      );
+
+      setIdError(
+        '서버와 연결할 수 없습니다.'
+      );
     }
   }
 
   return (
     <main className="login-page">
+
       <section className="login-card">
+
         <div className="login-wave" />
 
         <div className="login-content">
+
           <div className="login-title">
             <p>Swin으로</p>
             <p>Swim과 Skin을</p>
             <p>동시에</p>
           </div>
 
-          <form className="login-form" onSubmit={handleSubmit}>
-            {/* 아이디 */}
-            <div className={`input-group ${idError ? 'has-error' : ''}`}>
-              <label htmlFor="login-id">아이디</label>
+
+          <form
+            className="login-form"
+            onSubmit={handleSubmit}
+          >
+
+            {/* ========================================
+                아이디
+            ======================================== */}
+
+            <div
+              className={
+                `input-group ${
+                  idError
+                    ? 'has-error'
+                    : ''
+                }`
+              }
+            >
+              <label htmlFor="login-id">
+                아이디
+              </label>
 
               <input
                 id="login-id"
@@ -107,25 +212,45 @@ function Login() {
               />
 
               {idError && (
-                <p className="input-error">{idError}</p>
+                <p className="input-error">
+                  {idError}
+                </p>
               )}
             </div>
 
-            {/* 비밀번호 */}
+
+            {/* ========================================
+                비밀번호
+            ======================================== */}
+
             <div
-              className={`input-group ${
-                passwordError ? 'has-error' : ''
-              }`}
+              className={
+                `input-group ${
+                  passwordError
+                    ? 'has-error'
+                    : ''
+                }`
+              }
             >
-              <label htmlFor="login-password">비밀번호</label>
+              <label htmlFor="login-password">
+                비밀번호
+              </label>
 
               <div className="password-input">
+
                 <input
                   id="login-password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={
+                    showPassword
+                      ? 'text'
+                      : 'password'
+                  }
                   value={password}
                   onChange={(event) => {
-                    setPassword(event.target.value);
+                    setPassword(
+                      event.target.value
+                    );
+
                     setPasswordError('');
                   }}
                   placeholder="비밀번호를 입력해주세요."
@@ -135,7 +260,11 @@ function Login() {
                 <button
                   type="button"
                   className="password-toggle"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() =>
+                    setShowPassword(
+                      (prev) => !prev
+                    )
+                  }
                   aria-label={
                     showPassword
                       ? '비밀번호 숨기기'
@@ -143,24 +272,43 @@ function Login() {
                   }
                 >
                   <img
-                    src={showPassword ? pwShown : pwHidden}
+                    src={
+                      showPassword
+                        ? pwShown
+                        : pwHidden
+                    }
                     alt=""
                   />
                 </button>
+
               </div>
 
               {passwordError && (
-                <p className="input-error">{passwordError}</p>
+                <p className="input-error">
+                  {passwordError}
+                </p>
               )}
+
             </div>
 
-            {/* 로그인 */}
-            <button className="login-button" type="submit">
+
+            {/* ========================================
+                로그인
+            ======================================== */}
+
+            <button
+              className="login-button"
+              type="submit"
+            >
               로그인
             </button>
+
           </form>
+
         </div>
+
       </section>
+
     </main>
   );
 }

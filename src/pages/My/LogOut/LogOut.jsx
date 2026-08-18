@@ -12,9 +12,18 @@ function LogOut() {
   const [isLoggingOut, setIsLoggingOut] =
     useState(false);
 
+  // ========================================
+  // 취소
+  // ========================================
+
   const handleClose = () => {
     navigate('/my');
   };
+
+
+  // ========================================
+  // 로그아웃
+  // ========================================
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
@@ -25,17 +34,53 @@ function LogOut() {
     const refreshToken =
       localStorage.getItem('refreshToken');
 
+
+    // ========================================
+    // 토큰 확인
+    // ========================================
+
     if (!accessToken) {
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userName');
+      localStorage.removeItem(
+        'refreshToken'
+      );
+
+      localStorage.removeItem(
+        'userId'
+      );
+
+      localStorage.removeItem(
+        'userName'
+      );
 
       navigate('/');
       return;
     }
 
+
+    if (!refreshToken) {
+      console.error(
+        'refreshToken이 없습니다.'
+      );
+
+      alert(
+        '로그아웃에 필요한 인증 정보가 없습니다. 다시 로그인해 주세요.'
+      );
+
+      return;
+    }
+
+
     try {
       setIsLoggingOut(true);
+
+      console.log(
+        '로그아웃 요청:',
+        {
+          refresh_token:
+            refreshToken,
+        },
+      );
+
 
       const response = await fetch(
         API_URL,
@@ -45,19 +90,50 @@ function LogOut() {
           headers: {
             Authorization:
               `Bearer ${accessToken}`,
+
             'Content-Type':
               'application/json',
           },
 
           body: JSON.stringify({
             refresh_token:
-              refreshToken || '',
+              refreshToken,
           }),
         }
       );
 
-      const responseData =
-        await response.json();
+
+      const responseText =
+        await response.text();
+
+      let responseData = {};
+
+      try {
+        responseData =
+          responseText
+            ? JSON.parse(
+                responseText
+              )
+            : {};
+      } catch {
+        responseData = {};
+      }
+
+
+      console.log(
+        '로그아웃 응답 상태:',
+        response.status
+      );
+
+      console.log(
+        '로그아웃 응답:',
+        responseData
+      );
+
+
+      // ========================================
+      // 로그아웃 성공
+      // ========================================
 
       if (response.ok) {
         localStorage.removeItem(
@@ -80,14 +156,50 @@ function LogOut() {
         return;
       }
 
+
+      // ========================================
+      // 인증 오류
+      // ========================================
+
+      if (response.status === 401) {
+        localStorage.removeItem(
+          'accessToken'
+        );
+
+        localStorage.removeItem(
+          'refreshToken'
+        );
+
+        localStorage.removeItem(
+          'userId'
+        );
+
+        localStorage.removeItem(
+          'userName'
+        );
+
+        alert(
+          '로그인 정보가 만료되었습니다.'
+        );
+
+        navigate('/');
+        return;
+      }
+
+
+      // ========================================
+      // 기타 오류
+      // ========================================
+
       alert(
         responseData?.detail ||
           responseData?.message ||
           '로그아웃에 실패했습니다.'
       );
+
     } catch (error) {
       console.error(
-        '로그아웃 오류:',
+        '로그아웃 API 오류:',
         error
       );
 
@@ -99,17 +211,21 @@ function LogOut() {
     }
   };
 
+
   return (
     <main className="logout-page">
+
       <div className="logout-dimmed-content">
         <div className="logout-placeholder" />
       </div>
+
 
       <div
         className="logout-overlay"
         onClick={handleClose}
         role="presentation"
       >
+
         <section
           className="logout-modal"
           onClick={(event) =>
@@ -119,16 +235,14 @@ function LogOut() {
           aria-modal="true"
           aria-labelledby="logout-title"
         >
+
           <h1 id="logout-title">
-            로그아웃하시겠어요?
+            로그아웃하시겠습니까?
           </h1>
 
-          <p>
-            로그아웃하면 다시 로그인해야
-            서비스를 이용할 수 있어요.
-          </p>
 
           <div className="logout-actions">
+
             <button
               type="button"
               className="logout-cancel"
@@ -138,6 +252,7 @@ function LogOut() {
               취소
             </button>
 
+
             <button
               type="button"
               className="logout-confirm"
@@ -146,11 +261,15 @@ function LogOut() {
             >
               {isLoggingOut
                 ? '로그아웃 중...'
-                : '로그아웃'}
+                : '확인'}
             </button>
+
           </div>
+
         </section>
+
       </div>
+
     </main>
   );
 }
