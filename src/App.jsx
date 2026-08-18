@@ -33,6 +33,24 @@ import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
 
 
 /* ========================================
+   My
+======================================== */
+
+import My from './pages/My/My.jsx';
+import Info from './pages/My/Info/Info.jsx';
+import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
+import Policy from './pages/My/Policy/Policy.jsx';
+import LogOut from './pages/My/LogOut/LogOut.jsx';
+
+
+/* ========================================
+   Bottom Navigation
+======================================== */
+
+import BottomNav from './components/BottomNav/BottomNav.jsx';
+
+
+/* ========================================
    Clinic
 ======================================== */
 
@@ -61,14 +79,6 @@ import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SwimReport from './pages/Analysis/SwimReport.jsx';
 
-/* ========================================
-   My
-
-import My from './pages/My/My.jsx';
-import Info from './pages/My/Info/Info.jsx';
-import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
-import Policy from './pages/My/Policy/Policy.jsx';
-import LogOut from './pages/My/LogOut/LogOut.jsx';
 
 import './App.css';
 
