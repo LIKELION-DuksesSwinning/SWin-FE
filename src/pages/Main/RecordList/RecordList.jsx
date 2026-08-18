@@ -1,5 +1,11 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useMemo,
+  useState,
+} from 'react';
+
+import {
+  useNavigate,
+} from 'react-router-dom';
 
 import arrayFilter from '../../../assets/images/array-filter.svg';
 import moreRecords from '../../../assets/images/more-records.svg';
@@ -7,86 +13,120 @@ import noRecords from '../../../assets/images/no-records.svg';
 
 import './RecordList.css';
 
+
 const PAGE_SIZE = 5;
 
 
-/* ========================================
-   날짜 파싱
-   API에서 들어오는
-   2026-08-17 / 2026.08.17
-   둘 다 대응
-======================================== */
+const parseRecordDate = (
+  dateValue
+) => {
+  if (!dateValue) {
+    return null;
+  }
 
-const parseRecordDate = (dateValue) => {
-  if (!dateValue) return null;
+  if (
+    dateValue instanceof Date
+  ) {
+    const date =
+      new Date(dateValue);
 
-  if (dateValue instanceof Date) {
-    const date = new Date(dateValue);
-
-    date.setHours(0, 0, 0, 0);
+    date.setHours(
+      0,
+      0,
+      0,
+      0
+    );
 
     return date;
   }
 
-  const normalized = String(dateValue)
-    .trim()
-    .replace(/\./g, '-')
-    .split('T')[0];
 
-  const [year, month, day] =
-    normalized.split('-').map(Number);
+  const normalized =
+    String(dateValue)
+      .trim()
+      .replace(/\./g, '-')
+      .split('T')[0];
 
-  if (!year || !month || !day) {
-    return null;
-  }
 
-  const date = new Date(
+  const [
     year,
-    month - 1,
-    day
-  );
+    month,
+    day,
+  ] =
+    normalized
+      .split('-')
+      .map(Number);
 
-  if (Number.isNaN(date.getTime())) {
+
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
     return null;
   }
 
-  date.setHours(0, 0, 0, 0);
+
+  const date =
+    new Date(
+      year,
+      month - 1,
+      day
+    );
+
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return null;
+  }
+
+
+  date.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
   return date;
 };
 
 
-/* ========================================
-   화면 표시 날짜
-======================================== */
-
-const formatDisplayDate = (dateValue) => {
-  const date = parseRecordDate(dateValue);
+const formatDisplayDate = (
+  dateValue
+) => {
+  const date =
+    parseRecordDate(
+      dateValue
+    );
 
   if (!date) {
     return '-';
   }
 
-  const year = date.getFullYear();
+  const year =
+    date.getFullYear();
 
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, '0');
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(2, '0');
 
-  const day = String(
-    date.getDate()
-  ).padStart(2, '0');
+  const day =
+    String(
+      date.getDate()
+    ).padStart(2, '0');
 
   return `${year}.${month}.${day}`;
 };
 
 
-/* ========================================
-   오늘 날짜
-======================================== */
-
 const getToday = () => {
-  const today = new Date();
+  const today =
+    new Date();
 
   today.setHours(
     0,
@@ -99,24 +139,21 @@ const getToday = () => {
 };
 
 
-/* ========================================
-   최근 3일 이내 기록인지 확인
-
-   오늘 포함
-   오늘 / 어제 / 2일 전 / 3일 전
-======================================== */
-
 const isRecordAddable = (
   recordDateValue
 ) => {
   const recordDate =
-    parseRecordDate(recordDateValue);
+    parseRecordDate(
+      recordDateValue
+    );
 
   if (!recordDate) {
     return false;
   }
 
-  const today = getToday();
+
+  const today =
+    getToday();
 
   const threeDaysAgo =
     new Date(today);
@@ -125,9 +162,12 @@ const isRecordAddable = (
     today.getDate() - 3
   );
 
+
   return (
-    recordDate >= threeDaysAgo &&
-    recordDate <= today
+    recordDate >=
+      threeDaysAgo &&
+    recordDate <=
+      today
   );
 };
 
@@ -135,17 +175,22 @@ const isRecordAddable = (
 function RecordList({
   records = [],
 }) {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const [
     sortOrder,
     setSortOrder,
-  ] = useState('latest');
+  ] = useState(
+    'latest'
+  );
 
   const [
     visibleCount,
     setVisibleCount,
-  ] = useState(PAGE_SIZE);
+  ] = useState(
+    PAGE_SIZE
+  );
 
   const [
     isSortOpen,
@@ -153,59 +198,62 @@ function RecordList({
   ] = useState(false);
 
 
-  /* ========================================
-     안전한 records 배열
-  ======================================== */
-
   const safeRecords =
     Array.isArray(records)
       ? records
       : [];
 
 
-  /* ========================================
-     정렬
-  ======================================== */
+  const sortedRecords =
+    useMemo(() => {
+      const copiedRecords = [
+        ...safeRecords,
+      ];
 
-  const sortedRecords = useMemo(() => {
-    const copiedRecords = [
-      ...safeRecords,
-    ];
+      copiedRecords.sort(
+        (a, b) => {
+          const dateA =
+            parseRecordDate(
+              a?.date
+            );
 
-    copiedRecords.sort((a, b) => {
-      const dateA =
-        parseRecordDate(a?.date);
-
-      const dateB =
-        parseRecordDate(b?.date);
-
-      if (!dateA && !dateB) {
-        return 0;
-      }
-
-      if (!dateA) {
-        return 1;
-      }
-
-      if (!dateB) {
-        return -1;
-      }
-
-      return sortOrder === 'latest'
-        ? dateB - dateA
-        : dateA - dateB;
-    });
-
-    return copiedRecords;
-  }, [
-    safeRecords,
-    sortOrder,
-  ]);
+          const dateB =
+            parseRecordDate(
+              b?.date
+            );
 
 
-  /* ========================================
-     표시할 기록
-  ======================================== */
+          if (
+            !dateA &&
+            !dateB
+          ) {
+            return 0;
+          }
+
+          if (!dateA) {
+            return 1;
+          }
+
+          if (!dateB) {
+            return -1;
+          }
+
+
+          return (
+            sortOrder ===
+            'latest'
+              ? dateB - dateA
+              : dateA - dateB
+          );
+        }
+      );
+
+      return copiedRecords;
+    }, [
+      safeRecords,
+      sortOrder,
+    ]);
+
 
   const visibleRecords =
     sortedRecords.slice(
@@ -213,154 +261,143 @@ function RecordList({
       visibleCount
     );
 
-  const hasMore =
-    visibleCount <
-    sortedRecords.length;
 
   const isExpanded =
-    visibleCount > PAGE_SIZE;
+    visibleCount >
+    PAGE_SIZE;
 
   const hasExpandableRecords =
-    sortedRecords.length > PAGE_SIZE;
+    sortedRecords.length >
+    PAGE_SIZE;
 
 
-  /* ========================================
-     정렬 변경
-  ======================================== */
+  const handleSortChange =
+    (nextOrder) => {
+      setSortOrder(
+        nextOrder
+      );
 
-  const handleSortChange = (
-    nextOrder
-  ) => {
-    setSortOrder(nextOrder);
+      setVisibleCount(
+        PAGE_SIZE
+      );
 
-    // 정렬 변경 시 다시 5개부터
-    setVisibleCount(PAGE_SIZE);
-
-    setIsSortOpen(false);
-  };
+      setIsSortOpen(false);
+    };
 
 
-  /* ========================================
-     더보기 / 접기
-  ======================================== */
+  const handleMoreToggle =
+    () => {
+      if (isExpanded) {
+        setVisibleCount(
+          PAGE_SIZE
+        );
 
-  const handleMoreToggle = () => {
+        return;
+      }
 
-    /* ----------------------------
-       현재 펼쳐진 상태
-       → 다시 5개로 접기
-    ---------------------------- */
-
-    if (isExpanded) {
-      setVisibleCount(PAGE_SIZE);
-
-      return;
-    }
-
-
-    /* ----------------------------
-       현재 접힌 상태
-       → 5개씩 추가
-    ---------------------------- */
-
-    setVisibleCount((prev) =>
-      Math.min(
-        prev + PAGE_SIZE,
-        sortedRecords.length
-      )
-    );
-  };
+      setVisibleCount(
+        (prev) =>
+          Math.min(
+            prev +
+              PAGE_SIZE,
+            sortedRecords.length
+          )
+      );
+    };
 
 
-  /* ========================================
-     기록 추가
-     → Additional.jsx
-  ======================================== */
+  /* 기록 추가 */
 
-  const handleAddRecord = (
-    record
-  ) => {
-    if (!record?.date) {
-      return;
-    }
-
-    const recordDate =
-      parseRecordDate(record.date);
-
-    if (!recordDate) {
-      return;
-    }
-
-    const year =
-      recordDate.getFullYear();
-
-    const month = String(
-      recordDate.getMonth() + 1
-    ).padStart(2, '0');
-
-    const day = String(
-      recordDate.getDate()
-    ).padStart(2, '0');
-
-    const dateKey =
-      `${year}-${month}-${day}`;
-
-    navigate(
-      `/archive/additional?date=${encodeURIComponent(
-        dateKey
-      )}`
-    );
-  };
+  const handleAddRecord =
+    (record) => {
+      if (
+        !record?.id ||
+        !record?.date
+      ) {
+        return;
+      }
 
 
-  /* ========================================
-     자세히 보기
-     → Furthermore.jsx
-  ======================================== */
+      const recordDate =
+        parseRecordDate(
+          record.date
+        );
 
-  const handleDetail = (
-    record
-  ) => {
-    if (!record?.id || !record?.date) {
-      return;
-    }
-
-    const recordDate =
-      parseRecordDate(record.date);
-
-    if (!recordDate) {
-      return;
-    }
-
-    const year =
-      recordDate.getFullYear();
-
-    const month = String(
-      recordDate.getMonth() + 1
-    ).padStart(2, '0');
-
-    const day = String(
-      recordDate.getDate()
-    ).padStart(2, '0');
-
-    const dateKey =
-      `${year}-${month}-${day}`;
-
-    navigate(
-      `/archive/furthermore?id=${encodeURIComponent(
-        record.id
-      )}&date=${encodeURIComponent(
-        dateKey
-      )}`
-    );
-  };
+      if (!recordDate) {
+        return;
+      }
 
 
-  /* ========================================
-     기록 없음
-  ======================================== */
+      const year =
+        recordDate.getFullYear();
 
-  if (safeRecords.length === 0) {
+      const month =
+        String(
+          recordDate.getMonth() + 1
+        ).padStart(2, '0');
+
+      const day =
+        String(
+          recordDate.getDate()
+        ).padStart(2, '0');
+
+
+      const dateKey =
+        `${year}-${month}-${day}`;
+
+
+      navigate(
+        `/archive/additional?id=${encodeURIComponent(
+          record.id
+        )}&date=${encodeURIComponent(
+          dateKey
+        )}`
+      );
+    };
+
+
+  /* 자세히 보기 */
+
+  const handleDetail =
+    (record) => {
+      if (
+        !record?.id
+      ) {
+        return;
+      }
+
+
+      const recordDate =
+        parseRecordDate(
+          record.date
+        );
+
+
+      const dateKey =
+        recordDate
+          ? `${recordDate.getFullYear()}-${String(
+              recordDate.getMonth() + 1
+            ).padStart(2, '0')}-${String(
+              recordDate.getDate()
+            ).padStart(2, '0')}`
+          : '';
+
+
+      navigate(
+        `/archive/furthermore?id=${encodeURIComponent(
+          record.id
+        )}&date=${encodeURIComponent(
+          dateKey
+        )}`
+      );
+    };
+
+
+  /* 기록 없음 */
+
+  if (
+    safeRecords.length === 0
+  ) {
     return (
       <section className="record-list">
 
@@ -414,20 +451,12 @@ function RecordList({
   return (
     <section className="record-list">
 
-      {/* ================================
-          Header
-      ================================= */}
-
       <div className="record-list-header">
 
         <h2>
           내 수영 기록
         </h2>
 
-
-        {/* ================================
-            Sort
-        ================================= */}
 
         <div className="record-sort">
 
@@ -440,7 +469,8 @@ function RecordList({
             }`}
             onClick={() =>
               setIsSortOpen(
-                (prev) => !prev
+                (prev) =>
+                  !prev
               )
             }
             aria-label="정렬"
@@ -462,7 +492,8 @@ function RecordList({
               <button
                 type="button"
                 className={
-                  sortOrder === 'latest'
+                  sortOrder ===
+                  'latest'
                     ? 'selected'
                     : ''
                 }
@@ -478,7 +509,8 @@ function RecordList({
               <button
                 type="button"
                 className={
-                  sortOrder === 'oldest'
+                  sortOrder ===
+                  'oldest'
                     ? 'selected'
                     : ''
                 }
@@ -499,15 +531,10 @@ function RecordList({
       </div>
 
 
-      {/* ================================
-          Record Feed
-      ================================= */}
-
       <div className="record-feed">
 
         {visibleRecords.map(
           (record) => {
-
             const addable =
               isRecordAddable(
                 record?.date
@@ -565,10 +592,6 @@ function RecordList({
       </div>
 
 
-      {/* ================================
-          More / Collapse
-      ================================= */}
-
       {hasExpandableRecords && (
         <button
           type="button"
@@ -577,8 +600,12 @@ function RecordList({
               ? 'expanded'
               : ''
           }`}
-          onClick={handleMoreToggle}
-          aria-expanded={isExpanded}
+          onClick={
+            handleMoreToggle
+          }
+          aria-expanded={
+            isExpanded
+          }
         >
 
           <span>
@@ -599,5 +626,6 @@ function RecordList({
     </section>
   );
 }
+
 
 export default RecordList;

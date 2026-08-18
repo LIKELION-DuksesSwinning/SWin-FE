@@ -1,5 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  useNavigate,
+} from 'react-router-dom';
 
 import MonthlyCalendar from './MonthlyCalendar/MonthlyCalendar';
 import ArchiveBtn from './ArchiveBtn/ArchiveBtn';
@@ -8,41 +14,131 @@ import RecordList from './RecordList/RecordList';
 import alertActivated from '../../assets/images/alert-activated.svg';
 import alertDeactivated from '../../assets/images/alert-deactivated.svg';
 
+import {
+  getSwimRecords,
+} from '../../api/records';
+
 import './Main.css';
 
-const DEMO_RECORDS = [
-  { id: 1, date: '2026-08-17' },
-  { id: 2, date: '2026-08-15' },
-  { id: 3, date: '2026-08-14' },
-  { id: 4, date: '2026-08-12' },
-  { id: 5, date: '2026-08-01' },
-  { id: 6, date: '2026-07-29' },
-  { id: 7, date: '2026-07-26' },
-  { id: 8, date: '2026-07-22' },
-  { id: 9, date: '2026-07-18' },
-  { id: 10, date: '2026-07-15' },
-];
 
 function Main() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  // TODO:
-  // 추후 알림 API 연동 시 실제 읽지 않은 알림 여부로 변경
-  const [hasUnreadAlert] = useState(true);
+
+  const [
+    records,
+    setRecords,
+  ] = useState([]);
+
+
+  const [
+    hasUnreadAlert,
+  ] = useState(true);
+
+
+  const [
+    isLoadingRecords,
+    setIsLoadingRecords,
+  ] = useState(true);
+
+
+  const userName =
+    localStorage.getItem(
+      'userName'
+    ) || '멋사님';
+
+
+  useEffect(() => {
+    let isMounted = true;
+
+
+    const loadRecords =
+      async () => {
+        setIsLoadingRecords(
+          true
+        );
+
+        try {
+          const data =
+            await getSwimRecords(
+              'latest'
+            );
+
+
+          const nextRecords =
+            Array.isArray(
+              data?.records
+            )
+              ? data.records.map(
+                  (record) => ({
+                    id:
+                      record.record_id,
+                    date:
+                      record.created_at
+                        ?.split('T')[0] ||
+                      '',
+                    timing:
+                      record.timing,
+                    photoUrl:
+                      record.photo_url,
+                    swimTime:
+                      record.swim_time,
+                    symptoms:
+                      record.symptoms ||
+                      [],
+                    memo:
+                      record.memo ||
+                      '',
+                  })
+                )
+              : [];
+
+
+          if (isMounted) {
+            setRecords(
+              nextRecords
+            );
+          }
+        } catch (error) {
+          console.error(
+            '수영 기록 목록 조회 실패:',
+            error
+          );
+
+          if (isMounted) {
+            setRecords([]);
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoadingRecords(
+              false
+            );
+          }
+        }
+      };
+
+
+    loadRecords();
+
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
 
   return (
     <main className="main-page">
 
-      {/* ================================
-          Header
-      ================================= */}
+      {/* Header */}
 
       <header className="main-header">
 
         <div className="main-greeting">
 
           <p className="main-greeting-small">
-            안녕하세요, 멋사님
+            안녕하세요, {userName}
           </p>
 
           <h1>
@@ -54,14 +150,12 @@ function Main() {
         </div>
 
 
-        {/* ================================
-            Notification
-        ================================= */}
-
         <button
           type="button"
           className="main-notification-button"
-          onClick={() => navigate('/alert')}
+          onClick={() =>
+            navigate('/alert')
+          }
           aria-label="알림"
         >
           <img
@@ -78,30 +172,29 @@ function Main() {
       </header>
 
 
-      {/* ================================
-          Monthly Calendar
-      ================================= */}
+      {/* Calendar */}
 
       <section className="main-calendar-section">
         <MonthlyCalendar />
       </section>
 
 
-      {/* ================================
-          Swim Before / After Record
-      ================================= */}
+      {/* 수영 전/후 기록 */}
 
       <ArchiveBtn />
 
 
-      {/* ================================
-          My Swim Records
-      ================================= */}
+      {/* 기록 */}
 
-    <RecordList records={DEMO_RECORDS} />
+      {!isLoadingRecords && (
+        <RecordList
+          records={records}
+        />
+      )}
 
     </main>
   );
 }
+
 
 export default Main;
