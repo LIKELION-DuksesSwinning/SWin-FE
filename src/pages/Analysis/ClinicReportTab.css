@@ -1,7 +1,7 @@
 .analysis-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); 
+    height: calc(100vh - 60px);
     background-color: #FFFFFC;
     overflow-y: auto;
     
@@ -12,10 +12,8 @@
     display: none;
 }
 
-/* --- 탭 메뉴 영역 스타일 --- */
 .analysis-tab-menu {
     display: flex;
-    border-bottom: 1px solid #D9D9D9; 
 }
 
 .tab-item {
@@ -23,15 +21,14 @@
     text-align: center;
     padding: 16px 0;
     font-size: 16px;
-    color: #767676; 
+    color: #767676;
     cursor: pointer;
-    border-bottom: 2px solid transparent; 
 }
 
 .tab-item.active {
     color: #111111;
     font-weight: 600;
-    border-bottom: 2px solid #111111; 
+    border-bottom: 2px solid #111111;
 }
 
 .tab-item.disabled {
@@ -59,7 +56,7 @@
 }
 
 .empty-state-info.no-records {
-    margin-bottom: 0; 
+    margin-bottom: 0;
 }
 
 .empty-icon {
@@ -70,7 +67,7 @@
 
 .empty-title {
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
     color: #111111;
     margin: 0 0 8px 0;
 }

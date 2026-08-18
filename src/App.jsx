@@ -16,91 +16,72 @@ import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import NoRecords from './pages/Analysis/NoRecords.jsx';
-import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
+import ClinicReportTab from './pages/Analysis/ClinicReportTab.jsx';
 import Loading from './pages/Analysis/Loading.jsx';
-
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
-import SwimReport from './pages/Analysis/SwimReport.jsx';
+
+import SWinTab from './pages/Analysis/SWinTab.jsx';
 
 import './App.css'; 
 
 const Home = () => (
-  <div>
-    <WeeklyCalendar />
-  </div>
+    <div>
+        <WeeklyCalendar />
+    </div>
 );
 const My = () => <div>마이 화면입니다</div>;
 
-
 function App() {
-  const location = useLocation();
+    const location = useLocation();
+    const [showStarting, setShowStarting] = useState(true);
 
-  const [showStarting, setShowStarting] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowStarting(false);
+        }, 2000);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowStarting(false);
-    }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
 
-    return () => clearTimeout(timer);
-  }, []);
+    const isLoginPage = location.pathname === '/';
+    const isUserRecordPage = location.pathname === '/user-record';
+    const isRecordDonePage = location.pathname === '/record-done';
 
-  const isLoginPage = location.pathname === '/';
-  const isUserRecordPage = location.pathname === '/user-record';
-  const isRecordDonePage = location.pathname === '/record-done';
+    return (
+        <div className="app-container">
+            <div className="content-area">
+                <Routes>
+                    <Route
+                        path="/"
+                        element={showStarting ? <Starting /> : <Login />}
+                    />
 
-  return (
-    <div className="app-container">
-      <div className="content-area">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          
-          {/* 처음 접속하는 Starting → Login */}
-          <Route
-            path="/"
-            element={showStarting ? <Starting /> : <Login />}
-          />
+                    <Route path="/user-record" element={<UserRecord />} />
+                    <Route path="/record-done" element={<RecordDone />} />
 
-          {/* 로그인 후 사용자 기록 */}
-          <Route
-            path="/user-record"
-            element={<UserRecord />}
-          />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/pool" element={<PoolSearch />} />
+                    
+                    <Route path="/clinic" element={<ReservationDate />} />  
+                    <Route path="/clinic/time" element={<ReservationTime />} />
+                    <Route path="/clinic/complete" element={<ReservationComplete />} />
+                    <Route path="/clinic/history" element={<ReservationHistory />} />
 
-          {/* 사용자 기록 완료 화면 */}
-          <Route
-            path="/record-done"
-            element={<RecordDone />}
-          />
+                    <Route path="/analysis" element={<ClickForAnalysis />} />
+                    <Route path="/analysis/loading" element={<Loading />} />
+                    <Route path="/analysis/result" element={<AIanalysis />} />
 
-          {/* 사용자 기록 완료 후 홈 */}
-          <Route path="/home" element={<Home />} />
+                    <Route path="/analysis/swim-report" element={<SWinTab />} />
+                    
+                    <Route path="/analysis/clinic-report" element={<ClinicReportTab />} />
 
-          <Route path="/analysis" element={<Analysis />} />
+                    <Route path="/my" element={<My />} />
+                </Routes>
+            </div>
 
-          <Route path="/pool" element={<PoolSearch />} />
-          
-          <Route path="/clinic" element={<ReservationDate />} />  
-          <Route path="/clinic/time" element={<ReservationTime />} />
-          <Route path="/clinic/complete" element={<ReservationComplete />} />
-          <Route path="/clinic/history" element={<ReservationHistory />} />
-
-          <Route path="/analysis/loading" element={<Loading />} />
-          <Route path="/analysis" element={<ClickForAnalysis />} />
-          <Route path="/analysis/swim-report" element={<NoRecords />} />
-          <Route path="/analysis/clinic-report" element={<NoClinicReport />} />
-          <Route path="/analysis/swim-report-data" element={<SwimReport />} />
-
-          <Route path="/my" element={<My />} />
-        </Routes>
-      </div>
-
-      {/* Starting / Login / UserRecord / RecordDone에서는 하단 네비게이션 숨김 */}
-      {!isLoginPage &&
-        !isUserRecordPage &&
-        !isRecordDonePage && <BottomNav />}
-    </div>
-  );
+            {!isLoginPage && !isUserRecordPage && !isRecordDonePage && <BottomNav />}
+        </div>
+    );
 }
 
 export default App;

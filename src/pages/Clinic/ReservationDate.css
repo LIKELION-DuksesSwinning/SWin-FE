@@ -2,10 +2,15 @@
     padding: 24px 20px;
     display: flex;
     flex-direction: column;
-    height: 100%;
     height: calc(100vh - 60px); 
     background-color: #FFFFFC;
-    overflow: hidden;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.reservation-container::-webkit-scrollbar {
+    display: none;
 }
 
 .title {

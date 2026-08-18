@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import './NoClinicReport.css';
+import './ClinicReportTab.css';
 import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar.jsx';
 import warningGrey from '../../assets/images/warning-grey.svg';
 
-const NoClinicReport = () => {
+const ClinicReportTab = () => {
     const navigate = useNavigate();
 
     return (
@@ -21,9 +21,12 @@ const NoClinicReport = () => {
                     className="tab-item" 
                     onClick={() => navigate('/analysis/swim-report')}
                 >
-                    수영 리포트
+                    SWin 리포트
                 </div>
-                <div className="tab-item active">
+                <div 
+                    className="tab-item active" 
+                    onClick={() => navigate('/analysis/clinic-report')}
+                >
                     시술 리포트
                 </div>
             </div>
@@ -31,9 +34,9 @@ const NoClinicReport = () => {
             <div className="analysis-content empty-state-wrapper">
                 <div className="empty-state-info no-records">
                     <img src={warningGrey} alt="기록 없음 아이콘" className="empty-icon" />
-                    <h3 className="empty-title">아직 금일 리포트가 없어요</h3>
+                    <h3 className="empty-title">준비 중인 기능이에요</h3>
                     <p className="empty-subtitle">
-                        시술을 받으시면<br />
+                        AAC와 서비스 연동이 완료되면<br />
                         시술 내역과 케어 가이드를 확인할 수 있어요
                     </p>
                 </div>
@@ -42,4 +45,4 @@ const NoClinicReport = () => {
     );
 };
 
-export default NoClinicReport;
+export default ClinicReportTab;

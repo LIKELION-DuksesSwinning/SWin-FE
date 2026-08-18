@@ -4,24 +4,65 @@ import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar.jsx';
 import reportGrey from '../../assets/images/report-grey.svg';
 import analysisNext from '../../assets/images/analysis-next.svg';
 
+const API_BASE_URL = 'http://localhost:8000/api/v1/analysis';
+
 const ClickForAnalysis = () => {
     const navigate = useNavigate();
+
+    const handleAnalysisStart = async () => {
+        navigate('/analysis/loading');
+
+        try {
+            const token = localStorage.getItem('access_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const payload = {
+                swim_record_id: 1 
+            };
+
+            const response = await fetch(`${API_BASE_URL}/skin/`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const analysisData = await response.json();
+                navigate('/analysis/result', { state: { analysisData }, replace: true });
+            } else {
+                const errorData = await response.json();
+                alert(`분석 실패: ${errorData.error?.message || '알 수 없는 오류'}`);
+                navigate('/analysis');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('서버와 통신할 수 없습니다.');
+            navigate('/analysis');
+        }
+    };
 
     return (
         <div className="analysis-container">
             <WeeklyCalendar />
 
             <div className="analysis-tab-menu">
-                <div className="tab-item active">
-                    AI 분석
+                <div 
+                    className="tab-item active" 
+                    onClick={() => navigate('/analysis')}
+                >
+                    AI 피부 분석
                 </div>
                 <div 
                     className="tab-item" 
                     onClick={() => navigate('/analysis/swim-report')}
                 >
-                    수영 리포트
+                    SWin 리포트
                 </div>
-                <div className="tab-item disabled">
+                <div 
+                    className="tab-item" 
+                    onClick={() => navigate('/analysis/clinic-report')}
+                >
                     시술 리포트
                 </div>
             </div>
@@ -36,11 +77,7 @@ const ClickForAnalysis = () => {
                     </p>
                 </div>
 
-                <button 
-                    className="ai-analysis-btn" 
-                    onClick={() => console.log('AI 피부 분석 받기 클릭')}
-                >
-
+                <button className="ai-analysis-btn" onClick={handleAnalysisStart}>
                     <div className="btn-text-area">
                         <span className="btn-small-text">내 피부 상태가 궁금하다면?</span>
                         <div className="btn-separator">
