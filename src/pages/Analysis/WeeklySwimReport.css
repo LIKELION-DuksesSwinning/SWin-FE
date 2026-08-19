@@ -13,7 +13,7 @@
     padding: 16px 20px;
     background-color: #FFFFFF;
     width: 100%;
-    box-sizing: border-box; /* 가로폭 삐져나가는 현상 방지 */
+    box-sizing: border-box;
 }
 
 .back-btn {

@@ -31,22 +31,18 @@ const TREND_MAP = {
 const AIanalysis = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    
-const [analysisData] = useState(() => {
+
+    const [analysisData] = useState(() => {
         const realData = location.state?.analysisData;
         if (!realData) return null;
-        
+
         return {
-            ...realData, // 백엔드가 준 남색 카드(GPT) 내용은 그대로 살리고!
-            
-            // 1. 수영 전후 주요 변화 (강제로 꽉 채우기)
+            ...realData,
             symptom_changes: [
                 { symptomType: "itchy", before: 2, after: 5 },
                 { symptomType: "redness", before: 3, after: 4 },
                 { symptomType: "trouble", before: 1, after: 5 }
             ],
-            
-            // 2. 최근 4주 경향 (강제로 꽉 채우기)
             four_week_trend: [
                 { symptomType: "dry", trend: "no_record" },
                 { symptomType: "tight", trend: "no_record" },
@@ -54,8 +50,6 @@ const [analysisData] = useState(() => {
                 { symptomType: "redness", trend: "maintained" },
                 { symptomType: "trouble", trend: "worsened" }
             ],
-            
-            // 3. 권장 사항 클리닉 버튼 (강제로 띄우기)
             clinic_recommendation: {
                 shown: true,
                 text: "최근 수영 후 붉음이 4회 이상 기록되었습니다.\n정확한 피부 분석을 위해 더나 클리닉 상담을 추천드려요.",
@@ -97,20 +91,20 @@ const [analysisData] = useState(() => {
             <WeeklyCalendar />
 
             <div className="analysis-tab-menu">
-                <div 
-                    className="tab-item active" 
+                <div
+                    className="tab-item active"
                     onClick={() => navigate('/analysis')}
                 >
                     AI 피부 분석
                 </div>
-                <div 
-                    className="tab-item" 
+                <div
+                    className="tab-item"
                     onClick={() => navigate('/analysis/swim-report')}
                 >
                     SWin 리포트
                 </div>
-                <div 
-                    className="tab-item" 
+                <div
+                    className="tab-item"
                     onClick={() => navigate('/analysis/clinic-report')}
                 >
                     시술 리포트
@@ -118,7 +112,7 @@ const [analysisData] = useState(() => {
             </div>
 
             <div className="analysis-content result-wrapper">
-                
+
                 <div className="pattern-box">
                     <span className="pattern-label">관찰된 패턴</span>
                     <div className="pattern-tags">
@@ -133,7 +127,7 @@ const [analysisData] = useState(() => {
                 </div>
 
                 <div className="graph-trend">
-                    
+
                 </div>
                 <div className="section-block">
                     <h3 className="section-title">수영 전후 주요 변화</h3>
@@ -143,15 +137,15 @@ const [analysisData] = useState(() => {
                                 <span className="symptom-name">{SYMPTOM_MAP[change.symptomType] || change.symptomType}</span>
                                 <div className="bar-container">
                                     <div className="bar-wrapper before-bar">
-                                        <div 
-                                            className="bar-fill" 
+                                        <div
+                                            className="bar-fill"
                                             style={{ width: getBarWidth(change.before), backgroundColor: getBarColor(change.before) }}
                                         />
                                     </div>
                                     <span className="arrow">→</span>
                                     <div className="bar-wrapper after-bar">
-                                        <div 
-                                            className="bar-fill" 
+                                        <div
+                                            className="bar-fill"
                                             style={{ width: getBarWidth(change.after), backgroundColor: getBarColor(change.after) }}
                                         />
                                     </div>
@@ -180,10 +174,10 @@ const [analysisData] = useState(() => {
                         <h3 className="section-title">권장 사항</h3>
                         <p className="recommendation-text">
                             {analysisData.clinic_recommendation.text.split('\n').map((line, i) => (
-                                <React.Fragment key={i}>{line}<br/></React.Fragment>
+                                <React.Fragment key={i}>{line}<br /></React.Fragment>
                             ))}
                         </p>
-                        <button 
+                        <button
                             className="clinic-reservation-btn"
                             onClick={() => navigate('/clinic')}
                         >
