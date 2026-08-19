@@ -23,6 +23,7 @@ import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
+import BottomNav from './components/BottomNav/BottomNav.jsx';
 
 /* ========================================
    Alert
@@ -63,6 +64,7 @@ import SwimReport from './pages/Analysis/SwimReport.jsx';
 
 /* ========================================
    My
+   ======================================== */
 
 import My from './pages/My/My.jsx';
 import Info from './pages/My/Info/Info.jsx';
