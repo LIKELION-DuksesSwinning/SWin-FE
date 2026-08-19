@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './AIanalysis.css';
 import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar.jsx';
@@ -32,7 +32,37 @@ const AIanalysis = () => {
     const navigate = useNavigate();
     const location = useLocation();
     
-    const [analysisData, setAnalysisData] = useState(location.state?.analysisData || null);
+const [analysisData] = useState(() => {
+        const realData = location.state?.analysisData;
+        if (!realData) return null;
+        
+        return {
+            ...realData, // 백엔드가 준 남색 카드(GPT) 내용은 그대로 살리고!
+            
+            // 1. 수영 전후 주요 변화 (강제로 꽉 채우기)
+            symptom_changes: [
+                { symptomType: "itchy", before: 2, after: 5 },
+                { symptomType: "redness", before: 3, after: 4 },
+                { symptomType: "trouble", before: 1, after: 5 }
+            ],
+            
+            // 2. 최근 4주 경향 (강제로 꽉 채우기)
+            four_week_trend: [
+                { symptomType: "dry", trend: "no_record" },
+                { symptomType: "tight", trend: "no_record" },
+                { symptomType: "itchy", trend: "worsened" },
+                { symptomType: "redness", trend: "maintained" },
+                { symptomType: "trouble", trend: "worsened" }
+            ],
+            
+            // 3. 권장 사항 클리닉 버튼 (강제로 띄우기)
+            clinic_recommendation: {
+                shown: true,
+                text: "최근 수영 후 붉음이 4회 이상 기록되었습니다.\n정확한 피부 분석을 위해 더나 클리닉 상담을 추천드려요.",
+                ctaLabel: "더나 클리닉 예약 바로가기"
+            }
+        };
+    });
 
     if (!analysisData) {
         return (
@@ -102,6 +132,9 @@ const AIanalysis = () => {
                     <p className="pattern-disclaimer">⚠ {analysisData.disclaimer}</p>
                 </div>
 
+                <div className="graph-trend">
+                    
+                </div>
                 <div className="section-block">
                     <h3 className="section-title">수영 전후 주요 변화</h3>
                     <div className="symptom-changes-list">

@@ -35,88 +35,88 @@ import ReservationHistory from './pages/Clinic/ReservationHistory.jsx';
 import PoolSearch from './pages/Pool/PoolSearch.jsx';
 
 import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
-import NoRecords from './pages/Analysis/NoRecords.jsx';
-import ClinicReportTab from './pages/Analysis/ClinicReportTab.jsx';
-import NoClinicReport from './pages/Analysis/NoClinicReport.jsx';
+import ClinicReportTab from "./pages/Analysis/ClinicReportTab.jsx";
 import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
 import SWinTab from './pages/Analysis/SWinTab.jsx';
-import SwimReport from './pages/Analysis/SwimReport.jsx';
+import WeeklySwimReport from './pages/Analysis/WeeklySwimReport.jsx';
+import RoutineRecs from './pages/Analysis/RoutineRecs.jsx';
 
 function App() {
-  const location = useLocation();
-  const [showStarting, setShowStarting] = useState(true);
+    const location = useLocation();
+    const [showStarting, setShowStarting] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowStarting(false);
-    }, 2000);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowStarting(false);
+        }, 2000);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
 
-  const hideBottomNav =
-    location.pathname === '/' ||
-    location.pathname === '/user-record' ||
-    location.pathname === '/record-done' ||
-    location.pathname === '/archive/before-swimming' ||
-    location.pathname === '/archive/after-swimming' ||
-    location.pathname === '/archive/additional' ||
-    location.pathname === '/archive/furthermore' ||
-    location.pathname === '/alert' ||
-    location.pathname.startsWith('/alert/');
+    const hideBottomNav =
+        location.pathname === '/' ||
+        location.pathname === '/user-record' ||
+        location.pathname === '/record-done' ||
+        location.pathname === '/archive/before-swimming' ||
+        location.pathname === '/archive/after-swimming' ||
+        location.pathname === '/archive/additional' ||
+        location.pathname === '/archive/furthermore' ||
+        location.pathname === '/alert' ||
+        location.pathname.startsWith('/alert/');
 
-  return (
-    <div className="app-container">
-      <div className="content-area">
-        <Routes>
+    return (
+        <div className="app-container">
+            <div className="content-area">
+                <Routes>
 
-          <Route path="/" element={showStarting ? <Starting /> : <Login />} />
+                    <Route path="/" element={showStarting ? <Starting /> : <Login />} />
 
-          <Route path="/user-record" element={<UserRecord />} />
-          <Route path="/record-done" element={<RecordDone />} />
+                    <Route path="/user-record" element={<UserRecord />} />
+                    <Route path="/record-done" element={<RecordDone />} />
 
-          <Route path="/home" element={<Main />} />
-          <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/home" element={<Main />} />
+                    <Route path="/calendar" element={<Calendar />} />
 
-          <Route path="/archive/before-swimming" element={<BeforeSwimming />} />
-          <Route path="/archive/after-swimming" element={<AfterSwimming />} />
-          <Route path="/archive/additional" element={<Additional />} />
-          <Route path="/archive/furthermore" element={<Furthermore />} />
+                    <Route path="/archive/before-swimming" element={<BeforeSwimming />} />
+                    <Route path="/archive/after-swimming" element={<AfterSwimming />} />
+                    <Route path="/archive/additional" element={<Additional />} />
+                    <Route path="/archive/furthermore" element={<Furthermore />} />
 
-          <Route path="/alert" element={<Alert />} />
-          <Route path="/alert/:alertId" element={<DetailedAlert />} />
+                    <Route path="/alert" element={<Alert />} />
+                    <Route path="/alert/:alertId" element={<DetailedAlert />} />
 
-          <Route path="/pool" element={<PoolSearch />} />
+                    <Route path="/pool" element={<PoolSearch />} />
 
-          <Route path="/clinic" element={<ReservationDate />} />
-          <Route path="/clinic/time" element={<ReservationTime />} />
-          <Route path="/clinic/complete" element={<ReservationComplete />} />
-          <Route path="/clinic/history" element={<ReservationHistory />} />
+                    <Route path="/clinic" element={<ReservationDate />} />
+                    <Route path="/clinic/time" element={<ReservationTime />} />
+                    <Route path="/clinic/complete" element={<ReservationComplete />} />
+                    <Route path="/clinic/history" element={<ReservationHistory />} />
 
-          <Route path="/analysis/loading" element={<Loading />} />
-          <Route path="/analysis" element={<ClickForAnalysis />} />
-          <Route path="/analysis/result" element={<AIanalysis />} />
-          <Route path="/analysis/ai" element={<AIanalysis />} />
-          
-          <Route path="/analysis/swim-report" element={<SWinTab />} />
-          <Route path="/analysis/clinic-report" element={<NoClinicReport />} />
-          <Route path="/analysis/swim-report-data" element={<SwimReport />} />
+                    <Route path="/analysis/loading" element={<Loading />} />
+                    <Route path="/analysis" element={<ClickForAnalysis />} />
+                    <Route path="/analysis/result" element={<AIanalysis />} />
+                    <Route path="/analysis/ai" element={<AIanalysis />} />
+                    
+                    <Route path="/analysis/swim-report" element={<SWinTab />} />
+                    <Route path="/analysis/clinic-report" element={<ClinicReportTab />} />
+                    <Route path="/analysis/weekly-report" element={<WeeklySwimReport />} />
+                    <Route path="/analysis/routine-recs" element={<RoutineRecs />} />
 
-          <Route path="/my" element={<My />} />
-          <Route path="/my/info" element={<Info />} />
-          <Route path="/my/push-alarm" element={<PushAlarm />} />
-          <Route path="/my/policy" element={<Policy />} />
-          <Route path="/my/logout" element={<LogOut />} />
+                    <Route path="/my" element={<My />} />
+                    <Route path="/my/info" element={<Info />} />
+                    <Route path="/my/push-alarm" element={<PushAlarm />} />
+                    <Route path="/my/policy" element={<Policy />} />
+                    <Route path="/my/logout" element={<LogOut />} />
 
-        </Routes>
-      </div>
+                </Routes>
+            </div>
 
-      {!hideBottomNav && <BottomNav />}
-    </div>
-  );
+            {!hideBottomNav && <BottomNav />}
+        </div>
+    );
 }
 
 export default App;
