@@ -1,16 +1,11 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-
-import './WeeklyCalendar.css';
+import { useEffect, useMemo, useState } from 'react';
 
 import arrowPrev from '../../assets/images/arrow-prev.svg';
 import arrowNext from '../../assets/images/arrow-next.svg';
 
 import { apiRequest } from '../../api/axios';
 
+import './WeeklyCalendar.css';
 
 const WEEK_DAYS = [
   'Su',
@@ -22,42 +17,19 @@ const WEEK_DAYS = [
   'Sa',
 ];
 
-
-/* ========================================
-   Date → YYYY-MM-DD
-======================================== */
-
 const formatDateKey = (date) => {
   const year = date.getFullYear();
-
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, '0');
-
-  const day = String(
-    date.getDate()
-  ).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 };
 
-
-/* ========================================
-   API datetime → YYYY-MM-DD
-======================================== */
-
 const getScheduleDateKey = (datetime) => {
-  if (!datetime) {
-    return null;
-  }
+  if (!datetime) return null;
 
   return String(datetime).slice(0, 10);
 };
-
-
-/* ========================================
-   API schedule → 화면용 schedule
-======================================== */
 
 const normalizeSchedule = (schedule) => ({
   id: schedule?.schedule_id,
@@ -104,11 +76,6 @@ const normalizeSchedule = (schedule) => ({
     schedule?.repeat_until ?? null,
 });
 
-
-/* ========================================
-   월별 일정 조회
-======================================== */
-
 const fetchSchedulesByMonth = async (
   year,
   month
@@ -136,11 +103,6 @@ const fetchSchedulesByMonth = async (
     );
 };
 
-
-/* ========================================
-   해당 날짜가 포함된 주의 일요일
-======================================== */
-
 const getSunday = (date) => {
   const sunday = new Date(date);
 
@@ -157,11 +119,6 @@ const getSunday = (date) => {
 
   return sunday;
 };
-
-
-/* ========================================
-   해당 주의 7일
-======================================== */
 
 const getWeekDates = (date) => {
   const sunday = getSunday(date);
@@ -181,77 +138,39 @@ const getWeekDates = (date) => {
   );
 };
 
-
 const WeeklyCalendar = ({
   schedules: controlledSchedules = null,
   selectedDate: controlledSelectedDate = null,
   onDateChange = null,
 }) => {
-  /* ========================================
-     초기 날짜
-  ======================================== */
-
   const initialDate =
     controlledSelectedDate
       ? new Date(controlledSelectedDate)
       : new Date();
-
-
-  /* ========================================
-     현재 주의 기준 날짜
-  ======================================== */
 
   const [
     currentWeekDate,
     setCurrentWeekDate,
   ] = useState(initialDate);
 
-
-  /* ========================================
-     내부 선택 날짜
-
-     controlledSelectedDate가 전달되지 않는
-     독립 사용을 위한 fallback state
-  ======================================== */
-
   const [
     internalSelectedDate,
     setInternalSelectedDate,
   ] = useState(initialDate);
-
-
-  /* ========================================
-     실제 선택 날짜
-  ======================================== */
-
-  const selectedDate =
-    controlledSelectedDate ||
-    internalSelectedDate;
-
-
-  /* ========================================
-     API 일정
-  ======================================== */
 
   const [
     fetchedSchedules,
     setFetchedSchedules,
   ] = useState([]);
 
-
-  /* ========================================
-     API 일정 조회 중 여부
-  ======================================== */
-
   const [
     isFetchingSchedules,
     setIsFetchingSchedules,
   ] = useState(false);
 
-
-  /* ========================================
-     현재 주 날짜
-  ======================================== */
+  const selectedDate =
+    controlledSelectedDate ||
+    internalSelectedDate;
 
   const weekDates = useMemo(
     () =>
@@ -261,28 +180,15 @@ const WeeklyCalendar = ({
     [currentWeekDate]
   );
 
-
-  /* ========================================
-     로딩 상태
-
-     부모에게 schedules가 전달된 경우에는
-     자체 API 조회를 하지 않음
-  ======================================== */
-
   const isLoading =
     controlledSchedules === null &&
     isFetchingSchedules;
-
-
-  /* ========================================
-     이번 주가 포함된 월 조회
-  ======================================== */
 
   useEffect(() => {
     if (
       controlledSchedules !== null
     ) {
-      return;
+      return undefined;
     }
 
     let isMounted = true;
@@ -299,11 +205,6 @@ const WeeklyCalendar = ({
         const lastDate =
           weekDates[6];
 
-
-        /* ========================================
-           첫 번째 월
-        ======================================== */
-
         const monthRequests = [
           {
             year:
@@ -314,12 +215,6 @@ const WeeklyCalendar = ({
           },
         ];
 
-
-        /* ========================================
-           마지막 날짜가 다른 월에 있다면
-           해당 월도 추가 조회
-        ======================================== */
-
         const lastMonth = {
           year:
             lastDate.getFullYear(),
@@ -327,7 +222,6 @@ const WeeklyCalendar = ({
           month:
             lastDate.getMonth() + 1,
         };
-
 
         if (
           monthRequests[0].year !==
@@ -340,11 +234,6 @@ const WeeklyCalendar = ({
           );
         }
 
-
-        /* ========================================
-           월별 API 요청
-        ======================================== */
-
         const results =
           await Promise.all(
             monthRequests.map(
@@ -356,18 +245,8 @@ const WeeklyCalendar = ({
             )
           );
 
-
-        /* ========================================
-           API 결과 병합
-        ======================================== */
-
         const merged =
           results.flat();
-
-
-        /* ========================================
-           schedule_id 기준 중복 제거
-        ======================================== */
 
         const uniqueSchedules =
           Array.from(
@@ -380,7 +259,6 @@ const WeeklyCalendar = ({
               )
             ).values()
           );
-
 
         if (isMounted) {
           setFetchedSchedules(
@@ -413,43 +291,24 @@ const WeeklyCalendar = ({
     controlledSchedules,
   ]);
 
-
-  /* ========================================
-     실제 일정 데이터
-  ======================================== */
-
   const schedules =
     controlledSchedules !== null
       ? controlledSchedules
       : fetchedSchedules;
 
-
-  /* ========================================
-     헤더 월
-  ======================================== */
-
   const headerDate =
     weekDates[3];
 
-
   const year =
     headerDate.getFullYear();
-
 
   const month = String(
     headerDate.getMonth() + 1
   ).padStart(2, '0');
 
-
-  /* ========================================
-     이전 주
-  ======================================== */
-
   const handlePrevWeek = () => {
     const prevWeek =
-      new Date(
-        currentWeekDate
-      );
+      new Date(currentWeekDate);
 
     prevWeek.setDate(
       prevWeek.getDate() - 7
@@ -460,16 +319,9 @@ const WeeklyCalendar = ({
     );
   };
 
-
-  /* ========================================
-     다음 주
-  ======================================== */
-
   const handleNextWeek = () => {
     const nextWeek =
-      new Date(
-        currentWeekDate
-      );
+      new Date(currentWeekDate);
 
     nextWeek.setDate(
       nextWeek.getDate() + 7
@@ -480,14 +332,7 @@ const WeeklyCalendar = ({
     );
   };
 
-
-  /* ========================================
-     날짜 선택
-  ======================================== */
-
-  const handleDateClick = (
-    date
-  ) => {
+  const handleDateClick = (date) => {
     setInternalSelectedDate(
       date
     );
@@ -496,11 +341,6 @@ const WeeklyCalendar = ({
       onDateChange(date);
     }
   };
-
-
-  /* ========================================
-     특정 날짜 일정 조회
-  ======================================== */
 
   const getSchedulesForDate = (
     date
@@ -514,24 +354,14 @@ const WeeklyCalendar = ({
     );
   };
 
-
   return (
     <section className="weekly-calendar">
-
-      {/* ========================================
-          Header
-      ======================================== */}
-
       <div className="calendar-header">
-
         <div className="calendar-navigation">
-
           <button
             type="button"
             className="calendar-arrow"
-            onClick={
-              handlePrevWeek
-            }
+            onClick={handlePrevWeek}
             aria-label="이전 주"
           >
             <img
@@ -540,19 +370,15 @@ const WeeklyCalendar = ({
             />
           </button>
 
-
           <span className="calendar-month">
             {year}년&nbsp;&nbsp;
             {month}월
           </span>
 
-
           <button
             type="button"
             className="calendar-arrow"
-            onClick={
-              handleNextWeek
-            }
+            onClick={handleNextWeek}
             aria-label="다음 주"
           >
             <img
@@ -560,106 +386,66 @@ const WeeklyCalendar = ({
               alt=""
             />
           </button>
-
         </div>
 
-
-        {/* ========================================
-            수영 / 클리닉 범례
-        ======================================== */}
-
         <div className="schedule-legend">
-
           <div className="legend-item">
-            <span
-              className="legend-dot swim-dot"
-            />
+            <span className="legend-dot swim-dot" />
             <span>수영</span>
           </div>
 
-
           <div className="legend-item">
-            <span
-              className="legend-dot clinic-dot"
-            />
+            <span className="legend-dot clinic-dot" />
             <span>클리닉</span>
           </div>
-
         </div>
-
       </div>
-
-
-      {/* ========================================
-          Weekdays
-      ======================================== */}
 
       <div className="calendar-weekdays">
-
-        {WEEK_DAYS.map(
-          (day, index) => (
-            <div
-              key={day}
-              className={`calendar-weekday ${
-                index === 0
-                  ? 'sunday'
-                  : ''
-              } ${
-                index === 6
-                  ? 'saturday'
-                  : ''
-              }`}
-            >
-              {day}
-            </div>
-          )
-        )}
-
+        {WEEK_DAYS.map((day, index) => (
+          <div
+            key={day}
+            className={`calendar-weekday ${
+              index === 0
+                ? 'sunday'
+                : ''
+            } ${
+              index === 6
+                ? 'saturday'
+                : ''
+            }`}
+          >
+            {day}
+          </div>
+        ))}
       </div>
 
-
-      {/* ========================================
-          Dates
-      ======================================== */}
-
       <div className="calendar-dates">
-
         {weekDates.map((date) => {
           const dateKey =
             formatDateKey(date);
-
 
           const isSelected =
             selectedDate &&
             dateKey ===
               formatDateKey(
-                new Date(
-                  selectedDate
-                )
+                new Date(selectedDate)
               );
 
-
           const daySchedules =
-            getSchedulesForDate(
-              date
-            );
-
+            getSchedulesForDate(date);
 
           const hasSwim =
             daySchedules.some(
               (schedule) =>
-                schedule.type ===
-                'swim'
+                schedule.type === 'swim'
             );
-
 
           const hasClinic =
             daySchedules.some(
               (schedule) =>
-                schedule.type ===
-                'clinic'
+                schedule.type === 'clinic'
             );
-
 
           return (
             <button
@@ -671,21 +457,15 @@ const WeeklyCalendar = ({
                   : ''
               }`}
               onClick={() =>
-                handleDateClick(
-                  date
-                )
+                handleDateClick(date)
               }
             >
-
               <div className="date-circle">
-
                 <span className="date-number">
                   {date.getDate()}
                 </span>
 
-
                 <div className="schedule-dots">
-
                   {hasSwim && (
                     <span
                       className="schedule-dot swim-dot"
@@ -693,31 +473,18 @@ const WeeklyCalendar = ({
                     />
                   )}
 
-
                   {hasClinic && (
                     <span
                       className="schedule-dot clinic-dot"
                       aria-label="클리닉 일정"
                     />
                   )}
-
                 </div>
-
               </div>
-
             </button>
           );
         })}
-
       </div>
-
-
-      {/* ========================================
-          Loading 상태
-
-          현재 CSS 구조를 유지하기 위해
-          실제 화면에는 표시하지 않음
-      ======================================== */}
 
       <span
         aria-hidden="true"
@@ -729,10 +496,8 @@ const WeeklyCalendar = ({
           ? 'loading'
           : ''}
       </span>
-
     </section>
   );
 };
-
 
 export default WeeklyCalendar;

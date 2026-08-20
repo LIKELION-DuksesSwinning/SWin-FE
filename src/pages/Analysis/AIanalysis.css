@@ -1,31 +1,26 @@
 .analysis-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); 
+    height: calc(100vh - 60px);
     background-color: #FFFFFC;
     overflow-y: auto;
-    
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
 .analysis-container::-webkit-scrollbar {
     display: none;
 }
 
 .analysis-tab-menu {
     display: flex;
-    height: 44px;
-    padding: 12px 24px;
-    justify-content: center;
-    align-items: center;
-    gap: 35px;
-    margin-top: 3px;
+    border-bottom: 1px solid #D9D9D9;
 }
 
 .tab-item {
     flex: 1;
     text-align: center;
-    padding: 12px 0;
+    padding: 16px 0;
     font-size: 16px;
     color: #767676;
     cursor: pointer;
@@ -35,38 +30,188 @@
 .tab-item.active {
     color: #111111;
     font-weight: 600;
-    border-bottom: 1px solid #111111; 
+    border-bottom: 2px solid #111111;
 }
 
 .tab-item.disabled {
     cursor: default;
 }
 
-.analysis-content {
-    flex: 1;
-    padding: 24px 20px;
+.analysis-content.result-wrapper {
+    padding: 0 0 100px 0;
+    text-align: left;
 }
 
-.report-cards-container {
-    display: flex;
-    gap: 16px;
-    padding: 24px 20px;
+.pattern-box {
+    background-color: #082567;
+    border-radius: 16px;
+    padding: 20px 16px 16px 16px;
+    margin: 32px 40px;
+    color: #FFFFFC;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: left;
 }
 
-.report-card-btn {
-    flex: 1;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.report-card-btn img {
-    width: 100%;
-    height: auto;
+.pattern-label {
+    font-size: 12px;
+    color: rgba(217, 217, 217, 0.8);
     display: block;
-    object-fit: contain;
+    margin-bottom: 16px;
+}
+
+.pattern-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.pattern-title {
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.pattern-desc {
+    font-size: 16px;
+    line-height: 1.25;
+    margin: 0 0 18px 0;
+    color: rgba(217, 217, 217, 0.8);
+    font-weight: 400;
+}
+
+.pattern-disclaimer {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.section-block {
+    padding: 0 40px;
+    margin-bottom: 40px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111111;
+    margin: 0 0 20px 0;
+    text-align: left;
+}
+
+.symptom-changes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.symptom-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.symptom-name {
+    width: 60px;
+    font-size: 15px;
+    color: #111111;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.bar-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bar-wrapper {
+    flex: 1;
+    height: 8px;
+    background-color: #F5F5F5;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease-in-out;
+}
+
+.arrow {
+    font-size: 14px;
+    color: #D9D9D9;
+    flex-shrink: 0;
+}
+
+.trend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.trend-row {
+    display: flex;
+    gap: 32px;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.trend-name {
+    width: 60px;
+    font-size: 15px;
+    color: #111111;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.trend-value {
+    font-size: 14px;
+    color: #111111;
+    text-align: left;
+}
+
+.trend-value.worsened {
+    font-weight: 600;
+}
+
+.recommendation-block {
+    margin-bottom: 0;
+}
+
+.recommendation-text {
+    font-size: 14px;
+    color: #111111;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    text-align: left;
+}
+
+.clinic-reservation-btn {
+    width: 224px;
+    height: 52px;
+    background-color: #fff76b;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #111111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-arrow {
+    width: 20px;
+    height: 20px;
 }

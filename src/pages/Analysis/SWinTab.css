@@ -1,7 +1,7 @@
 .analysis-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); 
+    height: calc(100vh - 60px);
     background-color: #FFFFFC;
     overflow-y: auto;
     
@@ -16,6 +16,7 @@
     display: flex;
     height: 44px;
     padding: 12px 24px;
+    margin-top: 4px;
     justify-content: center;
     align-items: center;
     gap: 35px;
@@ -49,30 +50,61 @@
 
 .report-cards-container {
     display: flex;
-    gap: 40px;
-    padding: 34px 43px;
+    gap: 12px;
+    padding: 52px 29px 0 29px;
 }
 
 .report-card-btn {
-    flex: 1; 
-    padding: 0;
+    flex: 1;
+    padding: 14.5px 12px;
+    width: 166px;
+    height: 185px;
     cursor: pointer;
     overflow: hidden;
     display: flex;
-    padding: 32px 12px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 16px;
     border-radius: 8px;
-    border: 1px solid #D9D9D9;
-    background: #FFF;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(217, 217, 217, 0.38);
+    background: #fffffc;
+    box-shadow: 0 8px 18px 0 rgba(10, 26, 51, 0.05);
 }
 
-.report-card-btn img {
-    width: 60px;
-    height: 60px;
-    display: block;
-    object-fit: contain;
+.swin-report-icon, .routine-recs-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-self: flex-start;
+    margin-left: 10px;
+}
+
+.title-subtitle-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    gap: 4px;
+}
+
+.report-card-title {
+    font-size: 16px;
+    color: #111111;
+    font-weight: 700;
+}
+
+.report-card-subtitle {
+    font-size: 12px;
+    color: #767676;
+    line-height: 1.4;
+    word-break: keep-all;
+}
+
+.report-card-next-icon {
+    align-self: flex-end;
+    width: 24px;
+    height: 24px;
 }

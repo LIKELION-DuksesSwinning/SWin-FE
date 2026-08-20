@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  useNavigate,
+} from 'react-router-dom';
 
 import prevBtn from '../../assets/images/prev-btn.svg';
 
@@ -10,91 +16,295 @@ import {
 
 import './Alert.css';
 
+/* ========================================
+   날짜 표시 변환
+======================================== */
+
+const formatNotificationDate = (
+  createdAt
+) => {
+  if (!createdAt) {
+    return '';
+  }
+
+  const date =
+    new Date(createdAt);
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return createdAt;
+  }
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    date.getMonth() + 1;
+
+  const day =
+    date.getDate();
+
+  const hour =
+    date.getHours();
+
+  const minute =
+    date.getMinutes();
+
+  const period =
+    hour < 12
+      ? '오전'
+      : '오후';
+
+  const displayHour =
+    hour % 12 || 12;
+
+  const paddedMinute =
+    String(minute).padStart(
+      2,
+      '0'
+    );
+
+  return `${year}년 ${month}월 ${day}일 ${period} ${displayHour}시 ${paddedMinute}분`;
+};
+
+/* ========================================
+   API → 화면 데이터 변환
+======================================== */
+
+const mapNotification = (
+  notification
+) => {
+  const createdAt =
+    notification?.created_at ??
+    notification?.createdAt ??
+    '';
+
+  return {
+    id:
+      notification?.id,
+
+    category:
+      notification?.category ?? null,
+
+    categoryDisplay:
+      notification?.category_display ??
+      notification?.categoryDisplay ??
+      '',
+
+    title:
+      notification?.title ?? '',
+
+    content:
+      notification?.content ?? '',
+
+    isRead:
+      Boolean(
+        notification?.is_read ??
+        notification?.isRead ??
+        false
+      ),
+
+    createdAt,
+
+    date:
+      formatNotificationDate(
+        createdAt
+      ),
+  };
+};
+
+/* ========================================
+   응답에서 알림 배열 추출
+======================================== */
+
+const getNotificationList = (
+  response
+) => {
+  if (
+    Array.isArray(response)
+  ) {
+    return response;
+  }
+
+  if (
+    Array.isArray(
+      response?.notifications
+    )
+  ) {
+    return response.notifications;
+  }
+
+  if (
+    Array.isArray(
+      response?.data?.notifications
+    )
+  ) {
+    return response.data.notifications;
+  }
+
+  if (
+    Array.isArray(
+      response?.data
+    )
+  ) {
+    return response.data;
+  }
+
+  return [];
+};
+
 function Alert() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [alerts, setAlerts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [
+    alerts,
+    setAlerts,
+  ] = useState([]);
 
-  // 알림 불러오기
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(true);
+
+  const [
+    error,
+    setError,
+  ] = useState('');
+
+  /* ========================================
+     알림 목록 조회
+  ======================================== */
+
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setIsLoading(true);
-        setError('');
+    const loadNotifications =
+      async () => {
+        try {
+          setIsLoading(
+            true
+          );
 
-        const response = await getNotifications();
+          setError('');
 
-        const notificationList =
-          response?.data?.notifications ??
-          response?.data ??
-          [];
+          const response =
+            await getNotifications();
 
-        const formattedAlerts = notificationList.map((notification) => ({
-          id: notification.id,
-          title: notification.title ?? '',
-          content: notification.content ?? '',
-          date: notification.createdAt ?? notification.created_at ?? '',
-          isRead: notification.isRead ?? notification.is_read ?? false,
-        }));
+          const notificationList =
+            getNotificationList(
+              response
+            );
 
-        setAlerts(formattedAlerts);
-      } catch (err) {
-        console.error('알림 조회 실패:', err);
-        setError('알림을 불러오지 못했습니다.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+          setAlerts(
+            notificationList.map(
+              mapNotification
+            )
+          );
+        } catch (loadError) {
+          console.error(
+            '알림 목록 조회 실패:',
+            loadError
+          );
 
-    fetchNotifications();
+          setError(
+            loadError?.message ||
+            '알림을 불러오지 못했습니다.'
+          );
+        } finally {
+          setIsLoading(
+            false
+          );
+        }
+      };
+
+    loadNotifications();
   }, []);
 
-  // 뒤로가기
+  /* ========================================
+     뒤로가기
+  ======================================== */
+
   const handleBack = () => {
     navigate(-1);
   };
 
-  // 알림 클릭
-  const handleAlertClick = async (alert) => {
-    try {
-      if (!alert.isRead) {
-        await markNotificationAsRead(alert.id);
+  /* ========================================
+     알림 클릭
+  ======================================== */
 
-        setAlerts((prevAlerts) =>
-          prevAlerts.map((item) =>
-            item.id === alert.id
-              ? { ...item, isRead: true }
-              : item
-          )
+  const handleAlertClick =
+    async (
+      alert
+    ) => {
+      const wasUnread =
+        !alert.isRead;
+
+      const updatedAlert = {
+        ...alert,
+        isRead: true,
+      };
+
+      try {
+        if (wasUnread) {
+          setAlerts(
+            (prevAlerts) =>
+              prevAlerts.map(
+                (item) =>
+                  item.id === alert.id
+                    ? updatedAlert
+                    : item
+              )
+          );
+
+          await markNotificationAsRead(
+            alert.id
+          );
+        }
+
+        navigate(
+          `/alert/${alert.id}`,
+          {
+            state: {
+              alert: updatedAlert,
+            },
+          }
+        );
+      } catch (readError) {
+        console.error(
+          '알림 읽음 처리 실패:',
+          readError
+        );
+
+        if (wasUnread) {
+          setAlerts(
+            (prevAlerts) =>
+              prevAlerts.map(
+                (item) =>
+                  item.id === alert.id
+                    ? {
+                        ...item,
+                        isRead: false,
+                      }
+                    : item
+              )
+          );
+        }
+
+        navigate(
+          `/alert/${alert.id}`,
+          {
+            state: {
+              alert,
+            },
+          }
         );
       }
-    } catch (err) {
-      console.error('알림 읽음 처리 실패:', err);
-    }
-  };
-
-  // 날짜 표시
-  const formatDate = (date) => {
-    if (!date) return '';
-
-    const parsedDate = new Date(date);
-
-    if (Number.isNaN(parsedDate.getTime())) {
-      return date;
-    }
-
-    return parsedDate.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
+    };
 
   return (
     <main className="alert-page">
-
       {/* Header */}
       <header className="alert-header">
         <button
@@ -105,7 +315,7 @@ function Alert() {
         >
           <img
             src={prevBtn}
-            alt=""
+            alt="이전"
           />
         </button>
 
@@ -122,13 +332,14 @@ function Alert() {
       )}
 
       {/* Error */}
-      {!isLoading && error && (
-        <section className="alert-list">
-          <div className="alert-empty alert-error">
-            {error}
-          </div>
-        </section>
-      )}
+      {!isLoading &&
+        error && (
+          <section className="alert-list">
+            <div className="alert-empty alert-error">
+              {error}
+            </div>
+          </section>
+        )}
 
       {/* Empty */}
       {!isLoading &&
@@ -145,16 +356,24 @@ function Alert() {
       {!isLoading &&
         !error &&
         alerts.length > 0 && (
-          <section className="alert-list">
-
+          <section
+            className="alert-list"
+            aria-label="알림 목록"
+          >
             {alerts.map((alert) => (
               <button
                 key={alert.id}
                 type="button"
                 className={`alert-item ${
-                  alert.isRead ? 'read' : 'unread'
+                  alert.isRead
+                    ? 'read'
+                    : 'unread'
                 }`}
-                onClick={() => handleAlertClick(alert)}
+                onClick={() =>
+                  handleAlertClick(
+                    alert
+                  )
+                }
               >
                 <span className="alert-title">
                   {alert.title}
@@ -165,11 +384,10 @@ function Alert() {
                 </span>
 
                 <span className="alert-date">
-                  {formatDate(alert.date)}
+                  {alert.date}
                 </span>
               </button>
             ))}
-
           </section>
         )}
     </main>

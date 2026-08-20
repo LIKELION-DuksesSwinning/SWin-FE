@@ -18,7 +18,7 @@ const NoRecords = () => {
                     className="tab-item" 
                     onClick={() => navigate('/analysis/swim-report')}
                 >
-                    수영 리포트
+                    SWin 리포트
                 </div>
                 <div className="tab-item disabled">
                     시술 리포트
