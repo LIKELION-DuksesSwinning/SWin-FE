@@ -1,13 +1,33 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './ClickForAnalysis.css';
+import './AIanalysis.css';
 import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar.jsx';
-import reportGrey from '../../assets/images/report-grey.svg';
-import analysisNext from '../../assets/images/analysis-next.svg';
-import { getSwimRecords } from '../../api/records';
+import rightArrow from '../../assets/images/arrow-next.svg';
 import { apiRequest } from '../../api/axios';
 
-const API_BASE_URL = 'https://miseno.store/api/v1/analysis';
+const PATTERN_MAP = {
+    redness_type: '붉음 반응형',
+    dry_tight_type: '건조·당김형',
+    itch_type: '가려움 반응형',
+    trouble_type: '트러블 반응형',
+    normal: '이상 없음',
+    need_expert: '전문 확인 필요',
+};
+
+const SYMPTOM_MAP = {
+    redness: '붉음',
+    dry: '건조',
+    tight: '당김',
+    itchy: '가려움',
+    trouble: '트러블',
+};
+
+const TREND_MAP = {
+    worsened: '악화',
+    improved: '호전',
+    maintained: '유지',
+    no_record: '기록 없음',
+};
 
 const formatDateKey = (date) => {
     if (!date) return '';
@@ -19,144 +39,126 @@ const formatDateKey = (date) => {
     return `${year}-${month}-${day}`;
 };
 
-const ClickForAnalysis = () => {
+const AIanalysis = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
     const [selectedDate, setSelectedDate] = useState(() => {
-        const passedDate = location.state?.selectedDate;
+        const passedDate = location.state?.selectedDate || location.state?.date;
         return passedDate ? new Date(passedDate) : new Date();
     });
 
-    const [showNoRecordError, setShowNoRecordError] = useState(false);
-    const [isChecking, setIsChecking] = useState(false);
-    const [records, setRecords] = useState([]);
+    const [analysisData, setAnalysisData] = useState(null);
 
     useEffect(() => {
-        const loadRecords = async () => {
-            try {
-                const data = await getSwimRecords('latest');
-                const fetchedRecords = Array.isArray(data?.records) ? data.records : [];
-                setRecords(fetchedRecords);
-            } catch (error) {
-                setRecords([]);
-            }
-        };
-        loadRecords();
-    }, []);
+        let isMounted = true;
+        const dateKey = formatDateKey(selectedDate);
 
-    useEffect(() => {
-        const checkExistingAnalysis = async () => {
+        // 🌟 1. 방금 분석 버튼을 눌러서 넘어온 따끈따끈한 데이터가 있는지 확인
+        const passedData = location.state?.analysisData;
+        const passedDateStr = location.state?.selectedDate 
+            ? formatDateKey(new Date(location.state.selectedDate)) 
+            : null;
+
+        if (passedData && passedDateStr === dateKey) {
+            // 넘어온 데이터가 현재 달력 날짜와 같다면 바로 보여줌! (강제 초기화 삭제로 무한루프 방지)
+            setAnalysisData(passedData);
+            return; 
+        }
+
+        // 🌟 2. 넘어온 데이터가 없다면, 백엔드 지침대로 GET API를 찔러서 확인!
+        const fetchAnalysis = async () => {
             try {
-                const dateKey = formatDateKey(selectedDate);
                 const data = await apiRequest(`/api/v1/analysis/skin/?date=${dateKey}`);
                 const results = Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []);
 
                 if (results.length > 0) {
+                    // 결과가 있으면 상세 API 한 번 더 호출!
                     const detailData = await apiRequest(`/api/v1/analysis/skin/${results[0].id}/`);
-                    navigate('/analysis/result', {
-                        state: {
-                            analysisData: detailData,
-                            selectedDate: selectedDate.toISOString(),
-                        },
-                        replace: true,
-                    });
+                    if (isMounted) setAnalysisData(detailData);
+                } else {
+                    // 결과가 없으면 버튼이 있는 화면(ClickForAnalysis)으로 돌려보냄!
+                    if (isMounted) {
+                        navigate('/analysis', {
+                            state: { selectedDate: selectedDate.toISOString() },
+                            replace: true
+                        });
+                    }
                 }
             } catch (error) {
+                if (isMounted) {
+                    navigate('/analysis', {
+                        state: { selectedDate: selectedDate.toISOString() },
+                        replace: true
+                    });
+                }
             }
         };
 
-        checkExistingAnalysis();
-    }, [selectedDate, navigate]);
+        fetchAnalysis();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [selectedDate, location.state, navigate]);
 
     const handleDateChange = (newDate) => {
+        // 달력 날짜를 바꾸면 자연스럽게 useEffect가 다시 실행됩니다.
         setSelectedDate(newDate);
-        setShowNoRecordError(false);
     };
 
-    const getAfterRecordForSelectedDate = (recordList) => {
-        const selectedDateKey = formatDateKey(selectedDate);
+    if (!analysisData) {
+        return (
+            <div className="analysis-container">
+                <WeeklyCalendar
+                    selectedDate={selectedDate}
+                    onDateChange={handleDateChange}
+                />
 
-        return recordList.find((record) => {
-            if (record.timing !== 'AFTER') {
-                return false;
-            }
+                <div className="analysis-tab-menu">
+                    <div
+                        className="tab-item active"
+                        onClick={() => navigate('/analysis')}
+                    >
+                        AI 피부 분석
+                    </div>
+                    <div
+                        className="tab-item"
+                        onClick={() => navigate('/analysis/swim-report')}
+                    >
+                        SWin 리포트
+                    </div>
+                    <div
+                        className="tab-item"
+                        onClick={() => navigate('/analysis/clinic-report')}
+                    >
+                        시술 리포트
+                    </div>
+                </div>
 
-            if (!record.created_at) {
-                return false;
-            }
+                <div className="analysis-content empty-state-wrapper">
+                    <p
+                        style={{
+                            textAlign: 'center',
+                            marginTop: '40px',
+                            color: '#767676',
+                        }}
+                    >
+                        분석 데이터를 불러오는 중입니다...
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
-            return record.created_at.slice(0, 10) === selectedDateKey;
-        });
+    const getBarWidth = (score) => {
+        return `${(score / 5) * 100}%`;
     };
 
-    const handleAnalysisStart = async () => {
-        if (isChecking) return;
-
-        setIsChecking(true);
-        setShowNoRecordError(false);
-
-        try {
-            const data = await getSwimRecords('latest');
-            const fetchedRecords = Array.isArray(data?.records) ? data.records : [];
-            setRecords(fetchedRecords);
-
-            const afterRecord = getAfterRecordForSelectedDate(fetchedRecords);
-
-            if (!afterRecord) {
-                setShowNoRecordError(true);
-                return;
-            }
-
-            const recordId = afterRecord.record_id || afterRecord.id;
-
-            if (!recordId) {
-                setShowNoRecordError(true);
-                return;
-            }
-
-            const token = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
-            const headers = { 'Content-Type': 'application/json' };
-
-            if (token) {
-                headers.Authorization = `Bearer ${token}`;
-            }
-
-            const response = await fetch(`${API_BASE_URL}/skin/`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({
-                    swim_record_id: Number(recordId),
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (response.ok) {
-                navigate('/analysis/result', {
-                    state: {
-                        analysisData: responseData,
-                        selectedDate: selectedDate.toISOString(),
-                    },
-                    replace: true,
-                });
-                return;
-            }
-
-            let errorMessage = '알 수 없는 오류';
-
-            if (responseData?.error?.fields?.swim_record_id) {
-                errorMessage = responseData.error.fields.swim_record_id[0];
-            } else if (responseData?.error?.message) {
-                errorMessage = responseData.error.message;
-            }
-
-            alert(`분석 실패: ${errorMessage}`);
-        } catch (error) {
-            alert('서버와 통신할 수 없습니다.');
-        } finally {
-            setIsChecking(false);
-        }
+    const getBarColor = (score) => {
+        if (score >= 4) return '#FF3636';
+        if (score >= 2) return '#FFA800';
+        return '#008AF4';
     };
 
     return (
@@ -169,7 +171,7 @@ const ClickForAnalysis = () => {
             <div className="analysis-tab-menu">
                 <div
                     className="tab-item active"
-                    onClick={() => navigate('/analysis')}
+                    onClick={() => navigate('/analysis/result')}
                 >
                     AI 피부 분석
                 </div>
@@ -187,90 +189,95 @@ const ClickForAnalysis = () => {
                 </div>
             </div>
 
-            <div className="analysis-content empty-state-wrapper">
-                {!showNoRecordError ? (
-                    <>
-                        <div className="empty-state-info">
-                            <img
-                                src={reportGrey}
-                                alt="노트 아이콘"
-                                className="empty-icon"
-                            />
-                            <h3 className="empty-title">
-                                아직 금일 분석이 없어요
-                            </h3>
-                            <p className="empty-subtitle">
-                                분석을 받으시면
-                                <br />
-                                피부 패턴과 변화를 확인할 수 있어요
-                            </p>
-                        </div>
+            <div className="analysis-content result-wrapper">
+                <div className="pattern-box">
+                    <span className="pattern-label">관찰된 패턴</span>
+                    <div className="pattern-tags">
+                        {analysisData.pattern_types?.map((type, idx) => (
+                            <h2 key={idx} className="pattern-title">
+                                {PATTERN_MAP[type] || type}
+                            </h2>
+                        ))}
+                    </div>
+                    <p className="pattern-desc">
+                        {analysisData.pattern_description}
+                    </p>
+                    <p className="pattern-disclaimer">
+                        ⚠ {analysisData.disclaimer}
+                    </p>
+                </div>
 
-                        <button
-                            className="ai-analysis-btn"
-                            onClick={handleAnalysisStart}
-                            disabled={isChecking}
-                        >
-                            <div className="btn-text-area">
-                                <span className="btn-small-text">
-                                    {isChecking
-                                        ? '분석을 준비하고 있어요'
-                                        : '내 피부 상태가 궁금하다면?'}
+                <div className="section-block">
+                    <h3 className="section-title">수영 전후 주요 변화</h3>
+                    <div className="symptom-changes-list">
+                        {analysisData.symptom_changes?.map((change, idx) => (
+                            <div key={idx} className="symptom-row">
+                                <span className="symptom-name">
+                                    {SYMPTOM_MAP[change.symptomType] || change.symptomType}
                                 </span>
-                                <div className="btn-separator">
-                                    <span className="btn-large-text">
-                                        {isChecking
-                                            ? '잠시만 기다려 주세요'
-                                            : 'AI 피부 분석 받기'}
-                                    </span>
-                                    {!isChecking && (
-                                        <img
-                                            src={analysisNext}
-                                            alt="다음으로"
-                                            className="btn-arrow-icon"
-                                        />
-                                    )}
+                                <div className="bar-container">
+                                    <div className="bar-wrapper" style={{ backgroundColor: '#F5F5F5' }}>
+                                        {change.before > 0 && (
+                                            <div
+                                                className="bar-fill"
+                                                style={{
+                                                    width: getBarWidth(change.before),
+                                                    backgroundColor: getBarColor(change.before),
+                                                }}
+                                            />
+                                        )}
+                                    </div>
+                                    <span className="arrow">→</span>
+                                    <div className="bar-wrapper" style={{ backgroundColor: '#F5F5F5' }}>
+                                        {change.after > 0 && (
+                                            <div
+                                                className="bar-fill"
+                                                style={{
+                                                    width: getBarWidth(change.after),
+                                                    backgroundColor: getBarColor(change.after),
+                                                }}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </button>
-                    </>
-                ) : (
-                    <div
-                        style={{
-                            textAlign: 'center',
-                            marginTop: '80px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <p
-                            style={{
-                                color: '#111111',
-                                fontSize: '16px',
-                                lineHeight: '1.5',
-                                marginBottom: '32px',
-                                fontWeight: '500',
-                            }}
-                        >
-                            선택하신 날짜에 수영 전후 기록이 없어서
-                            <br />
-                            분석할 수 없어요.
+                        ))}
+                    </div>
+                </div>
+
+                <div className="section-block">
+                    <h3 className="section-title">최근 4주 경향</h3>
+                    <div className="trend-list">
+                        {analysisData.four_week_trend?.map((trend, idx) => (
+                            <div key={idx} className="trend-row">
+                                <span className="trend-name">
+                                    {SYMPTOM_MAP[trend.symptomType] || trend.symptomType}
+                                </span>
+                                <span className={`trend-value ${trend.trend}`}>
+                                    {TREND_MAP[trend.trend] || trend.trend}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {analysisData.clinic_recommendation?.shown && (
+                    <div className="section-block recommendation-block">
+                        <h3 className="section-title">권장 사항</h3>
+                        <p className="recommendation-text">
+                            {analysisData.clinic_recommendation.text?.split('\n').map((line, i) => (
+                                <React.Fragment key={i}>
+                                    {line}
+                                    <br />
+                                </React.Fragment>
+                            ))}
                         </p>
                         <button
-                            onClick={() => navigate('/home')}
-                            style={{
-                                padding: '14px 40px',
-                                backgroundColor: '#F5F5F5',
-                                color: '#111111',
-                                borderRadius: '12px',
-                                border: 'none',
-                                fontSize: '15px',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                            }}
+                            className="clinic-reservation-btn"
+                            onClick={() => navigate('/clinic')}
                         >
-                            홈으로
+                            {analysisData.clinic_recommendation.ctaLabel}
+                            <img src={rightArrow} alt="이동" className="btn-arrow" />
                         </button>
                     </div>
                 )}
@@ -279,4 +286,4 @@ const ClickForAnalysis = () => {
     );
 };
 
-export default ClickForAnalysis;
+export default AIanalysis;
