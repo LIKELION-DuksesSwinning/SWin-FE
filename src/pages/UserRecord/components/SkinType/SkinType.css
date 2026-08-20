@@ -28,13 +28,23 @@
 
 .skin-content {
   flex: 1;
-
   min-height: 0;
 
   overflow-y: auto;
   overflow-x: hidden;
 
   -webkit-overflow-scrolling: touch;
+
+  /* Firefox */
+  scrollbar-width: none;
+
+  /* 구형 Edge 및 IE */
+  -ms-overflow-style: none;
+}
+
+/* Chrome, Safari, 최신 Edge */
+.skin-content::-webkit-scrollbar {
+  display: none;
 }
 
 

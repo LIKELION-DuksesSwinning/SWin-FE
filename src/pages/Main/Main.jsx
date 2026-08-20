@@ -330,7 +330,7 @@ function Main() {
         <div className="main-greeting">
 
           <p className="main-greeting-small">
-            안녕하세요, {userName}
+            안녕하세요, {userName} 님.
           </p>
 
 

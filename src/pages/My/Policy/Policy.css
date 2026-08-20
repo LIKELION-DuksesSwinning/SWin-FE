@@ -118,8 +118,8 @@
 }
 
 .policy-toggle {
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
 
   padding: 0;
 
@@ -143,8 +143,8 @@
 }
 
 .policy-toggle.checked {
-  border-color: #111111;
-  background: #111111;
+  border-color: #082567;
+  background: #082567;
   color: #ffffff;
 }
 
