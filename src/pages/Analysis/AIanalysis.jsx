@@ -31,9 +31,11 @@ const TREND_MAP = {
 
 const formatDateKey = (date) => {
     if (!date) return '';
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
+
     return `${year}-${month}-${day}`;
 };
 
@@ -52,20 +54,20 @@ const AIanalysis = () => {
         let isMounted = true;
         const dateKey = formatDateKey(selectedDate);
 
-        // 🌟 1. 버튼 화면에서 넘어온 따끈따끈한 분석 데이터가 있다면 그대로 사용!
         const passedData = location.state?.analysisData;
         const passedDateStr = location.state?.selectedDate 
             ? formatDateKey(new Date(location.state.selectedDate)) 
             : null;
 
+        // 🌟 1. 방금 분석 버튼을 눌러서 넘어온 따끈따끈한 데이터가 있다면!
+        // 🚨 (핵심) 예전처럼 여기서 navigate로 state를 지우지 않습니다! 지우면 무한 루프가 발생합니다.
         if (passedData && passedDateStr === dateKey) {
             setAnalysisData(passedData);
-            return; // 🚨 무한 루프를 막기 위해 여기서 딱 멈춥니다! (API 재호출 X)
+            return; // 여기서 멈춤으로써 핑퐁을 완벽 차단!
         }
 
-        // 🌟 2. 탭을 왔다 갔다 했거나, 달력 날짜를 바꿔서 데이터가 없다면 API로 정석 조회!
+        // 🌟 2. 탭을 이동했거나, 달력에서 새 날짜를 누른 경우! (백엔드 가이드 적용)
         const fetchAnalysis = async () => {
-            // 새 날짜 조회 시 잠깐 빈 화면(로딩)을 보여주기 위해 상태 비움
             setAnalysisData(null); 
             
             try {
@@ -73,33 +75,24 @@ const AIanalysis = () => {
                 const results = Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []);
 
                 if (results.length > 0) {
-                    // 결과가 있으면 상세 API 찌르고 리포트 세팅!
+                    // 결과가 있으면 상세 정보 불러오기
                     const detailData = await apiRequest(`/api/v1/analysis/skin/${results[0].id}/`);
                     if (isMounted) setAnalysisData(detailData);
                 } else {
-                    // 결과가 없으면 백엔드 지침대로 버튼 화면(/analysis)으로 돌려보냄!
+                    // 결과가 없다면 "아직 금일 분석이 없어요" 화면(ClickForAnalysis)으로 자연스럽게 안내!
                     if (isMounted) {
-                        navigate('/analysis', {
-                            state: { selectedDate: selectedDate.toISOString() },
-                            replace: true
-                        });
+                        navigate('/analysis', { state: { selectedDate: selectedDate.toISOString() }, replace: true });
                     }
                 }
             } catch (error) {
-                if (isMounted) {
-                    navigate('/analysis', {
-                        state: { selectedDate: selectedDate.toISOString() },
-                        replace: true
-                    });
-                }
+                // 🚨 500 등 API 에러 시 버튼 화면으로 강제 이동시키면 다시 무한 루프가 생길 수 있으니, 제자리에 멈춰서 에러 화면만 띄웁니다.
+                if (isMounted) setAnalysisData(null);
             }
         };
 
         fetchAnalysis();
 
-        return () => {
-            isMounted = false; // 컴포넌트가 사라지면 멈춤
-        };
+        return () => { isMounted = false; };
     }, [selectedDate, location.state, navigate]);
 
     const handleDateChange = (newDate) => {
@@ -143,7 +136,7 @@ const AIanalysis = () => {
                             color: '#767676',
                         }}
                     >
-                        분석 데이터를 불러오는 중입니다...
+                        분석 데이터를 불러오지 못했습니다. 다시 시도해 주세요.
                     </p>
                 </div>
             </div>
