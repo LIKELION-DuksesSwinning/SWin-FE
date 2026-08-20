@@ -124,7 +124,6 @@ function SkinType({ onNext, onPrev }) {
   const handleNext = () => {
     if (!isComplete) return;
 
-    // UserRecord.jsx로 최종 데이터 전달
     onNext({
       skinTypes,
       symptoms,
@@ -136,103 +135,119 @@ function SkinType({ onNext, onPrev }) {
     <section className="skin-type">
 
       {/* ========================================
-          1. 피부 타입
+          스크롤 영역
       ======================================== */}
 
-      <div className="skin-question">
-        <h2>
-          1. 피부 타입{' '}
-          <span className="must-needed">*</span>
-        </h2>
+      <div className="skin-content">
 
-        <p>중복 선택 가능</p>
+        {/* ========================================
+            1. 피부 타입
+        ======================================== */}
 
-        <div className="skin-option-list max-three">
-          {SKIN_TYPE_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              className={`skin-option-button ${
-                skinTypes.includes(option)
-                  ? 'selected'
-                  : ''
-              }`}
-              onClick={() => handleSkinTypeClick(option)}
-            >
-              {option}
-            </button>
-          ))}
+        <div className="skin-question">
+          <h2>
+            1. 피부 타입{' '}
+            <span className="must-needed">*</span>
+          </h2>
+
+          <p>중복 선택 가능</p>
+
+          <div className="skin-option-list max-three">
+            {SKIN_TYPE_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`skin-option-button ${
+                  skinTypes.includes(option)
+                    ? 'selected'
+                    : ''
+                }`}
+                onClick={() =>
+                  handleSkinTypeClick(option)
+                }
+              >
+                {option}
+              </button>
+            ))}
+          </div>
         </div>
+
+
+        {/* ========================================
+            2. 반복 증상
+        ======================================== */}
+
+        <div className="skin-question">
+          <h2>
+            2. 반복 증상{' '}
+            <span className="must-needed">*</span>
+          </h2>
+
+          <p>
+            수영 후 자주 나타나는 증상을 선택하세요.
+            (중복 선택 가능)
+          </p>
+
+          <div className="skin-option-list max-three">
+            {SKIN_SYMPTOM_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`skin-option-button ${
+                  symptoms.includes(option)
+                    ? 'selected'
+                    : ''
+                }`}
+                onClick={() =>
+                  handleSymptomClick(option)
+                }
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+
+
+        {/* ========================================
+            3. 증상 발생 부위
+        ======================================== */}
+
+        <div className="skin-question">
+          <h2>
+            3. 증상 발생 부위
+          </h2>
+
+          <p>
+            수영 후 나타나는 증상이 발생하는 부위를
+            선택하세요. (중복 선택 가능)
+          </p>
+
+          <div className="skin-option-list max-three">
+            {SKIN_AREA_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`skin-option-button ${
+                  symptomAreas.includes(option)
+                    ? 'selected'
+                    : ''
+                }`}
+                onClick={() =>
+                  handleAreaClick(option)
+                }
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+
       </div>
 
 
       {/* ========================================
-          2. 반복 증상
-      ======================================== */}
-
-      <div className="skin-question">
-        <h2>
-          2. 반복 증상{' '}
-          <span className="must-needed">*</span>
-        </h2>
-
-        <p>
-          수영 후 자주 나타나는 증상을 선택하세요.
-          (중복 선택 가능)
-        </p>
-
-        <div className="skin-option-list max-three">
-          {SKIN_SYMPTOM_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              className={`skin-option-button ${
-                symptoms.includes(option)
-                  ? 'selected'
-                  : ''
-              }`}
-              onClick={() => handleSymptomClick(option)}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
-
-
-      {/* ========================================
-          3. 증상 발생 부위
-      ======================================== */}
-
-      <div className="skin-question">
-        <h2>3. 증상 발생 부위</h2>
-
-        <p>
-          수영 후 나타나는 증상이 발생하는 부위를
-          선택하세요. (중복 선택 가능)
-        </p>
-
-        <div className="skin-option-list max-three">
-          {SKIN_AREA_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              className={`skin-option-button ${
-                symptomAreas.includes(option)
-                  ? 'selected'
-                  : ''
-              }`}
-              onClick={() => handleAreaClick(option)}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
-
-
-      {/* ========================================
-          하단 버튼
+          하단 고정 네비게이션
       ======================================== */}
 
       <div className="skin-navigation">

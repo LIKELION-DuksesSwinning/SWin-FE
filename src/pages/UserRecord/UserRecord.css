@@ -7,14 +7,24 @@
   flex-direction: column;
 
   width: 100%;
-  min-height: 100vh;
+
+  /* 화면 높이를 넘지 않도록 고정 */
+  height: 100dvh;
+  min-height: 0;
+
+  box-sizing: border-box;
 
   background-color: var(--color-background);
+
+  /* 페이지 전체 스크롤 방지 */
+  overflow: hidden;
 }
 
 
 /* ================================
    Header
+   - 뒤로가기 + StepIndicator
+   - 화면 상단 고정 영역
 ================================ */
 
 .user-record-header {
@@ -25,7 +35,11 @@
   width: 100%;
   min-height: 160px;
 
+  flex-shrink: 0;
+
   padding: 18px 16px 14px;
+
+  box-sizing: border-box;
 
   background-color: #102E70;
 }
@@ -46,6 +60,7 @@
   padding: 0;
 
   border: none;
+
   background-color: transparent;
 
   cursor: pointer;
@@ -59,6 +74,8 @@
 
 /* ================================
    Content
+   - Header 아래 남은 공간 전체
+   - 자체적으로는 스크롤하지 않음
 ================================ */
 
 .user-record-content {
@@ -68,5 +85,14 @@
 
   width: 100%;
 
+  /* flex 자식이 콘텐츠 높이만큼
+     부모를 밀어내는 현상 방지 */
+  min-height: 0;
+
+  box-sizing: border-box;
+
   background-color: var(--color-background);
+
+  /* SkinType 내부에서만 스크롤 */
+  overflow: hidden;
 }
