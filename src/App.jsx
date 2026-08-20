@@ -5,6 +5,16 @@ import './App.css';
 import Login from './pages/Login/Login.jsx';
 import Starting from './pages/Starting/Starting.jsx';
 
+/* ========================================
+   Components - 공통 컴포넌트
+======================================== */
+
+import BottomNav from './components/BottomNav/BottomNav.jsx';
+
+/* ========================================
+   Home - 메인 페이지
+======================================== */
+
 import UserRecord from './pages/UserRecord/UserRecord.jsx';
 import RecordDone from './pages/UserRecord/components/RecordDone/RecordDone.jsx';
 
@@ -16,22 +26,18 @@ import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
-import BottomNav from './components/BottomNav/BottomNav.jsx';
+
 
 /* ========================================
-   Alert
+   Home - 알람페이지
 ======================================== */
 
 import Alert from './pages/Alert/Alert.jsx';
 import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
 
-import My from './pages/My/My.jsx';
-import Info from './pages/My/Info/Info.jsx';
-import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
-import Policy from './pages/My/Policy/Policy.jsx';
-import LogOut from './pages/My/LogOut/LogOut.jsx';
-
-import BottomNav from './components/BottomNav/BottomNav.jsx';
+/* ========================================
+   클리닉 예약 페이지
+======================================== */
 
 import ReservationDate from './pages/Clinic/ReservationDate.jsx';
 import ReservationTime from './pages/Clinic/ReservationTime.jsx';
@@ -44,7 +50,6 @@ import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import ClinicReportTab from "./pages/Analysis/ClinicReportTab.jsx";
 import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
-import SwimReport from './pages/Analysis/SwimReport.jsx';
 
 /* ========================================
    My
@@ -56,10 +61,10 @@ import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
 import Policy from './pages/My/Policy/Policy.jsx';
 import LogOut from './pages/My/LogOut/LogOut.jsx';
 
-import './App.css';
 
 /* ========================================
    App
+   ======================================== */
 import SWinTab from './pages/Analysis/SWinTab.jsx';
 import WeeklySwimReport from './pages/Analysis/WeeklySwimReport.jsx';
 import RoutineRecs from './pages/Analysis/RoutineRecs.jsx';
