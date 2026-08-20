@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './AIanalysis.css';
 import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar.jsx';
 import rightArrow from '../../assets/images/arrow-next.svg';
-import { apiRequest } from '../../api/axios';
 
 const PATTERN_MAP = {
     redness_type: '붉음 반응형',
@@ -44,49 +43,44 @@ const AIanalysis = () => {
     const location = useLocation();
 
     const [selectedDate, setSelectedDate] = useState(() => {
-        const passedDate = location.state?.selectedDate || location.state?.date;
+        const passedDate =
+            location.state?.selectedDate || location.state?.date;
+
         return passedDate ? new Date(passedDate) : new Date();
     });
 
     const [analysisData, setAnalysisData] = useState(null);
 
     useEffect(() => {
-        const fetchAnalysis = async () => {
-            try {
-                const dateKey = formatDateKey(selectedDate);
-                const data = await apiRequest(`/api/v1/analysis/skin/?date=${dateKey}`);
-                const results = Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []);
+        const currentDateKey = formatDateKey(selectedDate);
+        const passedData = location.state?.analysisData;
 
-                if (results.length > 0) {
-                    const detailData = await apiRequest(`/api/v1/analysis/skin/${results[0].id}/`);
-                    setAnalysisData(detailData);
-                } else {
-                    navigate('/analysis', {
-                        state: { selectedDate: selectedDate.toISOString() },
-                        replace: true
-                    });
-                }
-            } catch (error) {
-                navigate('/analysis', {
-                    state: { selectedDate: selectedDate.toISOString() },
-                    replace: true
-                });
-            }
-        };
+        let cachedAll = {};
 
-        if (
-            location.state?.analysisData &&
-            formatDateKey(new Date(location.state.selectedDate)) === formatDateKey(selectedDate)
-        ) {
-            setAnalysisData(location.state.analysisData);
-            navigate(location.pathname, {
-                replace: true,
-                state: { selectedDate: selectedDate.toISOString() }
-            });
-        } else {
-            fetchAnalysis();
+        try {
+            cachedAll = JSON.parse(
+                sessionStorage.getItem('ai_reports') || '{}'
+            );
+        } catch (error) {
+            cachedAll = {};
         }
-    }, [selectedDate, navigate, location.state, location.pathname]);
+
+        if (passedData) {
+            cachedAll[currentDateKey] = passedData;
+            sessionStorage.setItem(
+                'ai_reports',
+                JSON.stringify(cachedAll)
+            );
+        }
+
+        const dataForDate = cachedAll[currentDateKey];
+
+        if (dataForDate) {
+            setAnalysisData(dataForDate);
+        } else {
+            setAnalysisData(null);
+        }
+    }, [selectedDate, location.state]);
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
@@ -107,15 +101,21 @@ const AIanalysis = () => {
                     >
                         AI 피부 분석
                     </div>
+
                     <div
                         className="tab-item"
-                        onClick={() => navigate('/analysis/swim-report')}
+                        onClick={() =>
+                            navigate('/analysis/swim-report')
+                        }
                     >
                         SWin 리포트
                     </div>
+
                     <div
                         className="tab-item"
-                        onClick={() => navigate('/analysis/clinic-report')}
+                        onClick={() =>
+                            navigate('/analysis/clinic-report')
+                        }
                     >
                         시술 리포트
                     </div>
@@ -129,7 +129,7 @@ const AIanalysis = () => {
                             color: '#767676',
                         }}
                     >
-                        분석 데이터를 불러오는 중입니다...
+                        분석 데이터를 불러오지 못했습니다. 다시 시도해 주세요.
                     </p>
                 </div>
             </div>
@@ -160,109 +160,179 @@ const AIanalysis = () => {
                 >
                     AI 피부 분석
                 </div>
+
                 <div
                     className="tab-item"
-                    onClick={() => navigate('/analysis/swim-report')}
+                    onClick={() =>
+                        navigate('/analysis/swim-report')
+                    }
                 >
                     SWin 리포트
                 </div>
+
                 <div
                     className="tab-item"
-                    onClick={() => navigate('/analysis/clinic-report')}
+                    onClick={() =>
+                        navigate('/analysis/clinic-report')
+                    }
                 >
                     시술 리포트
                 </div>
             </div>
 
             <div className="analysis-content result-wrapper">
+
                 <div className="pattern-box">
-                    <span className="pattern-label">관찰된 패턴</span>
+                    <span className="pattern-label">
+                        관찰된 패턴
+                    </span>
+
                     <div className="pattern-tags">
                         {analysisData.pattern_types?.map((type, idx) => (
-                            <h2 key={idx} className="pattern-title">
+                            <h2
+                                key={idx}
+                                className="pattern-title"
+                            >
                                 {PATTERN_MAP[type] || type}
                             </h2>
                         ))}
                     </div>
+
                     <p className="pattern-desc">
                         {analysisData.pattern_description}
                     </p>
+
                     <p className="pattern-disclaimer">
                         ⚠ {analysisData.disclaimer}
                     </p>
                 </div>
 
                 <div className="section-block">
-                    <h3 className="section-title">수영 전후 주요 변화</h3>
+                    <h3 className="section-title">
+                        수영 전후 주요 변화
+                    </h3>
+
                     <div className="symptom-changes-list">
-                        {analysisData.symptom_changes?.map((change, idx) => (
-                            <div key={idx} className="symptom-row">
-                                <span className="symptom-name">
-                                    {SYMPTOM_MAP[change.symptomType] || change.symptomType}
-                                </span>
-                                <div className="bar-container">
-                                    <div className="bar-wrapper" style={{ backgroundColor: '#F5F5F5' }}>
-                                        {change.before > 0 && (
-                                            <div
-                                                className="bar-fill"
-                                                style={{
-                                                    width: getBarWidth(change.before),
-                                                    backgroundColor: getBarColor(change.before),
-                                                }}
-                                            />
-                                        )}
-                                    </div>
-                                    <span className="arrow">→</span>
-                                    <div className="bar-wrapper" style={{ backgroundColor: '#F5F5F5' }}>
-                                        {change.after > 0 && (
-                                            <div
-                                                className="bar-fill"
-                                                style={{
-                                                    width: getBarWidth(change.after),
-                                                    backgroundColor: getBarColor(change.after),
-                                                }}
-                                            />
-                                        )}
+                        {analysisData.symptom_changes?.map(
+                            (change, idx) => (
+                                <div
+                                    key={idx}
+                                    className="symptom-row"
+                                >
+                                    <span className="symptom-name">
+                                        {SYMPTOM_MAP[
+                                            change.symptomType
+                                        ] || change.symptomType}
+                                    </span>
+
+                                    <div className="bar-container">
+                                        {/* 🔥 철벽 방어 1: 다른 CSS가 침범하지 못하도록 배경색 강제 고정! */}
+                                        <div className="bar-wrapper" style={{ backgroundColor: '#F5F5F5' }}>
+                                            {change.before > 0 && (
+                                                <div
+                                                    className="bar-fill"
+                                                    style={{
+                                                        width: getBarWidth(
+                                                            change.before
+                                                        ),
+                                                        backgroundColor:
+                                                            getBarColor(
+                                                                change.before
+                                                            ),
+                                                    }}
+                                                />
+                                            )}
+                                        </div>
+
+                                        <span className="arrow">
+                                            →
+                                        </span>
+
+                                        {/* 🔥 철벽 방어 2: 여기도 배경색 강제 고정! */}
+                                        <div className="bar-wrapper" style={{ backgroundColor: '#F5F5F5' }}>
+                                            {change.after > 0 && (
+                                                <div
+                                                    className="bar-fill"
+                                                    style={{
+                                                        width: getBarWidth(
+                                                            change.after
+                                                        ),
+                                                        backgroundColor:
+                                                            getBarColor(
+                                                                change.after
+                                                            ),
+                                                    }}
+                                                />
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        )}
                     </div>
                 </div>
 
                 <div className="section-block">
-                    <h3 className="section-title">최근 4주 경향</h3>
+                    <h3 className="section-title">
+                        최근 4주 경향
+                    </h3>
+
                     <div className="trend-list">
-                        {analysisData.four_week_trend?.map((trend, idx) => (
-                            <div key={idx} className="trend-row">
-                                <span className="trend-name">
-                                    {SYMPTOM_MAP[trend.symptomType] || trend.symptomType}
-                                </span>
-                                <span className={`trend-value ${trend.trend}`}>
-                                    {TREND_MAP[trend.trend] || trend.trend}
-                                </span>
-                            </div>
-                        ))}
+                        {analysisData.four_week_trend?.map(
+                            (trend, idx) => (
+                                <div
+                                    key={idx}
+                                    className="trend-row"
+                                >
+                                    <span className="trend-name">
+                                        {SYMPTOM_MAP[
+                                            trend.symptomType
+                                        ] || trend.symptomType}
+                                    </span>
+
+                                    <span
+                                        className={`trend-value ${trend.trend}`}
+                                    >
+                                        {TREND_MAP[trend.trend] ||
+                                            trend.trend}
+                                    </span>
+                                </div>
+                            )
+                        )}
                     </div>
                 </div>
 
                 {analysisData.clinic_recommendation?.shown && (
                     <div className="section-block recommendation-block">
-                        <h3 className="section-title">권장 사항</h3>
+                        <h3 className="section-title">
+                            권장 사항
+                        </h3>
+
                         <p className="recommendation-text">
-                            {analysisData.clinic_recommendation.text?.split('\n').map((line, i) => (
-                                <React.Fragment key={i}>
-                                    {line}
-                                    <br />
-                                </React.Fragment>
-                            ))}
+                            {analysisData.clinic_recommendation.text
+                                ?.split('\n')
+                                .map((line, i) => (
+                                    <React.Fragment key={i}>
+                                        {line}
+                                        <br />
+                                    </React.Fragment>
+                                ))}
                         </p>
+
                         <button
                             className="clinic-reservation-btn"
                             onClick={() => navigate('/clinic')}
                         >
-                            {analysisData.clinic_recommendation.ctaLabel}
-                            <img src={rightArrow} alt="이동" className="btn-arrow" />
+                            {
+                                analysisData.clinic_recommendation
+                                    .ctaLabel
+                            }
+
+                            <img
+                                src={rightArrow}
+                                alt="이동"
+                                className="btn-arrow"
+                            />
                         </button>
                     </div>
                 )}
