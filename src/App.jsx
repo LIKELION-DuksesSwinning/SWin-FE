@@ -16,6 +16,12 @@ import AfterSwimming from './pages/Archive/AfterSwimming/AfterSwimming.jsx';
 import Additional from './pages/Archive/Additional/Additional.jsx';
 import Furthermore from './pages/Archive/Furthermore/Furthermore.jsx';
 
+import BottomNav from './components/BottomNav/BottomNav.jsx';
+
+/* ========================================
+   Alert
+======================================== */
+
 import Alert from './pages/Alert/Alert.jsx';
 import DetailedAlert from './pages/Alert/DetailedAlert/DetailedAlert.jsx';
 
@@ -38,6 +44,22 @@ import ClickForAnalysis from './pages/Analysis/ClickForAnalysis.jsx';
 import ClinicReportTab from "./pages/Analysis/ClinicReportTab.jsx";
 import Loading from './pages/Analysis/Loading.jsx';
 import AIanalysis from './pages/Analysis/AIanalysis.jsx';
+import SwimReport from './pages/Analysis/SwimReport.jsx';
+
+/* ========================================
+   My
+   ======================================== */
+
+import My from './pages/My/My.jsx';
+import Info from './pages/My/Info/Info.jsx';
+import PushAlarm from './pages/My/PushAlarm/PushAlarm.jsx';
+import Policy from './pages/My/Policy/Policy.jsx';
+import LogOut from './pages/My/LogOut/LogOut.jsx';
+
+import './App.css';
+
+/* ========================================
+   App
 import SWinTab from './pages/Analysis/SWinTab.jsx';
 import WeeklySwimReport from './pages/Analysis/WeeklySwimReport.jsx';
 import RoutineRecs from './pages/Analysis/RoutineRecs.jsx';
