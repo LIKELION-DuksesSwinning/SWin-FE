@@ -1,24 +1,75 @@
-import { useState, useEffect } from 'react';
-import './Loading.css';
+import {
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
+
+import {
+    useLocation,
+    useNavigate,
+} from 'react-router-dom';
+
 import loadingIcon from '../../assets/images/loading.svg';
 
-const Loading = () => {
-    const [progress, setProgress] = useState(0);
+import './Loading.css';
+
+function Loading() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [progress, setProgress] =
+        useState(0);
+
+    const routeState = useRef(
+        location.state ?? {}
+    );
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setProgress((prev) => {
-                if (prev >= 95) return prev;
-                return prev + 1;
-            });
-        }, 40);
+        const progressTimer =
+            setInterval(() => {
+                setProgress(
+                    (previousProgress) => {
+                        if (
+                            previousProgress >= 100
+                        ) {
+                            return 100;
+                        }
 
-        return () => clearInterval(timer);
-    }, []);
+                        return (
+                            previousProgress + 1
+                        );
+                    }
+                );
+            }, 40);
+
+        const navigationTimer =
+            setTimeout(() => {
+                navigate('/analysis', {
+                    replace: true,
+                    state: routeState.current,
+                });
+            }, 4200);
+
+        return () => {
+            clearInterval(
+                progressTimer
+            );
+
+            clearTimeout(
+                navigationTimer
+            );
+        };
+    }, [navigate]);
 
     const radius = 130;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+    const circumference =
+        2 * Math.PI * radius;
+
+    const strokeDashoffset =
+        circumference -
+        (progress / 100) *
+            circumference;
 
     return (
         <div className="loading-container">
@@ -36,24 +87,40 @@ const Loading = () => {
                         r={radius}
                         strokeWidth="6"
                     />
+
                     <circle
                         className="progress-fill"
                         cx="140"
                         cy="140"
                         r={radius}
                         strokeWidth="6"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
+                        strokeDasharray={
+                            circumference
+                        }
+                        strokeDashoffset={
+                            strokeDashoffset
+                        }
                     />
                 </svg>
+
                 <div className="loading-content">
-                    <img src={loadingIcon} alt="로딩 중" className="loading-icon" />
-                    <h2 className="loading-title">AI가 분석하고 있어요</h2>
-                    <p className="loading-subtitle">조금만 기다려 주세요</p>
+                    <img
+                        src={loadingIcon}
+                        alt="로딩 중"
+                        className="loading-icon"
+                    />
+
+                    <h2 className="loading-title">
+                        AI가 분석하고 있어요
+                    </h2>
+
+                    <p className="loading-subtitle">
+                        조금만 기다려 주세요
+                    </p>
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default Loading;

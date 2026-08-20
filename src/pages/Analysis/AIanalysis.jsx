@@ -1,6 +1,7 @@
 import React, {
     useCallback,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 
@@ -49,6 +50,7 @@ const formatDateKey = (date) => {
     }
 
     const year = date.getFullYear();
+
     const month = String(
         date.getMonth() + 1
     ).padStart(2, '0');
@@ -64,21 +66,32 @@ function AIanalysis() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [selectedDate, setSelectedDate] = useState(() => {
-        const passedDate =
-            location.state?.selectedDate ??
-            location.state?.date;
+    const initialRouteState = useRef(
+        location.state ?? {}
+    );
 
-        if (passedDate) {
-            const parsedDate = new Date(passedDate);
+    const [selectedDate, setSelectedDate] =
+        useState(() => {
+            const passedDate =
+                initialRouteState.current
+                    ?.selectedDate ??
+                initialRouteState.current?.date;
 
-            if (!Number.isNaN(parsedDate.getTime())) {
-                return parsedDate;
+            if (passedDate) {
+                const parsedDate =
+                    new Date(passedDate);
+
+                if (
+                    !Number.isNaN(
+                        parsedDate.getTime()
+                    )
+                ) {
+                    return parsedDate;
+                }
             }
-        }
 
-        return new Date();
-    });
+            return new Date();
+        });
 
     const [analysisData, setAnalysisData] =
         useState(null);
@@ -93,53 +106,50 @@ function AIanalysis() {
         formatDateKey(selectedDate);
 
     useEffect(() => {
-        let cancelled = false;
+        let isMounted = true;
 
         async function fetchAnalysis() {
-            const passedAnalysisData =
-                location.state?.analysisData;
-
-            const passedDate =
-                location.state?.selectedDate ??
-                location.state?.date;
-
             try {
                 setIsLoading(true);
                 setError('');
 
-                /*
-                 * 이전 페이지에서 분석 결과와 날짜를 함께
-                 * 전달받은 경우에는 API를 다시 호출하지 않고
-                 * 전달받은 데이터를 사용합니다.
-                 */
+                const routeState =
+                    initialRouteState.current;
+
+                const passedAnalysisData =
+                    routeState?.analysisData;
+
+                const passedDate =
+                    routeState?.selectedDate ??
+                    routeState?.date;
+
+                const normalizedPassedData =
+                    passedAnalysisData?.data ??
+                    passedAnalysisData;
+
                 if (
-                    passedAnalysisData &&
-                    passedDate &&
-                    formatDateKey(
-                        new Date(passedDate)
-                    ) === selectedDateKey
+                    normalizedPassedData &&
+                    (
+                        !passedDate ||
+                        formatDateKey(
+                            new Date(passedDate)
+                        ) === selectedDateKey
+                    )
                 ) {
-                    if (!cancelled) {
+                    if (isMounted) {
                         setAnalysisData(
-                            passedAnalysisData
+                            normalizedPassedData
                         );
                     }
 
                     return;
                 }
 
-                /*
-                 * 선택한 날짜의 피부 분석 목록을 조회합니다.
-                 */
                 const listResponse =
                     await apiRequest(
                         `/api/v1/analysis/skin/?date=${selectedDateKey}`
                     );
 
-                /*
-                 * apiRequest가 Axios 응답 전체를 반환하는 경우와
-                 * data만 반환하는 경우를 모두 처리합니다.
-                 */
                 const listData =
                     listResponse?.data ??
                     listResponse;
@@ -148,26 +158,29 @@ function AIanalysis() {
                     Array.isArray(listData)
                         ? listData
                         : Array.isArray(
-                              listData?.results
-                          )
+                                listData?.results
+                            )
                             ? listData.results
-                            : listData?.id
+                            : listData?.id ||
+                                    listData?.analysis_id
                                 ? [listData]
                                 : [];
 
-                /*
-                 * 해당 날짜의 분석 결과가 없는 경우입니다.
-                 */
                 if (results.length === 0) {
-                    if (!cancelled) {
+                    if (isMounted) {
                         setAnalysisData(null);
+
+                        setError(
+                            '선택하신 날짜의 분석 리포트가 없습니다.'
+                        );
                     }
 
                     return;
                 }
 
                 const analysisId =
-                    results[0]?.id;
+                    results[0]?.id ??
+                    results[0]?.analysis_id;
 
                 if (!analysisId) {
                     throw new Error(
@@ -175,9 +188,6 @@ function AIanalysis() {
                     );
                 }
 
-                /*
-                 * 목록에서 가져온 ID로 상세 결과를 조회합니다.
-                 */
                 const detailResponse =
                     await apiRequest(
                         `/api/v1/analysis/skin/${analysisId}/`
@@ -193,7 +203,7 @@ function AIanalysis() {
                     );
                 }
 
-                if (!cancelled) {
+                if (isMounted) {
                     setAnalysisData(
                         detailData
                     );
@@ -204,7 +214,7 @@ function AIanalysis() {
                     requestError
                 );
 
-                if (!cancelled) {
+                if (isMounted) {
                     setAnalysisData(null);
 
                     setError(
@@ -212,7 +222,7 @@ function AIanalysis() {
                     );
                 }
             } finally {
-                if (!cancelled) {
+                if (isMounted) {
                     setIsLoading(false);
                 }
             }
@@ -221,6 +231,7 @@ function AIanalysis() {
         if (!selectedDateKey) {
             setAnalysisData(null);
             setIsLoading(false);
+
             setError(
                 '선택한 날짜가 올바르지 않습니다.'
             );
@@ -231,18 +242,10 @@ function AIanalysis() {
         fetchAnalysis();
 
         return () => {
-            cancelled = true;
+            isMounted = false;
         };
-    }, [
-        selectedDateKey,
-        location.key,
-        location.state,
-    ]);
+    }, [selectedDateKey]);
 
-    /*
-     * WeeklyCalendar가 같은 날짜를 새로운 Date 객체로
-     * 반복 전달하더라도 상태를 변경하지 않습니다.
-     */
     const handleDateChange = useCallback(
         (newDate) => {
             const parsedDate =
@@ -293,7 +296,9 @@ function AIanalysis() {
             5
         );
 
-        return `${(safeScore / 5) * 100}%`;
+        return `${
+            (safeScore / 5) * 100
+        }%`;
     };
 
     const getBarColor = (score) => {
@@ -321,12 +326,7 @@ function AIanalysis() {
             />
 
             <div className="analysis-tab-menu">
-                <div
-                    className="tab-item active"
-                    onClick={() =>
-                        navigate('/analysis')
-                    }
-                >
+                <div className="tab-item active">
                     AI 피부 분석
                 </div>
 
@@ -355,9 +355,6 @@ function AIanalysis() {
         </>
     );
 
-    /*
-     * API 요청 중에만 로딩 문구를 표시합니다.
-     */
     if (isLoading) {
         return (
             <div className="analysis-container">
@@ -366,12 +363,9 @@ function AIanalysis() {
                 <div className="analysis-content empty-state-wrapper">
                     <p
                         style={{
-                            textAlign:
-                                'center',
-                            marginTop:
-                                '40px',
-                            color:
-                                '#767676',
+                            textAlign: 'center',
+                            marginTop: '40px',
+                            color: '#767676',
                         }}
                     >
                         분석 데이터를 불러오는
@@ -382,28 +376,56 @@ function AIanalysis() {
         );
     }
 
-    /*
-     * 요청에 실패했거나 선택 날짜에 결과가 없는 경우입니다.
-     */
     if (!analysisData) {
         return (
             <div className="analysis-container">
                 {renderCalendarAndTabs()}
 
                 <div className="analysis-content empty-state-wrapper">
-                    <p
+                    <div
                         style={{
-                            textAlign:
-                                'center',
-                            marginTop:
-                                '40px',
-                            color:
-                                '#767676',
+                            textAlign: 'center',
+                            marginTop: '80px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
                         }}
                     >
-                        {error ||
-                            '선택하신 날짜의 분석 리포트가 없습니다.'}
-                    </p>
+                        <p
+                            style={{
+                                color: '#111111',
+                                fontSize: '16px',
+                                lineHeight: '1.5',
+                                marginBottom: '32px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            {error ||
+                                '선택하신 날짜의 리포트를 찾을 수 없습니다.'}
+                        </p>
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                navigate(
+                                    '/analysis/start'
+                                )
+                            }
+                            style={{
+                                padding: '14px 40px',
+                                backgroundColor:
+                                    '#0056D2',
+                                color: '#FFFFFF',
+                                borderRadius: '12px',
+                                border: 'none',
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            분석 시작 화면으로 가기
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -421,14 +443,13 @@ function AIanalysis() {
 
                     <div className="pattern-tags">
                         {analysisData.pattern_types?.map(
-                            (type) => (
+                            (type, index) => (
                                 <h2
-                                    key={type}
+                                    key={`${type}-${index}`}
                                     className="pattern-title"
                                 >
-                                    {PATTERN_MAP[
-                                        type
-                                    ] || type}
+                                    {PATTERN_MAP[type] ||
+                                        type}
                                 </h2>
                             )
                         )}
@@ -442,10 +463,7 @@ function AIanalysis() {
 
                     {analysisData.disclaimer && (
                         <p className="pattern-disclaimer">
-                            ⚠{' '}
-                            {
-                                analysisData.disclaimer
-                            }
+                            ⚠ {analysisData.disclaimer}
                         </p>
                     )}
                 </div>
@@ -457,10 +475,7 @@ function AIanalysis() {
 
                     <div className="symptom-changes-list">
                         {analysisData.symptom_changes?.map(
-                            (
-                                change,
-                                index
-                            ) => {
+                            (change, index) => {
                                 const symptomType =
                                     change.symptomType ??
                                     change.symptom_type;
@@ -556,10 +571,7 @@ function AIanalysis() {
 
                     <div className="trend-list">
                         {analysisData.four_week_trend?.map(
-                            (
-                                trend,
-                                index
-                            ) => {
+                            (trend, index) => {
                                 const symptomType =
                                     trend.symptomType ??
                                     trend.symptom_type;
@@ -578,8 +590,7 @@ function AIanalysis() {
 
                                         <span
                                             className={`trend-value ${
-                                                trend.trend ||
-                                                ''
+                                                trend.trend || ''
                                             }`}
                                         >
                                             {TREND_MAP[
@@ -603,13 +614,12 @@ function AIanalysis() {
                         </h3>
 
                         <p className="recommendation-text">
-                            {analysisData.clinic_recommendation.text
+                            {analysisData
+                                .clinic_recommendation
+                                .text
                                 ?.split('\n')
                                 .map(
-                                    (
-                                        line,
-                                        index
-                                    ) => (
+                                    (line, index) => (
                                         <React.Fragment
                                             key={`${line}-${index}`}
                                         >
@@ -624,9 +634,7 @@ function AIanalysis() {
                             type="button"
                             className="clinic-reservation-btn"
                             onClick={() =>
-                                navigate(
-                                    '/clinic'
-                                )
+                                navigate('/clinic')
                             }
                         >
                             {analysisData
@@ -638,9 +646,7 @@ function AIanalysis() {
                                 '클리닉 예약하기'}
 
                             <img
-                                src={
-                                    rightArrow
-                                }
+                                src={rightArrow}
                                 alt=""
                                 className="btn-arrow"
                             />
