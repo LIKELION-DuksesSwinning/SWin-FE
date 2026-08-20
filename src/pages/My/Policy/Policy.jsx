@@ -15,6 +15,20 @@ import {
 import './Policy.css';
 
 
+/* ========================================
+   약관 표시 순서
+======================================== */
+
+const AGREEMENT_ORDER = [
+  '이용약관',
+  '개인정보 처리방침',
+  '개인정보 제3자 제공 동의서(Derna)',
+  '개인정보 제3자 제공 동의서(SWin)',
+  '민감정보 수집·이용 동의서',
+  '마케팅 정보 수신 동의서',
+];
+
+
 function Policy() {
   const navigate =
     useNavigate();
@@ -113,10 +127,58 @@ function Policy() {
           if (
             isMounted
           ) {
-            setAgreements(
+            /*
+             * API에서 받은 데이터를
+             * AGREEMENT_ORDER 순서대로 정렬
+             */
+
+            const agreementList =
               Array.isArray(data)
-                ? data
-                : []
+                ? [...data]
+                : [];
+
+
+            const sortedAgreements =
+              agreementList.sort(
+                (a, b) => {
+                  const aIndex =
+                    AGREEMENT_ORDER.indexOf(
+                      a.title
+                    );
+
+
+                  const bIndex =
+                    AGREEMENT_ORDER.indexOf(
+                      b.title
+                    );
+
+
+                  /*
+                   * AGREEMENT_ORDER에 없는 약관은
+                   * 가장 아래에 표시
+                   */
+                  const aOrder =
+                    aIndex === -1
+                      ? AGREEMENT_ORDER.length
+                      : aIndex;
+
+
+                  const bOrder =
+                    bIndex === -1
+                      ? AGREEMENT_ORDER.length
+                      : bIndex;
+
+
+                  return (
+                    aOrder -
+                    bOrder
+                  );
+                }
+              );
+
+
+            setAgreements(
+              sortedAgreements
             );
           }
 
@@ -215,6 +277,10 @@ function Policy() {
       }
 
 
+      /*
+       * 다른 약관 변경 요청 중이면
+       * 중복 요청 방지
+       */
       if (
         updatingType
       ) {
