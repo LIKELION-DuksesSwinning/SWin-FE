@@ -31,9 +31,11 @@ const TREND_MAP = {
 
 const formatDateKey = (date) => {
     if (!date) return '';
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
+
     return `${year}-${month}-${day}`;
 };
 
@@ -47,105 +49,113 @@ const AIanalysis = () => {
     });
 
     const [analysisData, setAnalysisData] = useState(null);
-    // 🌟 무한 루프를 막기 위한 에러 상태 추가
-    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
-        setHasError(false); // 날짜가 바뀌면 에러 리셋
+        let cancelled = false;
 
-        const dateKey = formatDateKey(selectedDate);
-        const passedData = location.state?.analysisData;
-        const passedDateStr = location.state?.selectedDate 
-            ? formatDateKey(new Date(location.state.selectedDate)) 
-            : null;
-
-        // 🌟 1. 방금 분석 버튼을 눌러서 넘어온 따끈따끈한 데이터가 있다면!
-        // 🚨 절대 navigate로 state를 지우지 않습니다. 
-        if (passedData && passedDateStr === dateKey) {
-            setAnalysisData(passedData);
-            return; // 여기서 멈춤 (API 재호출 X)
-        }
-
-        // 🌟 2. 탭을 이동했거나, 달력에서 새 날짜를 누른 경우
         const fetchAnalysis = async () => {
-            setAnalysisData(null); 
-            
-            try {
-                const data = await apiRequest(`/api/v1/analysis/skin/?date=${dateKey}`);
-                const results = Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []);
+            const passedAnalysisData = location.state?.analysisData;
+            const passedDate = location.state?.selectedDate || location.state?.date;
 
-                if (results.length > 0) {
-                    const detailData = await apiRequest(`/api/v1/analysis/skin/${results[0].id}/`);
-                    if (isMounted) setAnalysisData(detailData);
-                } else {
-                    // 🚨 [핵심 해결] 결과가 없어도 강제로 navigate 하지 않습니다!! (무한루프 방지)
-                    if (isMounted) setHasError(true);
+            if (
+                passedAnalysisData &&
+                passedDate &&
+                formatDateKey(new Date(passedDate)) === formatDateKey(selectedDate)
+            ) {
+                setAnalysisData(passedAnalysisData);
+                return;
+            }
+
+            try {
+                setAnalysisData(null);
+
+                const dateKey = formatDateKey(selectedDate);
+
+                const listResponse = await apiRequest(
+                    `/api/v1/analysis/skin/?date=${dateKey}`
+                );
+
+                // apiRequest가 Axios 응답 전체를 반환하는 경우까지 대응
+                const listData = listResponse?.data ?? listResponse;
+
+                const results = Array.isArray(listData)
+                    ? listData
+                    : Array.isArray(listData?.results)
+                        ? listData.results
+                        : listData?.id
+                            ? [listData]
+                            : [];
+
+                if (results.length === 0) {
+                    console.warn(`${dateKey}의 피부 분석 결과가 없습니다.`);
+                    return;
+                }
+
+                const detailResponse = await apiRequest(
+                    `/api/v1/analysis/skin/${results[0].id}/`
+                );
+
+                const detailData = detailResponse?.data ?? detailResponse;
+
+                if (!cancelled) {
+                    setAnalysisData(detailData);
                 }
             } catch (error) {
-                // 🚨 에러가 나도 강제로 navigate 하지 않습니다!!
-                if (isMounted) setHasError(true);
+                if (!cancelled) {
+                    console.error('AI 피부 분석 조회 실패:', error);
+                }
             }
         };
 
         fetchAnalysis();
 
-        return () => { isMounted = false; };
-    }, [selectedDate, location.state]); // navigate 의존성 제거
+        return () => {
+            cancelled = true;
+        };
+    }, [selectedDate]);
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
     };
 
-    // 🌟 에러 발생 시 UI (사용자가 버튼을 눌러야만 이동함 = 무한 루프 절대 발생 불가)
-    if (hasError) {
-        return (
-            <div className="analysis-container">
-                <WeeklyCalendar selectedDate={selectedDate} onDateChange={handleDateChange} />
-                <div className="analysis-tab-menu">
-                    <div className="tab-item active" onClick={() => navigate('/analysis')}>AI 피부 분석</div>
-                    <div className="tab-item" onClick={() => navigate('/analysis/swim-report')}>SWin 리포트</div>
-                    <div className="tab-item" onClick={() => navigate('/analysis/clinic-report')}>시술 리포트</div>
-                </div>
-                <div className="analysis-content empty-state-wrapper">
-                    <div style={{ textAlign: 'center', marginTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <p style={{ color: '#111111', fontSize: '16px', lineHeight: '1.5', marginBottom: '32px', fontWeight: '500' }}>
-                            선택하신 날짜의 리포트를 찾을 수 없습니다.<br />다시 시도해 주세요.
-                        </p>
-                        <button
-                            onClick={() => navigate('/analysis')}
-                            style={{
-                                padding: '14px 40px',
-                                backgroundColor: '#0056D2',
-                                color: '#FFFFFF',
-                                borderRadius: '12px',
-                                border: 'none',
-                                fontSize: '15px',
-                                fontWeight: '600',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            분석 화면으로 가기
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // 로딩 중 UI
     if (!analysisData) {
         return (
             <div className="analysis-container">
-                <WeeklyCalendar selectedDate={selectedDate} onDateChange={handleDateChange} />
+                <WeeklyCalendar
+                    selectedDate={selectedDate}
+                    onDateChange={handleDateChange}
+                />
+
                 <div className="analysis-tab-menu">
-                    <div className="tab-item active" onClick={() => navigate('/analysis')}>AI 피부 분석</div>
-                    <div className="tab-item" onClick={() => navigate('/analysis/swim-report')}>SWin 리포트</div>
-                    <div className="tab-item" onClick={() => navigate('/analysis/clinic-report')}>시술 리포트</div>
+                    <div
+                        className="tab-item active"
+                        onClick={() => navigate('/analysis')}
+                    >
+                        AI 피부 분석
+                    </div>
+                    <div
+                        className="tab-item"
+                        onClick={() => navigate('/analysis/swim-report')}
+                    >
+                        SWin 리포트
+                    </div>
+                    <div
+                        className="tab-item"
+                        onClick={() => navigate('/analysis/clinic-report')}
+                    >
+                        시술 리포트
+                    </div>
                 </div>
+
                 <div className="analysis-content empty-state-wrapper">
-                    <p style={{ textAlign: 'center', marginTop: '40px', color: '#767676' }}>
-                        분석 데이터를 불러오는 중입니다...
+                    <p
+                        style={{
+                            textAlign: 'center',
+                            marginTop: '40px',
+                            color: '#767676',
+                        }}
+                    >
+                        선택하신 날짜의 분석 리포트가 없습니다.
                     </p>
                 </div>
             </div>
