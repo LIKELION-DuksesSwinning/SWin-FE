@@ -4,7 +4,6 @@
     height: calc(100vh - 60px);
     background-color: #FFFFFC;
     overflow-y: auto;
-
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -40,42 +39,45 @@
 
 .analysis-content.result-wrapper {
     padding: 0 0 100px 0;
+    text-align: left;
 }
 
 .pattern-box {
     background-color: #082567;
     border-radius: 16px;
-    padding: 24px;
-    margin: 24px 20px 40px;
+    padding: 20px 16px 16px 16px;
+    margin: 32px 40px;
     color: #FFFFFC;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: left;
 }
 
 .pattern-label {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    color: rgba(217, 217, 217, 0.8);
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .pattern-tags {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .pattern-title {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 400;
     margin: 0;
 }
 
 .pattern-desc {
-    font-size: 15px;
-    line-height: 1.5;
-    margin: 0 0 24px 0;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.25;
+    margin: 0 0 18px 0;
+    color: rgba(217, 217, 217, 0.8);
+    font-weight: 400;
 }
 
 .pattern-disclaimer {
@@ -87,30 +89,39 @@
 .section-block {
     padding: 0 40px;
     margin-bottom: 40px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .section-title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: #111111;
     margin: 0 0 20px 0;
+    text-align: left;
 }
 
 .symptom-changes-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
 }
 
 .symptom-row {
     display: flex;
     align-items: center;
+    width: 100%;
+    justify-content: flex-start;
 }
 
 .symptom-name {
     width: 60px;
     font-size: 15px;
     color: #111111;
+    text-align: left;
+    flex-shrink: 0;
 }
 
 .bar-container {
@@ -137,28 +148,36 @@
 .arrow {
     font-size: 14px;
     color: #D9D9D9;
+    flex-shrink: 0;
 }
 
 .trend-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
 }
 
 .trend-row {
     display: flex;
     gap: 32px;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .trend-name {
     width: 60px;
     font-size: 15px;
     color: #111111;
+    text-align: left;
+    flex-shrink: 0;
 }
 
 .trend-value {
-    font-size: 15px;
+    font-size: 14px;
     color: #111111;
+    text-align: left;
 }
 
 .trend-value.worsened {
@@ -170,20 +189,20 @@
 }
 
 .recommendation-text {
-    font-size: 15px;
+    font-size: 14px;
     color: #111111;
     line-height: 1.5;
     margin: 0 0 20px 0;
+    text-align: left;
 }
 
 .clinic-reservation-btn {
-    width: 100%;
+    width: 224px;
     height: 52px;
     background-color: #fff76b;
     border: none;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: 500;
     color: #111111;
     display: flex;
     justify-content: center;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './AIanalysis.css';
 import WeeklyCalendar from '../../components/WeeklyCalendar/WeeklyCalendar.jsx';
@@ -31,8 +31,32 @@ const TREND_MAP = {
 const AIanalysis = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    
-    const [analysisData, setAnalysisData] = useState(location.state?.analysisData || null);
+
+    const [analysisData] = useState(() => {
+        const realData = location.state?.analysisData;
+        if (!realData) return null;
+
+        return {
+            ...realData,
+            symptom_changes: [
+                { symptomType: "itchy", before: 2, after: 5 },
+                { symptomType: "redness", before: 3, after: 4 },
+                { symptomType: "trouble", before: 1, after: 5 }
+            ],
+            four_week_trend: [
+                { symptomType: "dry", trend: "no_record" },
+                { symptomType: "tight", trend: "no_record" },
+                { symptomType: "itchy", trend: "worsened" },
+                { symptomType: "redness", trend: "maintained" },
+                { symptomType: "trouble", trend: "worsened" }
+            ],
+            clinic_recommendation: {
+                shown: true,
+                text: "최근 수영 후 붉음이 4회 이상 기록되었습니다.\n정확한 피부 분석을 위해 더나 클리닉 상담을 추천드려요.",
+                ctaLabel: "더나 클리닉 예약 바로가기"
+            }
+        };
+    });
 
     if (!analysisData) {
         return (
@@ -67,20 +91,20 @@ const AIanalysis = () => {
             <WeeklyCalendar />
 
             <div className="analysis-tab-menu">
-                <div 
-                    className="tab-item active" 
+                <div
+                    className="tab-item active"
                     onClick={() => navigate('/analysis')}
                 >
                     AI 피부 분석
                 </div>
-                <div 
-                    className="tab-item" 
+                <div
+                    className="tab-item"
                     onClick={() => navigate('/analysis/swim-report')}
                 >
                     SWin 리포트
                 </div>
-                <div 
-                    className="tab-item" 
+                <div
+                    className="tab-item"
                     onClick={() => navigate('/analysis/clinic-report')}
                 >
                     시술 리포트
@@ -88,7 +112,7 @@ const AIanalysis = () => {
             </div>
 
             <div className="analysis-content result-wrapper">
-                
+
                 <div className="pattern-box">
                     <span className="pattern-label">관찰된 패턴</span>
                     <div className="pattern-tags">
@@ -102,6 +126,9 @@ const AIanalysis = () => {
                     <p className="pattern-disclaimer">⚠ {analysisData.disclaimer}</p>
                 </div>
 
+                <div className="graph-trend">
+
+                </div>
                 <div className="section-block">
                     <h3 className="section-title">수영 전후 주요 변화</h3>
                     <div className="symptom-changes-list">
@@ -110,15 +137,15 @@ const AIanalysis = () => {
                                 <span className="symptom-name">{SYMPTOM_MAP[change.symptomType] || change.symptomType}</span>
                                 <div className="bar-container">
                                     <div className="bar-wrapper before-bar">
-                                        <div 
-                                            className="bar-fill" 
+                                        <div
+                                            className="bar-fill"
                                             style={{ width: getBarWidth(change.before), backgroundColor: getBarColor(change.before) }}
                                         />
                                     </div>
                                     <span className="arrow">→</span>
                                     <div className="bar-wrapper after-bar">
-                                        <div 
-                                            className="bar-fill" 
+                                        <div
+                                            className="bar-fill"
                                             style={{ width: getBarWidth(change.after), backgroundColor: getBarColor(change.after) }}
                                         />
                                     </div>
@@ -147,10 +174,10 @@ const AIanalysis = () => {
                         <h3 className="section-title">권장 사항</h3>
                         <p className="recommendation-text">
                             {analysisData.clinic_recommendation.text.split('\n').map((line, i) => (
-                                <React.Fragment key={i}>{line}<br/></React.Fragment>
+                                <React.Fragment key={i}>{line}<br /></React.Fragment>
                             ))}
                         </p>
-                        <button 
+                        <button
                             className="clinic-reservation-btn"
                             onClick={() => navigate('/clinic')}
                         >
