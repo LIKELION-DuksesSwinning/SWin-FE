@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getLatestWeeklyReport } from '../../api/report';
 import './WeeklySwimReport.css';
 import prevBtn from '../../assets/images/prev-btn.svg';
-import arrowPrev from '../../assets/images/arrow-prev.svg';
-import arrowNext from '../../assets/images/arrow-next.svg';
 
 const mockSymptomChanges = [
     { label: '피부 당김', beforeWidth: '40%', afterWidth: '80%', delta: '+2', type: 'increase' },
@@ -79,9 +77,7 @@ function WeeklySwimReport() {
             </header>
 
             <div className="report-date-selector">
-                <img src={arrowPrev} alt="이전 주" className="date-arrow" />
                 <span className="date-range">{formatDate(week_start)} ~ {formatDate(week_end)}</span>
-                <img src={arrowNext} alt="다음 주" className="date-arrow" />
             </div>
 
             <section className="report-section">
