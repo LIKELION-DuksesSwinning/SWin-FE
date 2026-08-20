@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getLatestRoutineRecs } from '../../api/report';
 import './RoutineRecs.css';
 import prevBtn from '../../assets/images/prev-btn.svg';
-import arrowPrev from '../../assets/images/arrow-prev.svg';
-import arrowNext from '../../assets/images/arrow-next.svg';
 
 function RoutineRecs() {
     const navigate = useNavigate();
@@ -75,11 +73,9 @@ function RoutineRecs() {
             </header>
 
             <div className="routine-date-selector">
-                <img src={arrowPrev} alt="이전 주" className="date-arrow" />
                 <span className="date-range">
                     {formatDate(week_start || '2026-08-10')} ~ {formatDate(week_end || '2026-08-16')}
                 </span>
-                <img src={arrowNext} alt="다음 주" className="date-arrow" />
             </div>
 
             <section className="routine-section">
